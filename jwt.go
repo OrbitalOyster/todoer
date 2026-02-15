@@ -48,4 +48,3 @@ func validateToken(tokenString string) (*Claims, error) {
 	}
 	return claims, nil
 }
-

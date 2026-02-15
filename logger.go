@@ -12,4 +12,3 @@ func loggingMiddleware(next http.Handler) http.Handler {
 	}
 	return http.HandlerFunc(logHandler)
 }
-

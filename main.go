@@ -21,10 +21,13 @@ func faviconHandler(writer http.ResponseWriter, req *http.Request) {
 }
 
 func loginHandler(writer http.ResponseWriter, req *http.Request) {
+	http.ServeFile(writer, req, "static/html/login.html")
+}
+
+func loginAttemptHandler(writer http.ResponseWriter, req *http.Request) {
 	userID := "User"
 	token := createToken(userID)
 	setCookie(writer, token)
-	http.ServeFile(writer, req, "static/html/login.html")
 }
 
 func indexHandler(writer http.ResponseWriter, req *http.Request) {
@@ -48,6 +51,7 @@ func main() {
 	mux.HandleFunc("GET /", indexHandler)
 	mux.HandleFunc("GET /favicon.ico", faviconHandler)
 	mux.HandleFunc("GET /login", loginHandler)
+	// mux.HandleFunc("POST /login", loginHandler)
 
 	cssHandler := http.FileServer(http.Dir("static/css"))
 	mux.Handle("GET /css/", http.StripPrefix("/css/", cssHandler))

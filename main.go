@@ -11,11 +11,6 @@ const (
 	port = 8080
 )
 
-var (
-	userName = "orbital"
-	password = "qwerty"
-)
-
 func faviconHandler(writer http.ResponseWriter, req *http.Request) {
 	http.ServeFile(writer, req, "static/favicon.ico")
 }
@@ -25,9 +20,20 @@ func loginHandler(writer http.ResponseWriter, req *http.Request) {
 }
 
 func loginAttemptHandler(writer http.ResponseWriter, req *http.Request) {
-	userID := "User"
-	token := createToken(userID)
-	setCookie(writer, token)
+	if err := req.ParseForm(); err != nil {
+		http.Error(writer, "Haxxor alert!", http.StatusBadRequest)
+		return
+	}
+	username := req.FormValue("username")
+	password := req.FormValue("password")
+
+	if username == "orbital" && password == "qwerty" {
+		token := createToken("orbital")
+		setCookie(writer, token)
+		writer.Write([]byte("Yay!"))
+	} else {
+		writer.Write([]byte("Try again"))
+	}
 }
 
 func indexHandler(writer http.ResponseWriter, req *http.Request) {
@@ -51,10 +57,13 @@ func main() {
 	mux.HandleFunc("GET /", indexHandler)
 	mux.HandleFunc("GET /favicon.ico", faviconHandler)
 	mux.HandleFunc("GET /login", loginHandler)
-	// mux.HandleFunc("POST /login", loginHandler)
+	mux.HandleFunc("POST /login", loginAttemptHandler)
 
 	cssHandler := http.FileServer(http.Dir("static/css"))
 	mux.Handle("GET /css/", http.StripPrefix("/css/", cssHandler))
+
+	jsHandler := http.FileServer(http.Dir("static/js"))
+	mux.Handle("GET /js/", http.StripPrefix("/js/", jsHandler))
 
 	loggedMux := loggingMiddleware(mux)
 

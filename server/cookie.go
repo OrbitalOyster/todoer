@@ -6,12 +6,12 @@ import (
 	"todoer/config"
 )
 
-func GetCookie(req *http.Request, ) string  {
+func GetCookie(req *http.Request) string {
 	cookie, err := req.Cookie(config.CookieName)
 	if err != nil {
 		/* No cookie, return empty string */
 		if err == http.ErrNoCookie {
-			return "" 
+			return ""
 		}
 	}
 	return cookie.Value

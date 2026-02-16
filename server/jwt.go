@@ -22,6 +22,7 @@ func CreateToken(userID string) string {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(config.JWTSecret)
+	/* Something went terribly wrong */
 	if err != nil {
 		panic(err)
 	}

@@ -8,14 +8,13 @@ import (
 )
 
 var (
-	Port string
-	CookieName string
+	Port           string
+	CookieName     string
 	CookieLifetime int
-	JWTSecret []byte
+	JWTSecret      []byte
 )
 
 func Load() {
-	/* Load .env file */
 	err := godotenv.Load()
 	if err != nil {
 		log.Panic("Unable to load .env file:", err)
@@ -37,7 +36,6 @@ func Load() {
 	}
 
 	JWTSecret = []byte(os.Getenv("JWT_SECRET"))
-	println(string(JWTSecret))
 	if len(JWTSecret) == 0 {
 		log.Panic("Missing JWT_SECRET variable")
 	}

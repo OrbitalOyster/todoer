@@ -6,13 +6,13 @@ import (
 	"todoer/server"
 )
 
-var	publicURIs = []string {
+var publicURIs = []string{
 	"/login",
 	"/favicon.ico",
 	"/css/reset.css",
 }
 
-func Auth(next http.Handler) http.Handler  {
+func Auth(next http.Handler) http.Handler {
 	handler := func(writer http.ResponseWriter, req *http.Request) {
 		/* Public routes */
 		if slices.Contains(publicURIs, req.URL.Path) {
@@ -26,11 +26,13 @@ func Auth(next http.Handler) http.Handler  {
 			http.Redirect(writer, req, "/login", http.StatusSeeOther)
 			return
 		}
+		/* Invalid or expired token */
 		_, err := server.ValidateToken(cookie)
 		if err != nil {
 			http.Redirect(writer, req, "/login", http.StatusSeeOther)
 			return
 		}
+		/* All good */
 		next.ServeHTTP(writer, req)
 	}
 	return http.HandlerFunc(handler)

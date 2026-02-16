@@ -2,13 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
+	"todoer/api"
+	"todoer/server"
 )
 
-const (
-	port = 8080
+var (
+	port       string
+	cookieName string
 )
 
 func faviconHandler(writer http.ResponseWriter, req *http.Request) {
@@ -19,31 +23,13 @@ func loginHandler(writer http.ResponseWriter, req *http.Request) {
 	http.ServeFile(writer, req, "static/html/login.html")
 }
 
-func loginAttemptHandler(writer http.ResponseWriter, req *http.Request) {
-	if err := req.ParseForm(); err != nil {
-		http.Error(writer, "Haxxor alert!", http.StatusBadRequest)
-		return
-	}
-	username := req.FormValue("username")
-	password := req.FormValue("password")
-
-	if username == "orbital" && password == "qwerty" {
-		token := createToken("orbital")
-		setCookie(writer, token)
-		writer.Write([]byte("Yay!"))
-	} else {
-		writer.Write([]byte("Try again"))
-	}
-}
-
 func indexHandler(writer http.ResponseWriter, req *http.Request) {
-	cookie, err := req.Cookie(cookieName)
-	if err != nil {
-		log.Println("No cookie, redirecting to login")
+	cookie := server.GetCookie(req)
+	if cookie == "" {
 		http.Redirect(writer, req, "/login", http.StatusSeeOther)
 		return
 	}
-	token, err := validateToken(cookie.Value)
+	token, err := server.ValidateToken(cookie)
 	if err != nil {
 		panic(err)
 	}
@@ -52,12 +38,31 @@ func indexHandler(writer http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	/* Error handler */
+	defer func() {
+		if recovered := recover(); recovered != nil {
+			log.Println("Crashed:", recovered)
+		}
+		log.Println("Bye")
+	}()
+
+	/* Load .env file */
+	dotEnvErr := godotenv.Load()
+	if dotEnvErr != nil {
+		log.Panic("Missing .env file")
+	}
+
+	port = os.Getenv("PORT")
+	if port == "" {
+		log.Panic("Missing PORT variable")
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /", indexHandler)
 	mux.HandleFunc("GET /favicon.ico", faviconHandler)
 	mux.HandleFunc("GET /login", loginHandler)
-	mux.HandleFunc("POST /login", loginAttemptHandler)
+	mux.HandleFunc("POST /login", api.LoginAttemptHandler)
 
 	cssHandler := http.FileServer(http.Dir("static/css"))
 	mux.Handle("GET /css/", http.StripPrefix("/css/", cssHandler))
@@ -67,9 +72,10 @@ func main() {
 
 	loggedMux := loggingMiddleware(mux)
 
-	log.Printf("Starting server on port %d", port)
-	err := http.ListenAndServe(":"+strconv.Itoa(port), loggedMux)
+	log.Printf("Starting server on port %s", port)
+	err := http.ListenAndServe(":"+port, loggedMux)
 	if err != nil {
-		panic(err)
+		log.Panic("Unable to start server: ", err)
 	}
+
 }

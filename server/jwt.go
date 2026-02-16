@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	jwtSecret          = "JWT_SECRET"
+	jwtSecret          = "INSERT_LONG_RANDOM_STRING"
 	jwtLifetimeMinutes = 60 * 24
 )
 
@@ -16,7 +16,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func createToken(userID string) string {
+func CreateToken(userID string) string {
 	expirationTime := time.Now().Add(time.Duration(jwtLifetimeMinutes) * time.Minute)
 	claims := &Claims{
 		UserID: userID,
@@ -32,7 +32,7 @@ func createToken(userID string) string {
 	return tokenString
 }
 
-func validateToken(tokenString string) (*Claims, error) {
+func ValidateToken(tokenString string) (*Claims, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

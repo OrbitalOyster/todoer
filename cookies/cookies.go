@@ -1,4 +1,4 @@
-package server
+package cookies
 
 import (
 	"net/http"
@@ -6,18 +6,7 @@ import (
 	"todoer/config"
 )
 
-func GetCookie(req *http.Request) string {
-	cookie, err := req.Cookie(config.CookieName)
-	if err != nil {
-		/* No cookie, return empty string */
-		if err == http.ErrNoCookie {
-			return ""
-		}
-	}
-	return cookie.Value
-}
-
-func SetCookie(writer http.ResponseWriter, value string) {
+func Set(writer http.ResponseWriter, value string) {
 	cookie := http.Cookie{
 		Name:     config.CookieName,
 		Value:    value,
@@ -28,3 +17,15 @@ func SetCookie(writer http.ResponseWriter, value string) {
 	}
 	http.SetCookie(writer, &cookie)
 }
+
+func Get(req *http.Request) string {
+	cookie, err := req.Cookie(config.CookieName)
+	if err != nil {
+		/* No cookie, return empty string */
+		if err == http.ErrNoCookie {
+			return ""
+		}
+	}
+	return cookie.Value
+}
+

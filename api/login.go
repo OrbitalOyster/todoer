@@ -3,7 +3,7 @@ package api
 import (
 	"log"
 	"net/http"
-	"todoer/server"
+	"todoer/cookies"
 )
 
 func LoginAttemptHandler(writer http.ResponseWriter, req *http.Request) {
@@ -15,8 +15,8 @@ func LoginAttemptHandler(writer http.ResponseWriter, req *http.Request) {
 	/* Credentials mock up */
 	username, password := req.FormValue("username"), req.FormValue("password")
 	if username == "orbital" && password == "qwerty" {
-		token := server.CreateToken(username)
-		server.SetCookie(writer, token)
+		token := cookies.CreateToken(username)
+		cookies.Set(writer, token)
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {

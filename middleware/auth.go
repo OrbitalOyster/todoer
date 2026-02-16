@@ -3,7 +3,7 @@ package middlware
 import (
 	"net/http"
 	"slices"
-	"todoer/server"
+	"todoer/cookies"
 )
 
 var publicURIs = []string{
@@ -20,14 +20,14 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 		/* Protected routes - check credentials */
-		cookie := server.GetCookie(req)
+		cookie := cookies.Get(req)
 		/* No cookie */
 		if cookie == "" {
 			http.Redirect(writer, req, "/login", http.StatusSeeOther)
 			return
 		}
 		/* Invalid or expired token */
-		_, err := server.ValidateToken(cookie)
+		_, err := cookies.ValidateToken(cookie)
 		if err != nil {
 			http.Redirect(writer, req, "/login", http.StatusSeeOther)
 			return

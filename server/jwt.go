@@ -4,11 +4,7 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
-)
-
-const (
-	jwtSecret          = "INSERT_LONG_RANDOM_STRING"
-	jwtLifetimeMinutes = 60 * 24
+	"todoer/config"
 )
 
 type Claims struct {
@@ -17,7 +13,7 @@ type Claims struct {
 }
 
 func CreateToken(userID string) string {
-	expirationTime := time.Now().Add(time.Duration(jwtLifetimeMinutes) * time.Minute)
+	expirationTime := time.Now().Add(time.Duration(config.CookieLifetime) * time.Second)
 	claims := &Claims{
 		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -25,7 +21,7 @@ func CreateToken(userID string) string {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(jwtSecret))
+	tokenString, err := token.SignedString(config.JWTSecret)
 	if err != nil {
 		panic(err)
 	}
@@ -38,7 +34,7 @@ func ValidateToken(tokenString string) (*Claims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(jwtSecret), nil
+		return config.JWTSecret, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Unable to parse token: %w", err)

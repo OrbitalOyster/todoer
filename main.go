@@ -2,17 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
-	"os"
 	"todoer/api"
+	"todoer/config"
 	"todoer/server"
-)
-
-var (
-	port       string
-	cookieName string
 )
 
 func faviconHandler(writer http.ResponseWriter, req *http.Request) {
@@ -31,7 +25,9 @@ func indexHandler(writer http.ResponseWriter, req *http.Request) {
 	}
 	token, err := server.ValidateToken(cookie)
 	if err != nil {
-		panic(err)
+		http.Redirect(writer, req, "/login", http.StatusSeeOther)
+		return
+		// panic(err)
 	}
 	fmt.Println(token.UserID)
 	http.ServeFile(writer, req, "static/html/index.html")
@@ -46,16 +42,7 @@ func main() {
 		log.Println("Bye")
 	}()
 
-	/* Load .env file */
-	dotEnvErr := godotenv.Load()
-	if dotEnvErr != nil {
-		log.Panic("Missing .env file")
-	}
-
-	port = os.Getenv("PORT")
-	if port == "" {
-		log.Panic("Missing PORT variable")
-	}
+	config.Load()
 
 	mux := http.NewServeMux()
 
@@ -72,8 +59,8 @@ func main() {
 
 	loggedMux := loggingMiddleware(mux)
 
-	log.Printf("Starting server on port %s", port)
-	err := http.ListenAndServe(":"+port, loggedMux)
+	log.Printf("Starting server on port %s", config.Port)
+	err := http.ListenAndServe(":"+config.Port, loggedMux)
 	if err != nil {
 		log.Panic("Unable to start server: ", err)
 	}

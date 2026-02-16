@@ -15,6 +15,5 @@ func main() {
 		log.Println("Bye")
 	}()
 	config.Load()
-	log.Printf("Starting server on port %s", config.Port)
-	server.Create(config.Port)
+	server.Start()
 }

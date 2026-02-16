@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"slices"
 	"todoer/cookies"
+	"todoer/jwt"
 )
 
 var publicURIs = []string{
@@ -27,7 +28,7 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 		/* Invalid or expired token */
-		_, err := cookies.ValidateToken(cookie)
+		_, err := jwt.Validate(cookie)
 		if err != nil {
 			http.Redirect(writer, req, "/login", http.StatusSeeOther)
 			return

@@ -1,4 +1,4 @@
-package cookies
+package jwt
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func CreateToken(userID string) string {
+func Create(userID string) string {
 	expirationTime := time.Now().Add(time.Duration(config.CookieLifetime) * time.Second)
 	claims := &Claims{
 		UserID: userID,
@@ -29,7 +29,7 @@ func CreateToken(userID string) string {
 	return tokenString
 }
 
-func ValidateToken(tokenString string) (*Claims, error) {
+func Validate(tokenString string) (*Claims, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

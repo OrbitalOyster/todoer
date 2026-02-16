@@ -4,9 +4,10 @@ import (
 	"log"
 	"net/http"
 	"todoer/cookies"
+	"todoer/jwt"
 )
 
-func LoginAttemptHandler(writer http.ResponseWriter, req *http.Request) {
+func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	/* Check if form is ok */
 	if err := req.ParseForm(); err != nil {
 		http.Error(writer, "Haxxor alert!", http.StatusBadRequest)
@@ -15,7 +16,7 @@ func LoginAttemptHandler(writer http.ResponseWriter, req *http.Request) {
 	/* Credentials mock up */
 	username, password := req.FormValue("username"), req.FormValue("password")
 	if username == "orbital" && password == "qwerty" {
-		token := cookies.CreateToken(username)
+		token := jwt.Create(username)
 		cookies.Set(writer, token)
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)

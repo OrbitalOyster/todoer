@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"todoer/api"
 	"todoer/config"
+	"todoer/routes"
 	"todoer/server"
 )
 
@@ -15,5 +17,11 @@ func main() {
 		log.Println("Bye")
 	}()
 	config.Load()
-	server.Start()
+	/* Routes */
+	routerMap := map[string] server.RouterEntry {
+		"GET /": routes.DefaultHandler,
+		"GET /login": routes.Login,
+		"POST /login": api.LoginAttempt,
+	}
+	server.Start(routerMap)
 }

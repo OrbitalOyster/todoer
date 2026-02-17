@@ -19,8 +19,8 @@ func Start(routerMap RouterMap) {
 	/* Static files */
 	cssHandler := http.FileServer(http.Dir("static/css"))
 	mux.Handle("GET /css/", http.StripPrefix("/css/", cssHandler))
-	jsHandler := http.FileServer(http.Dir("static/js"))
-	mux.Handle("GET /js/", http.StripPrefix("/js/", jsHandler))
+	// jsHandler := http.FileServer(http.Dir("static/js"))
+	// mux.Handle("GET /js/", http.StripPrefix("/js/", jsHandler))
 	/* Favicon */
 	mux.HandleFunc("GET /favicon.ico", faviconHandler)
 	/* Routes */

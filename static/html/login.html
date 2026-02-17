@@ -12,11 +12,11 @@
   <body>
     <div class="d-flex vh-100">
       <div class="card m-auto shadow-sm">
-        <div class="card-header">
-          <h4 class="card-title">TODOer</h4>
+        <div class="card-header text-center">
+          TODOer
         </div>
         <div class="card-body">
-          <form hx-post="/login" hx-target="#response-message" hx-swap="innerHTML">
+          <form hx-post="/login" hx-target="#login-failed-message" hx-swap="innerHTML">
             <div class="d-flex flex-column gap-2">
               <div class="input-group">
                 <i class="input-group-text bi bi-person-fill"></i>
@@ -30,11 +30,11 @@
                 Log in
                 <i class="bi bi-box-arrow-right"></i>
               </button>
+              <p id="login-failed-message"> </p>
             </div>
           </form>
         </div>
       </div>
-      <p id="response-message"> </p>
     </div>
   </body>
 </html>

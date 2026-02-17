@@ -3,18 +3,28 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/reset.css" rel="stylesheet">
     <script src="https://unpkg.com/axios@1.13.2/dist/axios.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
+    <link href="https://bootswatch.com/5/lumen/bootstrap.min.css" rel="stylesheet">
     <title>Login</title>
   </head>
   <body>
-    <h1>Login</h1>
-    <form hx-post="/login" hx-target="#response-message" hx-swap="innerHTML">
-      <input name="username" type="text" />
-      <input name="password" type="password" />
-      <input type="submit" value="Log in"/>
-      <p id="response-message"></p>
-    </form>
+    <div class="d-flex vh-100">
+      <div class="card m-auto shadow-sm">
+        <div class="card-header">
+          <h4 class="card-title">TODOer</h4>
+        </div>
+        <div class="card-body">
+          <form hx-post="/login" hx-target="#response-message" hx-swap="innerHTML">
+            <div class="d-flex flex-column gap-2">
+              <input class="form-control" name="username" type="text" size="32"/>
+              <input class="form-control" name="password" type="password"/>
+              <button class="btn btn-primary" type="submit" />Log in</button>
+              <p id="response-message"> </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

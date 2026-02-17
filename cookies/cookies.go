@@ -28,3 +28,15 @@ func Get(req *http.Request) string {
 	}
 	return cookie.Value
 }
+
+func Clear(writer http.ResponseWriter)  {
+	emptyCookie := http.Cookie{
+		Name:     config.CookieName,
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	}
+	http.SetCookie(writer, &emptyCookie)
+}

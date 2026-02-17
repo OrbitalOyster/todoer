@@ -21,10 +21,12 @@ func main() {
 	tasks.Load()
 	/* Routes */
 	routerMap := map[string]server.RouterEntry{
-		"GET /":         routes.DefaultHandler,
-		"GET /login":    routes.Login,
-		"GET /foo": routes.Foo,
-		"POST /login":   api.LoginAttempt,
+		"GET /{$}":    routes.Main,
+		"GET /login":  routes.Login,
+		"GET /foo":    routes.Foo,
+		"POST /login": api.LoginAttempt,
+		"GET /logout": api.Logout,
+		"GET /":       routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)
 }

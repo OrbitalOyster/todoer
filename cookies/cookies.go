@@ -28,4 +28,3 @@ func Get(req *http.Request) string {
 	}
 	return cookie.Value
 }
-

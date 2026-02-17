@@ -6,6 +6,7 @@ import (
 	"todoer/config"
 	"todoer/routes"
 	"todoer/server"
+	"todoer/tasks"
 )
 
 func main() {
@@ -17,11 +18,13 @@ func main() {
 		log.Println("Bye")
 	}()
 	config.Load()
+	tasks.Load()
 	/* Routes */
-	routerMap := map[string] server.RouterEntry {
-		"GET /": routes.DefaultHandler,
-		"GET /login": routes.Login,
-		"POST /login": api.LoginAttempt,
+	routerMap := map[string]server.RouterEntry{
+		"GET /":         routes.DefaultHandler,
+		"GET /login":    routes.Login,
+		"GET /foo": routes.Foo,
+		"POST /login":   api.LoginAttempt,
 	}
 	server.Start(routerMap)
 }

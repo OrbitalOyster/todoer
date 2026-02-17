@@ -15,7 +15,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	}
 	/* Credentials mock up */
 	username, password := req.FormValue("username"), req.FormValue("password")
-	if username == "orbital" && password == "qwerty" {
+	/* Auth mockup */
+	if username == "admin" && password == "password" {
 		token := jwt.Create(username)
 		cookies.Set(writer, token)
 		writer.Header().Set("HX-Redirect", "/")

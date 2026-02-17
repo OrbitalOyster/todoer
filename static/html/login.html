@@ -13,7 +13,7 @@
     <div class="d-flex vh-100">
       <div class="card m-auto shadow-sm">
         <div class="card-header text-center">
-          TODOer
+          todoer
         </div>
         <div class="card-body">
           <form hx-post="/login" hx-target="#login-failed-message" hx-swap="innerHTML">
@@ -30,7 +30,7 @@
                 Log in
                 <i class="bi bi-box-arrow-right"></i>
               </button>
-              <p id="login-failed-message"> </p>
+              <span id="login-failed-message" class="text-info"></span>
             </div>
           </form>
         </div>

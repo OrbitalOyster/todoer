@@ -3,8 +3,10 @@ package jwt
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
+	"net/http"
 	"time"
 	"todoer/config"
+	"todoer/cookies"
 )
 
 type Claims struct {
@@ -44,4 +46,18 @@ func Validate(tokenString string) (*Claims, error) {
 		return nil, fmt.Errorf("Invalid token")
 	}
 	return claims, nil
+}
+
+func Get(req *http.Request) *Claims {
+	cookie := cookies.Get(req)
+	/* Should not happen */
+	if cookie == "" {
+		panic("Empty cookie")
+	}
+	claims, err := Validate(cookie)
+	/* Should not happen */
+	if err != nil {
+		panic("Empty cookie")
+	}
+	return claims
 }

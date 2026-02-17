@@ -2,8 +2,14 @@ package routes
 
 import (
 	"net/http"
+	"todoer/server"
 )
 
 func Main(writer http.ResponseWriter, req *http.Request) {
-	http.ServeFile(writer, req, "static/html/index.html")
+	data := struct {
+		Title string
+	} {
+		Title: "My template",
+	}
+	server.Templates.ExecuteTemplate(writer, "base.html", data)
 }

@@ -19,6 +19,7 @@ func main() {
 	}()
 	config.Load()
 	tasks.Load()
+
 	/* Routes */
 	routerMap := map[string]server.RouterEntry{
 		"GET /{$}":    routes.Main,

@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-const tasksFile = "tasks.yaml"
+const tasksFilename = "tasks.yaml"
 
 type Task struct {
 	Id          int    `yaml:"id"`
@@ -18,9 +18,9 @@ type Task struct {
 var list []Task
 
 func Load()  {
-	log.Println("Loading tasks from", tasksFile)
+	log.Println("Loading tasks from", tasksFilename)
 	/* Load raw yaml */
-	listRaw, err := os.ReadFile(tasksFile)
+	listRaw, err := os.ReadFile(tasksFilename)
 	if err != nil {
 		panic(err)
 	}
@@ -28,9 +28,7 @@ func Load()  {
 	if err := yaml.Unmarshal(listRaw, &list); err != nil {
 		panic(err)
 	}
-	// list[0].Done = true
-	// output, err := yaml.Marshal(tasks)
-	// log.Println(string(output))
+	log.Println("Tasks found:", len(list))
 }
 
 func Save() {

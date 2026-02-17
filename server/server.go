@@ -1,6 +1,7 @@
 package server
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"todoer/config"
@@ -9,6 +10,7 @@ import (
 
 type RouterEntry func(http.ResponseWriter, *http.Request)
 type RouterMap map[string] RouterEntry
+var Templates *template.Template
 
 func faviconHandler(writer http.ResponseWriter, req *http.Request) {
 	http.ServeFile(writer, req, "static/favicon.ico")
@@ -19,20 +21,24 @@ func Start(routerMap RouterMap) {
 	/* Static files */
 	cssHandler := http.FileServer(http.Dir("static/css"))
 	mux.Handle("GET /css/", http.StripPrefix("/css/", cssHandler))
-	// jsHandler := http.FileServer(http.Dir("static/js"))
-	// mux.Handle("GET /js/", http.StripPrefix("/js/", jsHandler))
 	/* Favicon */
 	mux.HandleFunc("GET /favicon.ico", faviconHandler)
 	/* Routes */
 	for pattern := range routerMap {
 		mux.HandleFunc(pattern, routerMap[pattern])
 	}
+  /* Templates */
+	log.Println("Parsing templates...")
+	parsedTemplates, err := template.ParseGlob("templates/*")
+	if err != nil {
+		panic(err)
+	}
+	Templates = parsedTemplates
 	/* Middleware */
 	middlewared := middlware.Auth(middlware.Logger(mux))
 	/* Start */
 	log.Printf("Starting server on port %s", config.Port)
-	err := http.ListenAndServe(":"+config.Port, middlewared)
-	if err != nil {
+	if err := http.ListenAndServe(":"+config.Port, middlewared); err != nil {
 		panic(err)
 	}
 }

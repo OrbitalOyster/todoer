@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://unpkg.com/axios@1.13.2/dist/axios.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
-    <link href="https://bootswatch.com/5/lumen/bootstrap.min.css" rel="stylesheet">
+    <link href="https://bootswatch.com/5/sketchy/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Login</title>
   </head>
   <body>
@@ -17,14 +18,23 @@
         <div class="card-body">
           <form hx-post="/login" hx-target="#response-message" hx-swap="innerHTML">
             <div class="d-flex flex-column gap-2">
-              <input class="form-control" name="username" type="text" size="32"/>
-              <input class="form-control" name="password" type="password"/>
-              <button class="btn btn-primary" type="submit" />Log in</button>
-              <p id="response-message"> </p>
+              <div class="input-group">
+                <i class="input-group-text bi bi-person-fill"></i>
+                <input class="form-control" name="username" type="text" size="32" autofocus/>
+              </div>
+              <div class="input-group">
+                <i class="input-group-text bi bi-lock-fill"></i>
+                <input class="form-control" name="password" type="password"/>
+              </div>
+              <button class="btn btn-primary" type="submit" />
+                Log in
+                <i class="bi bi-box-arrow-right"></i>
+              </button>
             </div>
           </form>
         </div>
       </div>
+      <p id="response-message"> </p>
     </div>
   </body>
 </html>

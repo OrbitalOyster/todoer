@@ -17,5 +17,5 @@ func Foo(writer http.ResponseWriter, req *http.Request) {
 		Username: claims.UserID,
 		Year: 2026,
 	}
-	server.Templates.ExecuteTemplate(writer, "foo.html", data)
+	server.Templates.ExecuteTemplate(writer, "base.html", data)
 }

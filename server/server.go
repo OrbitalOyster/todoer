@@ -10,6 +10,8 @@ import (
 
 type RouterEntry func(http.ResponseWriter, *http.Request)
 type RouterMap map[string] RouterEntry
+
+var Layouts *template.Template
 var Templates *template.Template
 
 func faviconHandler(writer http.ResponseWriter, req *http.Request) {

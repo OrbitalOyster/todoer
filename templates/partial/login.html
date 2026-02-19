@@ -1,0 +1,28 @@
+{{ define "body" }}
+<div class="d-flex vh-100">
+  <div class="card m-auto shadow-sm">
+    <div class="card-header text-center">
+      todoer
+    </div>
+    <div class="card-body">
+      <form hx-post="/login" hx-target="#login-failed-message" hx-swap="innerHTML">
+        <div class="d-flex flex-column gap-2">
+          <div class="input-group">
+            <i class="input-group-text bi bi-person-fill"></i>
+            <input class="form-control" name="username" type="text" size="32" autofocus/>
+          </div>
+          <div class="input-group">
+            <i class="input-group-text bi bi-lock-fill"></i>
+            <input class="form-control" name="password" type="password"/>
+          </div>
+          <button class="btn btn-primary" type="submit" />
+            Log in
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
+          <span id="login-failed-message" class="text-info"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{{ end }}

@@ -1,18 +1,15 @@
 package server
 
 import (
-	"html/template"
 	"log"
 	"net/http"
 	"todoer/config"
 	"todoer/middleware"
+	"todoer/templates"
 )
 
 type RouterEntry func(http.ResponseWriter, *http.Request)
 type RouterMap map[string] RouterEntry
-
-var Layouts *template.Template
-var Templates *template.Template
 
 func faviconHandler(writer http.ResponseWriter, req *http.Request) {
 	http.ServeFile(writer, req, "static/favicon.ico")
@@ -29,13 +26,8 @@ func Start(routerMap RouterMap) {
 	for pattern := range routerMap {
 		mux.HandleFunc(pattern, routerMap[pattern])
 	}
-  /* Templates */
-	log.Println("Parsing templates...")
-	parsedTemplates, err := template.ParseGlob("templates/*")
-	if err != nil {
-		panic(err)
-	}
-	Templates = parsedTemplates
+	/* Templates */
+	templates.Parse()
 	/* Middleware */
 	middlewared := middlware.Auth(middlware.Logger(mux))
 	/* Start */

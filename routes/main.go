@@ -2,11 +2,12 @@ package routes
 
 import (
 	"net/http"
-	"todoer/server"
-	"todoer/jwt"
+	// "todoer/server"
+	// "todoer/jwt"
 )
 
 func Main(writer http.ResponseWriter, req *http.Request) {
+	/*
 	claims := jwt.Get(req)
 	data := struct {
 		Title string
@@ -19,5 +20,7 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 		Content: "about",
 		Year: 2026,
 	}
-	server.Templates.ExecuteTemplate(writer, "base.html", data)
+	*/
+	// server.Templates.ExecuteTemplate(writer, "base.html", data)
+	// server.Templates.ExecuteTemplate(writer, "base.html", data)
 }

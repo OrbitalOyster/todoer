@@ -27,7 +27,17 @@ func Start(routerMap RouterMap) {
 		mux.HandleFunc(pattern, routerMap[pattern])
 	}
 	/* Templates */
-	templates.Parse()
+	t := map[string]templates.TemplateDeclaration{
+		"login": {
+			Layout: "layout-login.html",
+			Partial: "login.html",
+		},
+		"foo": {
+			Layout: "layout-login.html",
+			Partial: "about.html",
+		},
+	}
+	templates.Parse(t)
 	/* Middleware */
 	middlewared := middlware.Auth(middlware.Logger(mux))
 	/* Start */

@@ -6,66 +6,45 @@ import (
 	"net/http"
 )
 
-type listItem struct {
-	Template *template.Template
-	LayoutName string
+type TemplateDeclaration struct {
+	Layout  string
+	Partial string
 }
 
-var list = make(map[string]listItem)
+var list = make(map[string]struct {
+	*template.Template
+	layoutName string
+})
 
-func Parse()  {
-	var Layouts *template.Template
-  /* Layouts */
+func Parse(templateMap map[string]TemplateDeclaration) {
+	/* Layouts */
 	log.Println("Parsing layouts...")
-	parsedLayouts, err := template.ParseGlob("templates/layouts/*.html")
+	layouts, err := template.ParseGlob("templates/layouts/*.html")
 	if err != nil {
 		panic(err)
 	}
-	Layouts = parsedLayouts
-
-	type TemplateDeclaration struct {
-		Layout string
-		Partial string
-	}
-
-	Arg := map[string]TemplateDeclaration{
-		"login": {
-			Layout: "login.html",
-			Partial: "templates/partial/login.html",
-		},
-		"foo": {
-			Layout: "login.html",
-			Partial: "templates/partial/about.html",
-		},
-	}
-
-  /* Templates */
-	for key, value := range Arg {
-		clonedLayouts, err := Layouts.Clone()
-		if err != nil {
-			panic(err)
-		}
-		partialParsed, err := clonedLayouts.ParseFiles(value.Partial)
-		if err != nil {
-			panic(err)
-		}
-		list[key] = listItem{ partialParsed, value.Layout }
-	}
-	
-	/*
+	/* Templates */
 	log.Println("Parsing templates...")
-	clonedLayouts, err := Layouts.Clone()
-	if err != nil {
-		panic(err)
+	for key, value := range templateMap {
+		clonedLayouts, err := layouts.Clone()
+		if err != nil {
+			panic(err)
+		}
+		partialParsed, err := clonedLayouts.ParseFiles("templates/partial/" + value.Partial)
+		if err != nil {
+			panic(err)
+		}
+		list[key] = struct {
+			*template.Template
+			layoutName string
+		}{
+			partialParsed,
+			value.Layout,
+		}
+		log.Printf("%s: %s - %s", key, value.Layout, value.Partial)
 	}
-	list["login"], err = clonedLayouts.ParseFiles("templates/partial/login.html")
-	if err != nil {
-		panic(err)
-	}
-	*/
 }
 
 func Execute(writer http.ResponseWriter, name string, data any) {
-	// log.Fatal(name, list[name])
-	list[name].Template.ExecuteTemplate(writer, list[name].LayoutName, data)
+	list[name].ExecuteTemplate(writer, list[name].layoutName, data)
 }

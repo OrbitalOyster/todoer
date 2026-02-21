@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
 )
 
 type TemplateDeclaration struct {
@@ -11,40 +12,40 @@ type TemplateDeclaration struct {
 	Partial string
 }
 
-var list = make(map[string]struct {
-	*template.Template
-	layoutName string
-})
+var layoutsGlob = filepath.Join("templates", "layouts", "*.html")
+var partialsFolder = filepath.Join("templates", "partial")
+var layouts *template.Template
+var parsed = make(map[string]	*template.Template)
 
-func Parse(templateMap map[string]TemplateDeclaration) {
+func init()  {
 	/* Layouts */
-	log.Println("Parsing layouts...")
-	layouts, err := template.ParseGlob("templates/layouts/*.html")
+	log.Printf("Parsing layouts (%s)\n", layoutsGlob)
+	var err error
+	layouts, err = template.ParseGlob(layoutsGlob)
 	if err != nil {
 		panic(err)
 	}
-	/* Templates */
-	log.Println("Parsing templates...")
-	for key, value := range templateMap {
-		clonedLayouts, err := layouts.Clone()
-		if err != nil {
-			panic(err)
-		}
-		partialParsed, err := clonedLayouts.ParseFiles("templates/partial/" + value.Partial)
-		if err != nil {
-			panic(err)
-		}
-		list[key] = struct {
-			*template.Template
-			layoutName string
-		}{
-			partialParsed,
-			value.Layout,
-		}
-		log.Printf("%s: %s - %s", key, value.Layout, value.Partial)
+}
+
+func Add(name string, layout string, partial string)  {
+	/* Get layout */
+	clonedLayouts, err := layouts.Clone()
+	if err != nil {
+		panic(err)
 	}
+	/* Get partial */
+	filename := filepath.Join(partialsFolder, partial)
+	partialParsed, err := clonedLayouts.ParseFiles(filename)
+	if err != nil {
+		panic(err)
+	}
+	parsed[name] = partialParsed
+	log.Printf("Added template %s\n", name)
 }
 
 func Execute(writer http.ResponseWriter, name string, data any) {
-	list[name].ExecuteTemplate(writer, list[name].layoutName, data)
+	err := parsed[name].Execute(writer, data)
+	if err != nil {
+		panic(err)
+	}
 }

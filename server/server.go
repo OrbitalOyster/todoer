@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"todoer/config"
 	"todoer/middleware"
-	"todoer/templates"
 )
 
 type RouterEntry func(http.ResponseWriter, *http.Request)
@@ -26,18 +25,6 @@ func Start(routerMap RouterMap) {
 	for pattern := range routerMap {
 		mux.HandleFunc(pattern, routerMap[pattern])
 	}
-	/* Templates */
-	t := map[string]templates.TemplateDeclaration{
-		"login": {
-			Layout: "layout-login.html",
-			Partial: "login.html",
-		},
-		"foo": {
-			Layout: "layout-login.html",
-			Partial: "about.html",
-		},
-	}
-	templates.Parse(t)
 	/* Middleware */
 	middlewared := middlware.Auth(middlware.Logger(mux))
 	/* Start */

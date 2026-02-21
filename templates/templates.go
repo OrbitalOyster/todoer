@@ -13,7 +13,7 @@ type TemplateDeclaration struct {
 }
 
 var layoutsGlob = filepath.Join("templates", "layouts", "*.html")
-var partialsFolder = filepath.Join("templates", "partial")
+var pagesFolder = filepath.Join("templates", "pages")
 var layouts *template.Template
 var parsed = make(map[string]	*template.Template)
 
@@ -27,20 +27,20 @@ func init()  {
 	}
 }
 
-func Add(name string, layout string, partial string)  {
+func Add(name string, layout string, page string)  {
 	/* Get layout */
 	clonedLayouts, err := layouts.Clone()
 	if err != nil {
 		panic(err)
 	}
-	/* Get partial */
-	filename := filepath.Join(partialsFolder, partial)
-	partialParsed, err := clonedLayouts.ParseFiles(filename)
+	/* Get page */
+	filename := filepath.Join(pagesFolder, page)
+	newPage, err := clonedLayouts.ParseFiles(filename)
 	if err != nil {
 		panic(err)
 	}
-	parsed[name] = partialParsed
-	log.Printf("Added template %s\n", name)
+	parsed[name] = newPage
+	log.Printf("Added page %s\n", name)
 }
 
 func Execute(writer http.ResponseWriter, name string, data any) {

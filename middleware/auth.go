@@ -11,6 +11,7 @@ var publicURIs = []string{
 	"/login",
 	"/favicon.ico",
 	"/css/reset.css",
+	"/js/script.js",
 }
 
 func Auth(next http.Handler) http.Handler {

@@ -5,6 +5,7 @@ import (
 	"slices"
 	"todoer/cookies"
 	"todoer/jwt"
+	"strings"
 )
 
 var publicURIs = []string{
@@ -17,7 +18,7 @@ var publicURIs = []string{
 func Auth(next http.Handler) http.Handler {
 	handler := func(writer http.ResponseWriter, req *http.Request) {
 		/* Public routes */
-		if slices.Contains(publicURIs, req.URL.Path) {
+		if slices.Contains(publicURIs, req.URL.Path) || strings.HasPrefix(req.URL.Path, "/vendor/") {
 			next.ServeHTTP(writer, req)
 			return
 		}

@@ -8,7 +8,7 @@ import (
 )
 
 type RouterEntry func(http.ResponseWriter, *http.Request)
-type RouterMap map[string] RouterEntry
+type RouterMap map[string]RouterEntry
 
 func faviconHandler(writer http.ResponseWriter, req *http.Request) {
 	http.ServeFile(writer, req, "static/favicon.ico")
@@ -21,6 +21,8 @@ func Start(routerMap RouterMap) {
 	mux.Handle("GET /css/", http.StripPrefix("/css/", cssHandler))
 	jsHandler := http.FileServer(http.Dir("static/js"))
 	mux.Handle("GET /js/", http.StripPrefix("/js/", jsHandler))
+	vendorHandler := http.FileServer(http.Dir("static/vendor"))
+	mux.Handle("GET /vendor/", http.StripPrefix("/vendor/", vendorHandler))
 	/* Favicon */
 	mux.HandleFunc("GET /favicon.ico", faviconHandler)
 	/* Routes */

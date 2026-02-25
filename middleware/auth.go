@@ -10,6 +10,7 @@ import (
 
 var publicURIs = []string{
 	"/login",
+	"/api/login",
 	"/favicon.ico",
 	"/css/reset.css",
 	"/js/script.js",

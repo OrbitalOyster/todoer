@@ -1,7 +1,14 @@
 {{ define "page" }}
-  <h1>It Works!</h1>
-  {{ template "usercard" . }}
-  <div class="card w-50 m-auto shadow-sm">
+<main class="w-50 m-auto">
+  <header class="p-1 d-flex justify-content-between">
+    <h1>
+      <a href="/">
+        todoer
+      </a>
+    </h1>
+    {{ template "usercard" . }}
+  </header>
+  <div class="card shadow-sm">
     <div class="card-header text-center">
       <h4>Tasks</h4>
     </div>
@@ -9,4 +16,5 @@
       {{ template "taskTable" . }}
     </div>
   </div>
+</main>
 {{ end }}

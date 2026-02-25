@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- css -->
     <link href="/css/reset.css" rel="stylesheet">
-    <!-- htmx -->
-    <script defer src="/vendor/htmx.min.js"></script>
-    <script defer src="/vendor/bootstrap.bundle.min.js"></script>
     <!-- Funky Bootstrap -->
     <link rel="stylesheet" href="/vendor/lumen.min.css">
     <!-- Bootstrap icons -->
     <link rel="stylesheet" href="/vendor/bootstrap-icons.min.css">
+    <!-- htmx -->
+    <script defer src="/vendor/htmx.min.js"></script>
+    <!-- Bootstrap js -->
+    <script defer src="/vendor/bootstrap.bundle.min.js"></script>
     <!-- js -->
     <script defer src="/js/script.js"></script>
     <title>{{ .Title }}</title>
   </head>
   <body>
+    <!-- Firefox flashing layout voodoo hack -->
+    <script>0</script>
     {{ template "page" . }}
   </body>
 </html>

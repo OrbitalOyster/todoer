@@ -1,14 +1,28 @@
 {{ define "taskTable" }}
-<table class="table">
+<table class="table table-hover table-striped">
   <thead>
     <tr>
-      <th>What</th>
-      <th>Who</th>
-      <th>Done?</th>
+      <th class="text-center">#</th>
+      <th class="text-center">What</th>
+      <th class="text-center">When</th>
+      <th class="text-center">Who</th>
+      <th class="text-center">Done?</th>
     </tr>
   </thead>
-  <tbody>
-    <tr></tr>
+  <tbody class="table-group-divider">
+    {{ range .Tasks }}
+      <tr>
+        <td class="text-center">{{ .Id }}</td>
+        <td class="text-center">{{ .Description }}</td>
+        <td class="text-center">{{ .DatetimeFormatted }}</td>
+        <td class="text-center">{{ .User }}</td>
+        <td class="text-center">
+          {{ if .Done }}
+            <i class="bi bi-check2-circle text-success"></i>
+          {{ end }}
+        </td>
+      </tr>
+    {{ end }}
   </tbody>
 </table>
 {{ end }}

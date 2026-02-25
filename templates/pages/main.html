@@ -1,5 +1,12 @@
 {{ define "page" }}
   <h1>It Works!</h1>
   {{ template "usercard" . }}
-  {{ template "taskTable" . }}
+  <div class="card w-50 m-auto shadow-sm">
+    <div class="card-header text-center">
+      <h4>Tasks</h4>
+    </div>
+    <div class="card-body">
+      {{ template "taskTable" . }}
+    </div>
+  </div>
 {{ end }}

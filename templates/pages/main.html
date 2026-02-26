@@ -1,5 +1,5 @@
 {{ define "page" }}
-<main class="w-50 m-auto">
+<main class="col-xl-7 col-md-100 m-auto">
   <header class="align-items-center d-flex justify-content-between p-2">
     <h1>
       <a href="/">
@@ -11,6 +11,9 @@
   <div class="card shadow-sm">
     <div class="card-header text-center">
       <h4>Tasks</h4>
+      <button type="button" class="btn btn-primary position-absolute top-0 end-0 m-1">
+        <i class="bi bi-arrow-repeat fs-5"></i>
+      </button>
     </div>
     <div class="card-body">
       {{ template "taskTable" . }}

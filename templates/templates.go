@@ -50,8 +50,21 @@ func Add(name string, layout string, page string)  {
 }
 
 func Execute(writer http.ResponseWriter, name string, data any) {
-	err := parsed[name].Execute(writer, data)
+	/* Check if page exists */
+	if page, found := parsed[name]; found {
+		err := page.Execute(writer, data)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		panic("Invalid page: " + name)
+	}
+}
+
+func ExecutePartial(writer http.ResponseWriter, name string, data any) {
+	parsed, err := template.ParseFiles(name)
 	if err != nil {
 		panic(err)
 	}
+	parsed.Execute(writer, data)
 }

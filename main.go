@@ -29,6 +29,7 @@ func main() {
 		"GET /login":       routes.Login,
 		"POST /api/login":  api.LoginAttempt,
 		"POST /api/logout": api.Logout,
+		"GET /api/tasks":   api.Tasks,
 		"GET /":            routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)

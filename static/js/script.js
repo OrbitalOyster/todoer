@@ -70,6 +70,7 @@ let confirmMsg = null,
       toastHeader = document.createElement('div'),
       toastIcon = document.createElement('i'),
       toastTitle = document.createElement('strong'),
+      toastTime = document.createElement('small'),
       toastCloseBtn = document.createElement('button'),
       toastBody = document.createElement('div')
 
@@ -79,6 +80,7 @@ let confirmMsg = null,
     toastIcon.classList.add('bi', 'me-2')
     toastTitle.textContent = title
     toastTitle.className = 'me-auto'
+    toastTime.textContent = new Date().toLocaleString()
     toastCloseBtn.type = 'button'
     toastCloseBtn.className = 'btn-close'
     toastCloseBtn.dataset.bsDismiss = 'toast'
@@ -108,6 +110,7 @@ let confirmMsg = null,
     toastEl.appendChild(toastHeader)
     toastHeader.appendChild(toastIcon)
     toastHeader.appendChild(toastTitle)
+    toastHeader.appendChild(toastTime)
     toastHeader.appendChild(toastCloseBtn)
     toastEl.appendChild(toastBody)
 

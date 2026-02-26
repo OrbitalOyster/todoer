@@ -6,8 +6,7 @@
     type="button"
     hx-post="/api/logout"
     hx-trigger="confirmed"
-    onclick="confirmMsg('Logging out', 'Are you sure?')
-      .then((res) => res && htmx.trigger(this, 'confirmed'))"
+    onclick="htmxConfirmMsg(this, 'Logging out', 'Are you sure?')"
   >
     Log out
   </button>

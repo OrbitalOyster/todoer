@@ -13,5 +13,5 @@ func Tasks(writer http.ResponseWriter, req *http.Request)  {
 	} {
 		Tasks: taskList,
 	}
-	templates.ExecutePartial(writer, "templates/partials/taskTable.html", data)
+	templates.ExecutePartial(writer, "taskTable", data)
 }

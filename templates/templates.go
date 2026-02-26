@@ -17,6 +17,7 @@ var partialsGlob = filepath.Join("templates", "partials", "*.html")
 var pagesFolder = filepath.Join("templates", "pages")
 
 var layouts *template.Template
+var partials *template.Template
 var parsed = make(map[string]	*template.Template)
 
 func init()  {
@@ -31,6 +32,12 @@ func init()  {
 		panic(err)
 	}
 	layouts = layoutsWithPartials
+	/* Parse only partials */
+	parsedPartials, err := template.ParseGlob(partialsGlob)
+	if err != nil {
+		panic(err)
+	}
+	partials = parsedPartials
 }
 
 func Add(name string, layout string, page string)  {
@@ -62,9 +69,8 @@ func Execute(writer http.ResponseWriter, name string, data any) {
 }
 
 func ExecutePartial(writer http.ResponseWriter, name string, data any) {
-	parsed, err := template.ParseFiles(name)
+	err := partials.ExecuteTemplate(writer, name, data)
 	if err != nil {
 		panic(err)
 	}
-	parsed.Execute(writer, data)
 }

@@ -1,6 +1,15 @@
 {{ define "usercard" }}
 <div class="d-flex align-items-center gap-2">
   Hello, <strong> {{ .Username }} </strong>
-  <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#myModal">Log out</button>
+  <button
+    class="btn btn-warning"
+    type="button"
+    hx-post="/api/logout"
+    hx-trigger="confirmed"
+    onclick="confirmMsg('Logging out', 'Are you sure?')
+      .then((res) => res && htmx.trigger(this, 'confirmed'))"
+  >
+    Log out
+  </button>
 </div>
 {{ end }}

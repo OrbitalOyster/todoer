@@ -1,6 +1,7 @@
 'use strict'
 
-let confirmMsg = null;
+let confirmMsg = null,
+  htmxConfirmMsg = null;
 
 (function () {
 
@@ -25,7 +26,7 @@ let confirmMsg = null;
 
   /* Confirm modal */
   confirmMsg = async (title, content) => {
-    const modal = new bootstrap.Modal('#confirmModal', { focus: true }),
+    const modal = new bootstrap.Modal('#confirmModal'),
       modalDiv = document.getElementById('confirmModal'),
       titleH = modalDiv.querySelector('#modalTitle'),
       contentDiv = modalDiv.querySelector('#modalContent'),
@@ -49,5 +50,9 @@ let confirmMsg = null;
       cancelButton.addEventListener('click', cancel)
     })
   }
+
+  // htmxConfirmMsg = (title, content) => {
+  //   confirmMsg(title, content).then(res => res && htmx.trigger(this, 'confirmed'))
+  // }
 
 })()

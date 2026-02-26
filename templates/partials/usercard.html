@@ -1,6 +1,6 @@
 {{ define "usercard" }}
-<div>
-  Hello, {{ .Username }}
-  <button class="btn btn-warning" type="button">Log out</button>
+<div class="d-flex align-items-center gap-2">
+  Hello, <strong> {{ .Username }} </strong>
+  <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#myModal">Log out</button>
 </div>
 {{ end }}

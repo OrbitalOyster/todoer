@@ -37,10 +37,10 @@ let confirmMsg = null,
   confirmMsg = async (title, content) => {
     const modal = new bootstrap.Modal('#confirmModal'),
       modalEl = document.getElementById('confirmModal'),
-      titleEl = modalDiv.querySelector('#modalTitle'),
-      contentEl = modalDiv.querySelector('#modalContent'),
+      titleEl = modalEl.querySelector('#modalTitle'),
+      contentEl = modalEl.querySelector('#modalContent'),
       okBtn = modalEl.querySelector('#modalOkBtn'),
-      cancelBtn = modalDiv.querySelector('#modalCancelBtn')
+      cancelBtn = modalEl.querySelector('#modalCancelBtn')
     titleEl.textContent = title
     contentEl.textContent = content
     modal.show()
@@ -65,9 +65,10 @@ let confirmMsg = null,
     confirmMsg(title, content)
       .then(res => res && htmx.trigger(el, 'confirmed'))
 
-  addToast = (title, msg) => {
+  addToast = (type, title, msg) => {
     const toastEl = document.createElement('div'),
       toastHeader = document.createElement('div'),
+      toastIcon = document.createElement('i'),
       toastTitle = document.createElement('strong'),
       toastCloseBtn = document.createElement('button'),
       toastBody = document.createElement('div')
@@ -75,6 +76,7 @@ let confirmMsg = null,
     toastEl.className = 'toast'
     toastEl.dataset.bsAutohide = 'false'
     toastHeader.className = 'toast-header'
+    toastIcon.classList.add('bi', 'me-2')
     toastTitle.textContent = title
     toastTitle.className = 'me-auto'
     toastCloseBtn.type = 'button'
@@ -83,7 +85,28 @@ let confirmMsg = null,
     toastBody.className = 'toast-body'
     toastBody.textContent = msg
 
+    switch (type) {
+      case 'info':
+        toastEl.classList.add('border-info-subtle')
+        toastHeader.classList.add('bg-info-subtle')
+        toastIcon.classList.add('text-info', 'bi-info-circle-fill')
+        break
+      case 'warning':
+        toastEl.classList.add('border-warning-subtle')
+        toastHeader.classList.add('bg-warning-subtle')
+        toastIcon.classList.add('text-warning', 'bi-exclamation-triangle-fill' )
+        break
+      case 'danger':
+        toastEl.classList.add('border-danger-subtle')
+        toastHeader.classList.add('bg-danger-subtle')
+        toastIcon.classList.add('text-danger', 'bi-x-octagon-fill')
+        break
+      default:
+        break
+    }
+
     toastEl.appendChild(toastHeader)
+    toastHeader.appendChild(toastIcon)
     toastHeader.appendChild(toastTitle)
     toastHeader.appendChild(toastCloseBtn)
     toastEl.appendChild(toastBody)

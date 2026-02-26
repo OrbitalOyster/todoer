@@ -5,16 +5,31 @@
       todoer
     </div>
     <div class="card-body">
-      <form hx-post="/api/login" hx-target="#login-failed-message" hx-swap="innerHTML">
+      <form 
+        hx-post="/api/login" 
+        hx-on:htmx-after-request="addToast('danger', 'Login', 'Try again')"
+      >
         <div class="d-flex flex-column gap-2">
           <div class="input-group">
             <i class="input-group-text bi bi-person-fill"></i>
-            <input class="form-control" name="username" type="text" size="32" autofocus/>
+            <input 
+              class="form-control" 
+              name="username" 
+              type="text" 
+              size="32"
+              autofocus
+            />
           </div>
           <div class="input-group">
             <i class="input-group-text bi bi-lock-fill"></i>
             <input class="form-control" name="password" type="password"/>
-            <button class="btn btn-primary toggle-password-btn" type="button" data-bs-toggle="tooltip" data-bs-placement="right" title="Show or hide password">
+            <button
+              class="btn btn-primary toggle-password-btn"
+              type="button" 
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              title="Show or hide password"
+            >
               <i class="bi bi-eye-fill"></i>
             </button>
           </div>

@@ -22,6 +22,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {
-		writer.Write([]byte("Try again"))
+		writer.WriteHeader(http.StatusNoContent)
+		//writer.Write([]byte("Try again"))
 	}
 }

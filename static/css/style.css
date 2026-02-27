@@ -1,9 +1,5 @@
-#foo:not(.htmx-request) {
+#spinner:not(.htmx-request) {
   display: none !important;
-}
-
-.htmx-request {
-  opacity: 1;
 }
 
 .htmx-request + #taskTable {

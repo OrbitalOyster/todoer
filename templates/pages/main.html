@@ -16,17 +16,18 @@
         type="button" 
         data-bs-toggle="tooltip"
         data-bs-placement="right"
+        data-bs-trigger="hover"
         title="Refresh tasks"
         hx-get="/api/tasks" 
         hx-target="#taskTable" 
         hx-trigger="click, load"
-        hx-indicator="#foo"
+        hx-indicator="#spinner"
       >
         <i class="bi bi-arrow-repeat fs-5"></i>
       </button>
     </div>
     <div class="card-body">
-      <div id="foo" class="htmx-indicator">
+      <div id="spinner" class="htmx-indicator">
         <div class="d-flex justify-content-center">
           <div class="spinner-border"></div>
         </div>

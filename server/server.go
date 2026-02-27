@@ -30,7 +30,7 @@ func Start(routerMap RouterMap) {
 		mux.HandleFunc(pattern, routerMap[pattern])
 	}
 	/* Middleware */
-	middlewared := middlware.Auth(middlware.Logger(mux))
+	middlewared := middlware.Throttle(middlware.Auth(middlware.Logger(mux)))
 	/* Start */
 	log.Printf("Starting server on port %s", config.Port)
 	if err := http.ListenAndServe(":"+config.Port, middlewared); err != nil {

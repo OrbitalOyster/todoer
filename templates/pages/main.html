@@ -11,12 +11,20 @@
   <div class="card shadow-sm">
     <div class="card-header text-center">
       <h4>Tasks</h4>
-      <button type="button" class="btn btn-primary position-absolute top-0 end-0 m-1">
+      <button 
+        type="button" 
+        hx-get="/api/tasks" 
+        hx-target="#taskTable" 
+        hx-trigger="click, load"
+        class="btn btn-primary position-absolute top-0 end-0 m-1"
+      >
         <i class="bi bi-arrow-repeat fs-5"></i>
       </button>
     </div>
-    <div class="card-body">
-      {{ template "taskTable" . }}
+    <div class="card-body" id="taskTable">
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border"></div>
+      </div>
     </div>
   </div>
 </main>

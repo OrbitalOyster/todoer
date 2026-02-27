@@ -1,0 +1,11 @@
+#foo:not(.htmx-request) {
+  display: none !important;
+}
+
+.htmx-request {
+  opacity: 1;
+}
+
+.htmx-request + #taskTable {
+  display: none;
+}

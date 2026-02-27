@@ -13,6 +13,7 @@ var publicURIs = []string{
 	"/api/login",
 	"/favicon.ico",
 	"/css/reset.css",
+	"/css/style.css",
 	"/js/script.js",
 }
 

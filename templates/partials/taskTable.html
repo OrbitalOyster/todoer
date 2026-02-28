@@ -2,44 +2,59 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th></th>
-      <th class="text-center">#</th>
-      <th class="text-center">What</th>
-      <th class="text-center">When</th>
-      <th class="text-center">Who</th>
-      <th class="text-center">Done</th>
-      <th class="text-center">Actions</th>
+      <th class="text-center align-middle">
+        <input class="form-check-input" type="checkbox" value="">
+      </th>
+      <th class="text-center align-middle">#</th>
+      <th class="text-center align-middle">What</th>
+      <th class="text-center align-middle">When</th>
+      <th class="text-center align-middle">Who</th>
+      <th class="text-center align-middle">Done</th>
+      <th class="text-center align-middle">Actions</th>
     </tr>
   </thead>
   <tbody class="table-group-divider">
     {{ range .Tasks }}
-      <tr class="align-middle">
-        <td class="text-center">
+      <tr>
+        <td class="text-center align-middle">
           <input class="form-check-input" type="checkbox" value="">
         </td>
-        <td class="text-center">{{ .Id }}</td>
-        <td class="text-center">{{ .Description }}</td>
-        <td class="text-center">{{ .DatetimeFormatted }}</td>
-        <td class="text-center">{{ .User }}</td>
-        <td class="text-center">
+        <td class="text-center align-middle">{{ .Id }}</td>
+        <td class="text-center align-middle">{{ .Description }}</td>
+        <td class="text-center align-middle">{{ .DatetimeFormatted }}</td>
+        <td class="text-center align-middle">{{ .User }}</td>
+        <td class="text-center align-middle">
           {{ if .Done }}
             <i class="bi bi-check2-circle text-success"></i>
           {{ end }}
         </td>
-        <td class="text-center">
+        <td class="text-center align-middle">
           <div class="dropdown-center">
-            <a href="javascript:void(0)" data-bs-toggle="dropdown">
+            <button class="btn btn-link" data-bs-toggle="dropdown">
               <i class="bi bi-three-dots-vertical fs-5"></i>
-            </a>
+            </button>
             <ul class="dropdown-menu shadow-sm">
-              <li><a class="dropdown-item" href="#">Edit</a></li>
-              <li><a class="dropdown-item" href="#">Clone</a></li>
-              <li><a class="dropdown-item" href="#">Done</a></li>
+              <li>
+                <button class="dropdown-item">
+                  <i class="bi bi-pencil-fill me-2"></i>
+                  Edit
+                </button>
+              </li>
+              <li><button class="dropdown-item">Clone</button></li>
+              <li>
+                <button class="dropdown-item text-success">
+                  <i class="bi bi-check2-circle me-2"></i>
+                  Mark as "done"
+                </button>
+              </li>
               <li>
                 <hr class="dropdown-divider">
               </li>
               <li>
-                <a class="dropdown-item" href="#">Delete</a>
+                <button class="dropdown-item text-danger">
+                  <i class="bi bi-trash-fill me-2"></i>
+                  Delete
+                </button>
               </li>
             </ul>
           </div>

@@ -35,15 +35,15 @@ let confirmMsg = null,
 
   /* Confirm modal */
   confirmMsg = async (title, content) => {
-    const modal = new bootstrap.Modal('#confirmModal'),
+    const confirmModal = new bootstrap.Modal('#confirmModal'),
       modalEl = document.getElementById('confirmModal'),
-      titleEl = modalEl.querySelector('#modalTitle'),
-      contentEl = modalEl.querySelector('#modalContent'),
-      okBtn = modalEl.querySelector('#modalOkBtn'),
-      cancelBtn = modalEl.querySelector('#modalCancelBtn')
+      titleEl = modalEl.querySelector('#confirmModalTitle'),
+      contentEl = modalEl.querySelector('#confirmModalContent'),
+      okBtn = modalEl.querySelector('#confirmModalOkBtn'),
+      cancelBtn = modalEl.querySelector('#confirmModalCancelBtn')
     titleEl.textContent = title
     contentEl.textContent = content
-    modal.show()
+    confirmModal.show()
     return new Promise((resolve) => {
       const ok = () => {
           resolve(true)
@@ -53,7 +53,7 @@ let confirmMsg = null,
         cleanUp = () => {
           okBtn.removeEventListener('click', ok)
           cancelBtn.removeEventListener('click', cleanUp)
-          modal.hide()
+          confirmModal.hide()
         }
       okBtn.addEventListener('click', ok)
       cancelBtn.addEventListener('click', cancel)

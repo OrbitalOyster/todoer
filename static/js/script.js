@@ -132,4 +132,14 @@ let confirmMsg = null,
     editTaskModal.show()
   }
 
+  /* HTMX triggers */
+  function onToast(event) {
+    const type = event.detail.type,
+      title = event.detail.title,
+      msg = event.detail.msg
+    addToast(type, title, msg) 
+  }
+
+  document.body.addEventListener("toast", onToast)
+
 })()

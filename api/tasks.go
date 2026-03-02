@@ -24,6 +24,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		writer.WriteHeader(http.StatusBadRequest)
 		writer.Write([]byte("Bogus description"))
 	} else {
+		writer.Header().Set("HX-Trigger", `{"toast": {"type": "info", "title": "Toast", "msg": "Hello!"} }`)
 		writer.WriteHeader(http.StatusNoContent)
 		writer.Write([]byte("Ok"))
 	}

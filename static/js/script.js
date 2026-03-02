@@ -2,7 +2,8 @@
 
 let confirmMsg = null,
   htmxConfirmMsg = null,
-  addToast = null;
+  addToast = null,
+  showEditTaskModal = null;
 
 (function () {
 
@@ -65,6 +66,7 @@ let confirmMsg = null,
     confirmMsg(title, content)
       .then(res => res && htmx.trigger(el, 'confirmed'))
 
+  /* Create new toast message */
   addToast = (type, title, msg) => {
     const toastEl = document.createElement('div'),
       toastHeader = document.createElement('div'),
@@ -117,6 +119,17 @@ let confirmMsg = null,
     document.querySelector('.toast-container').appendChild(toastEl)
     new bootstrap.Toast(toastEl).show()
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
+  }
+
+  showEditTaskModal = (taskId) => {
+    const editTaskModal = new bootstrap.Modal('#editTaskModal'),
+      modalEl = document.getElementById('editTaskModal'),
+      inputEl = modalEl.querySelector('#taskDescriptionInput')
+    inputEl.textContent = taskId
+      // okBtn = modalEl.querySelector('#confirmModalOkBtn'),
+      // cancelBtn = modalEl.querySelector('#confirmModalCancelBtn')
+    //contentEl.textContent = content
+    editTaskModal.show()
   }
 
 })()

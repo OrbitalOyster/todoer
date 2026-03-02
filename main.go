@@ -30,6 +30,7 @@ func main() {
 		"POST /api/login":  api.LoginAttempt,
 		"POST /api/logout": api.Logout,
 		"GET /api/tasks":   api.Tasks,
+		"PATCH /api/tasks": api.PatchTask,
 		"GET /":            routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)

@@ -73,16 +73,26 @@ let confirmMsg = null,
       toastIcon = document.createElement('i'),
       toastTitle = document.createElement('strong'),
       toastTime = document.createElement('small'),
+      toastProgress = document.createElement('div'),
+      toastProgressBar = document.createElement('div'),
       toastCloseBtn = document.createElement('button'),
       toastBody = document.createElement('div')
 
     toastEl.className = 'toast'
-    toastEl.dataset.bsAutohide = 'false'
     toastHeader.className = 'toast-header'
     toastIcon.classList.add('bi', 'me-2')
     toastTitle.textContent = title
     toastTitle.className = 'me-auto'
     toastTime.textContent = new Date().toLocaleString()
+    
+    toastProgress.className = 'progress'
+    toastProgress.style = 'height: 2px'
+    toastProgressBar.classList.add(
+      'foo',
+      'progress-bar',
+    )
+    toastProgressBar.style = 'width: 0%'
+
     toastCloseBtn.type = 'button'
     toastCloseBtn.className = 'btn-close'
     toastCloseBtn.dataset.bsDismiss = 'toast'
@@ -90,20 +100,35 @@ let confirmMsg = null,
     toastBody.textContent = msg
 
     switch (type) {
+      case 'success':
+        toastEl.classList.add('border-success-subtle')
+        toastHeader.classList.add('bg-success-subtle')
+        toastIcon.classList.add('text-success', 'bi-hand-thumbs-up-fill')
+        toastProgressBar.classList.add('bg-success')
+        toastEl.dataset.bsAutohide = 'true'
+        toastEl.dataset.bsDelay = '10000'
+        break
       case 'info':
         toastEl.classList.add('border-info-subtle')
         toastHeader.classList.add('bg-info-subtle')
         toastIcon.classList.add('text-info', 'bi-info-circle-fill')
+        toastProgressBar.classList.add('bg-info')
+        toastEl.dataset.bsAutohide = 'true'
+        toastEl.dataset.bsDelay = '10000'
         break
       case 'warning':
         toastEl.classList.add('border-warning-subtle')
         toastHeader.classList.add('bg-warning-subtle')
         toastIcon.classList.add('text-warning', 'bi-exclamation-triangle-fill' )
+        toastEl.dataset.bsAutohide = 'false'
+        toastProgress.className = 'd-none'
         break
       case 'danger':
         toastEl.classList.add('border-danger-subtle')
         toastHeader.classList.add('bg-danger-subtle')
         toastIcon.classList.add('text-danger', 'bi-x-octagon-fill')
+        toastEl.dataset.bsAutohide = 'false'
+        toastProgress.className = 'd-none'
         break
       default:
         break
@@ -113,11 +138,14 @@ let confirmMsg = null,
     toastHeader.appendChild(toastIcon)
     toastHeader.appendChild(toastTitle)
     toastHeader.appendChild(toastTime)
+    toastProgress.appendChild(toastProgressBar)
+    toastEl.appendChild(toastProgress)
     toastHeader.appendChild(toastCloseBtn)
     toastEl.appendChild(toastBody)
 
     document.querySelector('.toast-container').appendChild(toastEl)
     new bootstrap.Toast(toastEl).show()
+    toastProgressBar.style = 'width: 100%'
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
   }
 

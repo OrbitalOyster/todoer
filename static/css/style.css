@@ -1,3 +1,7 @@
+.foo {
+  transition: width linear 10s !important
+}
+
 #spinner:not(.htmx-request) {
   display: none !important;
 }

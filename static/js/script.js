@@ -86,11 +86,8 @@ let confirmMsg = null,
     toastTime.textContent = new Date().toLocaleString()
     
     toastProgress.className = 'progress'
-    toastProgress.style = 'height: 2px'
-    toastProgressBar.classList.add(
-      'foo',
-      'progress-bar',
-    )
+    toastProgress.style = 'height: 3px'
+    toastProgressBar.classList.add('progress-bar')
     toastProgressBar.style = 'width: 0%'
 
     toastCloseBtn.type = 'button'
@@ -143,10 +140,18 @@ let confirmMsg = null,
     toastHeader.appendChild(toastCloseBtn)
     toastEl.appendChild(toastBody)
 
+    toastEl.addEventListener(
+      'mouseover', () => toastProgressBar.style = 'width: 0%; transition: none'
+    )
+
+    toastEl.addEventListener(
+      'mouseleave', () => toastProgressBar.style = 'width: 100%; transition: width linear 10s'
+    )
+
+    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
     document.querySelector('.toast-container').appendChild(toastEl)
     new bootstrap.Toast(toastEl).show()
-    toastProgressBar.style = 'width: 100%'
-    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
+    toastProgressBar.style = 'width: 100%; transition: width linear 10s'
   }
 
   showEditTaskModal = (taskId) => {

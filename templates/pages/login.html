@@ -7,7 +7,13 @@
     <div class="card-body">
       <form 
         hx-post="/api/login" 
-        hx-on:htmx-after-request="addToast('danger', 'Login', 'Try again')"
+        hx-disabled-elt="
+          find input[name='username'],
+          find input[name='password'],
+          find .toggle-password-btn,
+          find input[name='rememberMe'],
+          find button[type='submit']
+        "
       >
         <div class="d-flex flex-column gap-2">
           <div class="input-group">
@@ -34,11 +40,24 @@
               <i class="bi bi-eye-fill"></i>
             </button>
           </div>
-          <button class="btn btn-primary" type="submit" />
-            Log in
-            <i class="bi bi-box-arrow-right"></i>
-          </button>
-          <span id="login-failed-message" class="text-info"></span>
+          <div class="d-flex flex-row align-items-center gap-4">
+            <div class="form-check">
+              <input 
+                class="form-check-input"
+                id="rememberMe"
+                name="rememberMe" 
+                type="checkbox"
+              >
+              <label class="form-check-label" for="rememberMe">
+                Remember me
+              </label>
+            </div>
+            <button class="btn btn-primary flex-fill" type="submit" />
+              Log in
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+
         </div>
       </form>
     </div>

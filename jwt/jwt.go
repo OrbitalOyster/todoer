@@ -14,8 +14,15 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func Create(userID string) string {
-	expirationTime := time.Now().Add(time.Duration(config.CookieLifetime) * time.Second)
+func Create(userID string, rememberMe bool) string {
+	expirationTime := time.Now()
+
+	if rememberMe {
+		expirationTime = expirationTime.Add(time.Duration(config.CookieLifetime) * time.Second)
+	} else {
+		expirationTime = expirationTime.Add(time.Hour)
+	}
+
 	claims := &Claims{
 		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{

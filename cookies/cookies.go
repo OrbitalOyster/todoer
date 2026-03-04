@@ -6,11 +6,17 @@ import (
 	"todoer/config"
 )
 
-func Set(writer http.ResponseWriter, value string) {
+func Set(writer http.ResponseWriter, value string, longLifetime bool) {
+	expires := time.Now()
+	if longLifetime {
+		expires = expires.Add(time.Duration(config.CookieLifetime) * time.Second)
+	} else {
+		expires = expires.Add(time.Hour)
+	}
 	cookie := http.Cookie{
 		Name:     config.CookieName,
 		Value:    value,
-		Expires:  time.Now().Add(time.Duration(config.CookieLifetime) * time.Second),
+		Expires:  expires,
 		Path:     "/",
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,

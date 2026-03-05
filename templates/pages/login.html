@@ -2,11 +2,15 @@
 <div class="d-flex vh-100">
   <div class="card m-auto shadow shadow-sm">
     <div class="card-header text-center">
-      todoer
+      <h5>todoer</h5>
+      <div
+        id="spinner"
+        class="spinner-border spinner-border-sm text-secondary position-absolute top-0 end-0 m-3">
+      </div>
     </div>
     <div class="card-body">
       <form 
-        hx-post="/api/login" 
+        hx-post="/api/login"
         hx-disabled-elt="
           find input[name='username'],
           find input[name='password'],
@@ -14,6 +18,7 @@
           find input[name='rememberMe'],
           find button[type='submit']
         "
+        hx-indicator="#spinner"
       >
         <div class="d-flex flex-column gap-2">
           <div class="input-group">
@@ -54,10 +59,9 @@
             </div>
             <button class="btn btn-primary flex-fill" type="submit" />
               Log in
-              <i class="bi bi-box-arrow-right"></i>
+              <i class="bi bi-box-arrow-right" id="login-btn-icon"></i>
             </button>
           </div>
-
         </div>
       </form>
     </div>

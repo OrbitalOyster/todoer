@@ -8,10 +8,11 @@ import (
 )
 
 var (
-	Port           string
-	CookieName     string
-	CookieLifetime int
-	JWTSecret      []byte
+	Port                string
+	CookieName          string
+	CookieLifetime      int
+	CookieShortLifetime int
+	JWTSecret           []byte
 )
 
 func Load() {
@@ -33,6 +34,11 @@ func Load() {
 	CookieLifetime, err = strconv.Atoi(os.Getenv("COOKIE_LIFETIME"))
 	if err != nil {
 		log.Panic("Error parsing COOKIE_LIFETIME: ", err)
+	}
+
+	CookieShortLifetime, err = strconv.Atoi(os.Getenv("COOKIE_SHORT_LIFETIME"))
+	if err != nil {
+		log.Panic("Error parsing COOKIE_SHORT_LIFETIME: ", err)
 	}
 
 	JWTSecret = []byte(os.Getenv("JWT_SECRET"))

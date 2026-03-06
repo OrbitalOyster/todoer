@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"todoer/cookies"
 	"todoer/jwt"
+	"todoer/templates"
 )
 
 const loginFailedMsg = `{
@@ -37,7 +38,9 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {
-		writer.Header().Set("HX-Trigger", loginFailedMsg)
-		writer.WriteHeader(http.StatusNoContent)
+		// writer.Header().Set("HX-Trigger", loginFailedMsg)
+		writer.Header().Set("HX-Trigger-After-Settle", `{"createToast":{"target" : ".toast-container"}}`)
+		// writer.WriteHeader(http.StatusNoContent)
+		templates.ExecutePartial(writer, "foo", nil)	
 	}
 }

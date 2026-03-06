@@ -1,0 +1,23 @@
+{{ define "foo" }}
+<div class="toast border-warning-subtle">
+  <div class="toast-header bg-warning-subtle">
+    <i class="bi me-2 text-warning bi-exclamation-triangle-fill"></i>
+    <strong class="me-auto">
+      Foo title
+    </strong>
+    <small>
+      123.456.789
+    </small>
+    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+  </div>
+  <div class="d-none" style="height: 3px;">
+    <div
+      class="progress-bar"
+      style="width: 0%; transition: width 10s linear;">
+    </div>
+  </div>
+  <div class="toast-body">
+    Foo content
+  </div>
+</div>
+{{ end }}

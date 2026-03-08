@@ -6,6 +6,7 @@ import (
 	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/templates"
+	"time"
 )
 
 const loginFailedMsg = `{
@@ -15,6 +16,28 @@ const loginFailedMsg = `{
 		"msg": "Try again"
 	}
 }`
+
+func setToastHeaders(writer http.ResponseWriter) {
+	writer.Header().Set("HX-Trigger-After-Settle", "toast")
+	writer.Header().Set("HX-Retarget", ".toast-container")
+	writer.Header().Set("HX-Reswap", "beforeend")
+}
+
+func WarningToast(writer http.ResponseWriter, title string, msg string) {
+	setToastHeaders(writer)
+	options := map[string]string {
+		"BorderClass": "border-warning-subtle",
+		"Autohide": "false",
+		"HeaderColor": "bg-warning-subtle",
+		"IconColor": "text-warning",
+		"IconClass": "bi-exclamation-triangle-fill",
+		"Title": title,
+		"ProgressBarClass": "d-none",
+		"Content": msg,
+	}
+	options["Time"] = time.Now().Format("2.01.2006 15:04:05")
+	templates.ExecutePartial(writer, "toast", options)	
+}
 
 func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	/* Check if form is ok */
@@ -38,9 +61,12 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {
-		// writer.Header().Set("HX-Trigger", loginFailedMsg)
-		writer.Header().Set("HX-Trigger-After-Settle", `{"createToast":{"target" : ".toast-container"}}`)
-		// writer.WriteHeader(http.StatusNoContent)
+		WarningToast(writer, "Login failed", "Try again")
+		/*
+		writer.Header().Set("HX-Trigger-After-Settle", "toast")
+		writer.Header().Set("HX-Retarget", ".toast-container")
+		writer.Header().Set("HX-Reswap", "beforeend")
 		templates.ExecutePartial(writer, "foo", nil)	
+		*/
 	}
 }

@@ -173,14 +173,12 @@ let confirmMsg = null,
     addToast(type, title, msg) 
   }
 
-  document.body.addEventListener("toast", onToast)
-
-  function onCreateToast() {
-    console.log("Create toast", this.firstElementChild)
-    const toastEl = this.firstElementChild
-    new bootstrap.Toast(toastEl ).show()
+  /* On toast */
+  function onToast() {
+    const toastEl = document.querySelector('.toast-container').lastElementChild
+    new bootstrap.Toast(toastEl).show()
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
   }
-  document.querySelector('.toast-container').addEventListener("createToast", onCreateToast)
+  document.body.addEventListener('toast', onToast)
 
 })()

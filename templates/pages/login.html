@@ -10,9 +10,6 @@
     </div>
     <div class="card-body">
       <form 
-        hx-post="/api/login"
-        hx-target=".toast-container"
-        hx-swap="afterbegin"
         hx-disabled-elt="
           find input[name='username'],
           find input[name='password'],
@@ -21,6 +18,7 @@
           find button[type='submit']
         "
         hx-indicator="#spinner"
+        hx-post="/api/login"
       >
         <div class="d-flex flex-column gap-2">
           <div class="input-group">

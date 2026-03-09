@@ -1,5 +1,9 @@
 {{ define "toast" }}
-<div class="toast {{ .BorderClass }}" data-bs-autohide="{{ .Autohide }}">
+<div
+  class="toast {{ .BorderClass }}"
+  data-bs-autohide="{{ .Autohide }}"
+  data-bs-delay="10000"
+>
   <div class="toast-header {{ .HeaderColor }}">
     <i class="bi me-2 {{ .IconClass }} {{ .IconColor }}"></i>
     <strong class="me-auto">
@@ -10,12 +14,15 @@
     </small>
     <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
   </div>
-  <div class="d-none" style="height: 3px;">
-    <div
-      class="progress-bar {{ .ProgressBarClass }}"
-      style="width: 0%; transition: width 10s linear;">
+  {{ if eq .Autohide "true" }}
+  <div style="height: 3px;">
+    <div 
+      class="progress-bar h-100 foo {{ .ProgressBarClass }}"
+      style="width: 0%"
+    >
     </div>
   </div>
+  {{ end }}
   <div class="toast-body">
     {{ .Content }}
   </div>

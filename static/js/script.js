@@ -177,6 +177,9 @@ let confirmMsg = null,
   function onToast() {
     const toastEl = document.querySelector('.toast-container').lastElementChild
     new bootstrap.Toast(toastEl).show()
+    const progressBar = toastEl.querySelector('.progress-bar')
+    if (progressBar)
+      progressBar.style = 'width: 100%'
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
   }
   document.body.addEventListener('toast', onToast)

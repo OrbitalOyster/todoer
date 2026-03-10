@@ -66,94 +66,6 @@ let confirmMsg = null,
     confirmMsg(title, content)
       .then(res => res && htmx.trigger(el, 'confirmed'))
 
-  /* Create new toast message */
-  addToast = (type, title, msg) => {
-    const toastEl = document.createElement('div'),
-      toastHeader = document.createElement('div'),
-      toastIcon = document.createElement('i'),
-      toastTitle = document.createElement('strong'),
-      toastTime = document.createElement('small'),
-      toastProgress = document.createElement('div'),
-      toastProgressBar = document.createElement('div'),
-      toastCloseBtn = document.createElement('button'),
-      toastBody = document.createElement('div')
-
-    toastEl.className = 'toast'
-    toastHeader.className = 'toast-header'
-    toastIcon.classList.add('bi', 'me-2')
-    toastTitle.textContent = title
-    toastTitle.className = 'me-auto'
-    toastTime.textContent = new Date().toLocaleString()
-    
-    toastProgress.className = 'progress'
-    toastProgress.style = 'height: 3px'
-    toastProgressBar.classList.add('progress-bar')
-    toastProgressBar.style = 'width: 0%'
-
-    toastCloseBtn.type = 'button'
-    toastCloseBtn.className = 'btn-close'
-    toastCloseBtn.dataset.bsDismiss = 'toast'
-    toastBody.className = 'toast-body'
-    toastBody.textContent = msg
-
-    switch (type) {
-      case 'success':
-        toastEl.classList.add('border-success-subtle')
-        toastHeader.classList.add('bg-success-subtle')
-        toastIcon.classList.add('text-success', 'bi-hand-thumbs-up-fill')
-        toastProgressBar.classList.add('bg-success')
-        toastEl.dataset.bsAutohide = 'true'
-        toastEl.dataset.bsDelay = '10000'
-        break
-      case 'info':
-        toastEl.classList.add('border-info-subtle')
-        toastHeader.classList.add('bg-info-subtle')
-        toastIcon.classList.add('text-info', 'bi-info-circle-fill')
-        toastProgressBar.classList.add('bg-info')
-        toastEl.dataset.bsAutohide = 'true'
-        toastEl.dataset.bsDelay = '10000'
-        break
-      case 'warning':
-        toastEl.classList.add('border-warning-subtle')
-        toastHeader.classList.add('bg-warning-subtle')
-        toastIcon.classList.add('text-warning', 'bi-exclamation-triangle-fill' )
-        toastEl.dataset.bsAutohide = 'false'
-        toastProgress.className = 'd-none'
-        break
-      case 'danger':
-        toastEl.classList.add('border-danger-subtle')
-        toastHeader.classList.add('bg-danger-subtle')
-        toastIcon.classList.add('text-danger', 'bi-x-octagon-fill')
-        toastEl.dataset.bsAutohide = 'false'
-        toastProgress.className = 'd-none'
-        break
-      default:
-        break
-    }
-
-    toastEl.appendChild(toastHeader)
-    toastHeader.appendChild(toastIcon)
-    toastHeader.appendChild(toastTitle)
-    toastHeader.appendChild(toastTime)
-    toastProgress.appendChild(toastProgressBar)
-    toastEl.appendChild(toastProgress)
-    toastHeader.appendChild(toastCloseBtn)
-    toastEl.appendChild(toastBody)
-
-    toastEl.addEventListener(
-      'mouseover', () => toastProgressBar.style = 'width: 0%; transition: none'
-    )
-
-    toastEl.addEventListener(
-      'mouseleave', () => toastProgressBar.style = 'width: 100%; transition: width linear 10s'
-    )
-
-    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
-    document.querySelector('.toast-container').appendChild(toastEl)
-    new bootstrap.Toast(toastEl).show()
-    toastProgressBar.style = 'width: 100%; transition: width linear 10s'
-  }
-
   showEditTaskModal = (taskId) => {
     const editTaskModal = new bootstrap.Modal('#editTaskModal'),
       modalEl = document.getElementById('editTaskModal'),
@@ -165,23 +77,25 @@ let confirmMsg = null,
     editTaskModal.show()
   }
 
-  /* HTMX triggers */
-  function onToast(event) {
-    const type = event.detail.type,
-      title = event.detail.title,
-      msg = event.detail.msg
-    addToast(type, title, msg) 
-  }
-
   /* On toast */
-  function onToast() {
+  document.body.addEventListener('toast', function() {
     const toastEl = document.querySelector('.toast-container').lastElementChild
     new bootstrap.Toast(toastEl).show()
     const progressBar = toastEl.querySelector('.progress-bar')
-    if (progressBar)
-      progressBar.style = 'width: 100%'
+    if (progressBar) {
+      progressBar.style = 'width: 100%; transition: width linear 10s'
+      /* Halt progress bar animation on mouse over */
+      toastEl.addEventListener(
+        'mouseover',
+        () => progressBar.style = 'width: 0%; transition: none'
+      )
+      toastEl.addEventListener(
+        'mouseleave',
+        () => progressBar.style = 'width: 100%; transition: width linear 10s'
+      )
+    }
+    /* Remove element after delay */
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
-  }
-  document.body.addEventListener('toast', onToast)
+  })
 
 })()

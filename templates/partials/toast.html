@@ -15,13 +15,13 @@
     <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
   </div>
   {{ if eq .Autohide "true" }}
-  <div style="height: 3px;">
-    <div 
-      class="progress-bar h-100 foo {{ .ProgressBarClass }}"
-      style="width: 0%"
-    >
+    <div style="height: 2px">
+      <div 
+        class="h-100 progress-bar {{ .ProgressBarColor }}"
+        style="width: 0%"
+      >
+      </div>
     </div>
-  </div>
   {{ end }}
   <div class="toast-body">
     {{ .Content }}

@@ -38,6 +38,6 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {
-		toasts.Warning(writer, "Login failed", "Try again")
+		toasts.Info(writer, "Login failed", "Try again")
 	}
 }

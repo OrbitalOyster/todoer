@@ -82,7 +82,7 @@ func Success(writer http.ResponseWriter, title string, msg string) {
 }
 
 func Info(writer http.ResponseWriter, title string, msg string) {
-	execute(writer, 7, title, msg)
+	execute(writer, info, title, msg)
 }
 
 func Warning(writer http.ResponseWriter, title string, msg string) {

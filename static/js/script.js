@@ -2,7 +2,6 @@
 
 let confirmMsg = null,
   htmxConfirmMsg = null,
-  addToast = null,
   showEditTaskModal = null;
 
 (function () {

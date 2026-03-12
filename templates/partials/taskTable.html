@@ -41,7 +41,13 @@
                 </button>
               </li>
               <li>
-                <button class="dropdown-item">
+                <button 
+                  class="dropdown-item"
+                  hx-get="/api/edit-task"
+                  hx-target="#htmxModalDialog"
+                  hx-indicator="#htmxModalSpinner"
+                  onclick="showHTMXModal()"
+                  >
                   Clone
                 </button>
               </li>

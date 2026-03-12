@@ -2,8 +2,9 @@ package api
 
 import (
 	"net/http"
+	"todoer/templates"
 )
 
 func EditTask(writer http.ResponseWriter, req *http.Request)  {
-	writer.Write([]byte("Hello"))	
+	templates.ExecutePartial(writer, "editTaskModalHTMX", nil)
 }

@@ -23,6 +23,20 @@
     <script>0</script>
     {{ template "confirmModal" }}
     {{ template "editTaskModal" }}
+    <div class="fade modal" id="htmxModal" tabindex="-1">
+
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div id="htmx-modal-spinner" class="-htmx-indicator">
+        <div class="d-flex justify-content-center">
+          <div class="spinner-border"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    </div>
     {{ template "page" . }}
     <!-- Toasts -->
     <div

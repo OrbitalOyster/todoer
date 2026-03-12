@@ -25,13 +25,14 @@ func main() {
 	templates.Add("main", "base.html", "main.html")
 	/* Routes */
 	routerMap := map[string]server.RouterEntry{
-		"GET /{$}":         routes.Main,
-		"GET /login":       routes.Login,
-		"POST /api/login":  api.LoginAttempt,
-		"POST /api/logout": api.Logout,
-		"GET /api/tasks":   api.Tasks,
-		"PATCH /api/tasks": api.PatchTask,
-		"GET /":            routes.NotFoundHandler, // 404 page
+		"GET /{$}":           routes.Main,
+		"GET /login":         routes.Login,
+		"POST /api/login":    api.LoginAttempt,
+		"POST /api/logout":   api.Logout,
+		"GET /api/tasks":     api.Tasks,
+		"GET /api/edit-task": api.EditTask,
+		"PATCH /api/tasks":   api.PatchTask,
+		"GET /":              routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)
 }

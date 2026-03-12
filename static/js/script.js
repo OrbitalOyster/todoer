@@ -2,7 +2,8 @@
 
 let confirmMsg = null,
   htmxConfirmMsg = null,
-  showEditTaskModal = null;
+  showEditTaskModal = null,
+  showHTMXModal = null;
 
 (function () {
 
@@ -74,6 +75,11 @@ let confirmMsg = null,
       // cancelBtn = modalEl.querySelector('#confirmModalCancelBtn')
     //contentEl.textContent = content
     editTaskModal.show()
+  }
+
+  showHTMXModal = () => {
+    const htmxModal = new bootstrap.Modal('#htmxModal')
+    htmxModal.show()
   }
 
   /* On toast */

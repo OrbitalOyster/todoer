@@ -3,8 +3,12 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form hx-patch="/api/tasks">
-        <div class="modal-header">
+        <div class="modal-header position-relative">
           <h1 class="modal-title fs-5" id="modalTitle">Edit task</h1>
+          <div class="position-absolute top-50 end-0 translate-middle me-2">
+            <div id="spinner" class="spinner-border spinner-border-sm text-secondary">
+            </div>
+          </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">

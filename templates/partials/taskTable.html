@@ -44,7 +44,9 @@
                 <button 
                   class="dropdown-item"
                   hx-get="/api/edit-task"
-                  hx-target="#htmxModalDialog"
+                  hx-target="#editTaskHtmx"
+                  hx-indicator="#editTaskPlaceholder"
+                  hx-swap="beforeend"
                   onclick="showHTMXModal()"
                   >
                   Clone

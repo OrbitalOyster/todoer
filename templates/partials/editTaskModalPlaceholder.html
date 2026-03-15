@@ -1,0 +1,30 @@
+{{ define "editTaskPlaceholder" }} 
+<div id="editTaskPlaceholder" class="modal-content htmx-indicator">
+  <div class="modal-header position-relative">
+    <h1 class="modal-title fs-5" id="modalTitle">Edit task</h1>
+    <div class="position-absolute top-50 end-0 translate-middle me-2">
+      <div id="editModalSpinner" class="spinner-border spinner-border-sm text-secondary">
+      </div>
+    </div>
+  </div>
+  <div class="modal-body">
+    <input
+      type="text"
+      class="form-control"
+      id="taskDescriptionInput"
+      name="taskDescription"
+      placeholder="..."
+      disabled
+    >
+    </input>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" disabled>
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-primary" disabled>
+      Ok
+    </button>
+  </div>
+</div>
+{{ end }}

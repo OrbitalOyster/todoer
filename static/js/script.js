@@ -78,14 +78,8 @@ let confirmMsg = null,
   }
 
   showHTMXModal = () => {
-    const htmxModal = new bootstrap.Modal('#htmxModal'),
-      modalEl = document.getElementById('htmxModal')
-    modalEl.addEventListener('hidden.bs.modal', cleanUp)
-    function cleanUp() {
-      document.getElementById('removeMe').remove()
-      modalEl.removeEventListener('hidden.bs.modal', cleanUp)
-    }
-    htmxModal.show()
+    document.getElementById('removeMe')?.remove()
+    new bootstrap.Modal('#htmxModal').show()
   }
 
   /* On toast */

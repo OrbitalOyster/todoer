@@ -19,7 +19,7 @@ func Tasks(writer http.ResponseWriter, req *http.Request) {
 }
 
 func EditTask(writer http.ResponseWriter, req *http.Request)  {
-	templates.ExecutePartial(writer, "editTaskModalHTMX", nil)
+	templates.ExecutePartial(writer, "editTaskModal", nil)
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {

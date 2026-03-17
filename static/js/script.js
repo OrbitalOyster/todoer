@@ -67,7 +67,7 @@ let confirmMsg = null,
       .then(res => res && htmx.trigger(el, 'confirmed'))
 
   showHTMXModal = () => {
-    document.getElementById('removeMe')?.remove()
+    document.getElementById('editTaskForm')?.remove()
     new bootstrap.Modal('#htmxModal').show()
   }
 

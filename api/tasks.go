@@ -18,6 +18,10 @@ func Tasks(writer http.ResponseWriter, req *http.Request) {
 	templates.ExecutePartial(writer, "taskTable", data)
 }
 
+func EditTask(writer http.ResponseWriter, req *http.Request)  {
+	templates.ExecutePartial(writer, "editTaskModalHTMX", nil)
+}
+
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	taskId, taskDescription := req.FormValue("taskId"), req.FormValue("taskDescription")
 	log.Printf("id: %s, desc: %s\n", taskId, taskDescription)

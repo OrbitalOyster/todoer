@@ -1,5 +1,5 @@
 #spinner:not(.htmx-request) {
-  display: none !important;
+  display: none;
 }
 
 .htmx-request + #taskTable {
@@ -7,5 +7,5 @@
 }
 
 .htmx-indicator.modal-content:not(.htmx-request) {
-  display: none !important;
+  display: none;
 }

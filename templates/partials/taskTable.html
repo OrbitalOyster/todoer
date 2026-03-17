@@ -35,13 +35,7 @@
             </button>
             <ul class="dropdown-menu shadow-sm">
               <li>
-                <button class="dropdown-item" onclick="showEditTaskModal({{ .Id }})">
-                  <i class="bi bi-pencil-fill me-2"></i>
-                  Edit
-                </button>
-              </li>
-              <li>
-                <button 
+                <button
                   class="dropdown-item"
                   hx-get="/api/edit-task"
                   hx-target="#editTaskHtmx"
@@ -49,6 +43,12 @@
                   hx-swap="beforeend"
                   onclick="showHTMXModal()"
                   >
+                  <i class="bi bi-pencil-fill me-2"></i>
+                  Edit
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item">
                   Clone
                 </button>
               </li>

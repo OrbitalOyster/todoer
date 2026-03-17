@@ -66,17 +66,6 @@ let confirmMsg = null,
     confirmMsg(title, content)
       .then(res => res && htmx.trigger(el, 'confirmed'))
 
-  showEditTaskModal = (taskId) => {
-    const editTaskModal = new bootstrap.Modal('#editTaskModal'),
-      modalEl = document.getElementById('editTaskModal'),
-      inputEl = modalEl.querySelector('#taskDescriptionInput')
-    inputEl.textContent = taskId
-      // okBtn = modalEl.querySelector('#confirmModalOkBtn'),
-      // cancelBtn = modalEl.querySelector('#confirmModalCancelBtn')
-    //contentEl.textContent = content
-    editTaskModal.show()
-  }
-
   showHTMXModal = () => {
     document.getElementById('removeMe')?.remove()
     new bootstrap.Modal('#htmxModal').show()

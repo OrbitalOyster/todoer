@@ -9,7 +9,7 @@ import (
 
 func Main(writer http.ResponseWriter, req *http.Request) {
 	claims := jwt.Get(req)
-	taskList := tasks.Get()
+	taskList := tasks.GetAll()
 	data := struct {
 		Title string
 		Username string

@@ -37,7 +37,7 @@
               <li>
                 <button
                   class="dropdown-item"
-                  hx-get="/api/edit-task"
+                  hx-get="/api/edit-task/{{ .Id }}"
                   hx-target="#editTaskHtmx"
                   hx-indicator="#editTaskPlaceholder"
                   hx-swap="beforeend"

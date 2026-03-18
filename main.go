@@ -30,7 +30,7 @@ func main() {
 		"POST /api/login":    api.LoginAttempt,
 		"POST /api/logout":   api.Logout,
 		"GET /api/tasks":     api.Tasks,
-		"GET /api/edit-task": api.EditTask,
+		"GET /api/edit-task/{id}": api.EditTask,
 		"PATCH /api/tasks":   api.PatchTask,
 		"GET /":              routes.NotFoundHandler, // 404 page
 	}

@@ -1,13 +1,18 @@
 package tasks
 
 import (
+	"fmt"
 	"github.com/goccy/go-yaml"
 	"log"
 	"os"
+	"slices"
 	"time"
 )
 
-const tasksFilename = "tasks.yaml"
+const (
+	tasksFilename = "tasks.yaml"
+	timeFormat = "2.01.2006 15:04:05"
+)
 
 type Task struct {
 	Id                int    `yaml:"id"`
@@ -33,20 +38,38 @@ func Load() {
 		panic(err)
 	}
 	/* Format datetime */
-	for i, t := range list {
-		t, err := time.Parse(time.DateTime, t.Datetime)
+	for i, task := range list {
+		time, err := time.Parse(time.DateTime, task.Datetime)
 		if err != nil {
 			panic(err)
 		}
-		list[i].DatetimeParsed = t
-		list[i].DatetimeFormatted = t.Format("2.01.2006 15:04:05")
+		list[i].DatetimeParsed = time
+		list[i].DatetimeFormatted = time.Format(timeFormat)
 	}
 	log.Println("Tasks found:", len(list))
 }
 
-func Get() []Task {
+func GetAll() []Task {
 	return list
 }
 
-func Save() {
+func Get(id int) (Task, error) {
+	ind := slices.IndexFunc(list, func (t Task) bool { 
+		return t.Id == id
+	})
+	if ind == -1 {
+		return Task{}, fmt.Errorf("Task not found: %d", id)
+	}
+	return list[ind], nil
+}
+
+func Update(id int, newDescription string) error {
+	ind := slices.IndexFunc(list, func (t Task) bool { 
+		return t.Id == id
+	})
+	if ind == -1 {
+		return fmt.Errorf("Task not found: %d", id)
+	}
+	list[ind].Description = newDescription
+	return nil
 }

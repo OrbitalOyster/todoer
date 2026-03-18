@@ -7,14 +7,14 @@
       <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
     </div>
     <div class="modal-body">
-      <input type="hidden" name="taskId" value="1"/>
+      <input type="hidden" name="taskId" value="{{ .Id }}"/>
       <input
         type="text"
         class="form-control"
         name="taskDescription"
         placeholder="Enter task description"
-      >
-      </input>
+        value="{{ .Description }}"
+      />
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

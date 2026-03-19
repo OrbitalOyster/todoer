@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 	"todoer/tasks"
@@ -41,17 +40,16 @@ func EditTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	taskIdStr, taskDescription := req.FormValue("taskId"), req.FormValue("taskDescription")
-	log.Printf("id: %s, desc: %s\n", taskIdStr, taskDescription)
-	if taskDescription == "bogus" {
+	idStr, description := req.FormValue("taskId"), req.FormValue("taskDescription")
+	if description == "bogus" {
 		writer.WriteHeader(http.StatusBadRequest)
 		writer.Write([]byte("Bogus description"))
-	} else {
-		taskId, err := strconv.Atoi(taskIdStr)
-		if err != nil {
-			panic(err)
-		}
-		tasks.Update(taskId, taskDescription)
-		toasts.Success(writer, "Task "+taskIdStr, "Success")
+		return
 	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		panic(err)
+	}
+	tasks.Update(id, description)
+	toasts.Success(writer, "Task "+idStr, "Success")
 }

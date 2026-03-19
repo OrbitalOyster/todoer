@@ -9,3 +9,11 @@
 .htmx-indicator.modal-content:not(.htmx-request) {
   display: none;
 }
+
+i.htmx-request {
+  display: none;
+}
+
+i:not(.htmx-request) + .spinner-border {
+  display: none;
+}

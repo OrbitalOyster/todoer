@@ -1,6 +1,13 @@
 {{ define "editTaskModal" }}
 <div class="modal-content" id="editTaskForm">
-  <form hx-patch="/api/tasks">
+  <form
+    hx-disabled-elt="
+      find input[name='taskDescription'],
+      find button[type='button'].btn-secondary,
+      find button[type='submit']
+    "
+    hx-patch="/api/tasks"
+    >
     <div class="modal-header position-relative">
       <h1 class="modal-title fs-5">Edit task</h1>
       <div class="position-absolute top-50 end-0 translate-middle me-2"></div>
@@ -18,9 +25,11 @@
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-lg"></i>
         Cancel
       </button>
       <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-lg"></i>
         Ok
       </button>
     </div>

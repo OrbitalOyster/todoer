@@ -3,10 +3,6 @@
   <div class="card m-auto shadow shadow-sm">
     <div class="card-header text-center position-relative">
       todoer
-      <div class="position-absolute top-50 end-0 translate-middle me-2">
-        <div id="spinner" class="spinner-border spinner-border-sm text-secondary">
-        </div>
-      </div>
     </div>
     <div class="card-body">
       <form 
@@ -17,7 +13,7 @@
           find input[name='rememberMe'],
           find button[type='submit']
         "
-        hx-indicator="#spinner"
+        hx-indicator="#login-btn-icon"
         hx-post="/api/login"
       >
         <div class="d-flex flex-column gap-2">
@@ -58,8 +54,9 @@
               </label>
             </div>
             <button class="btn btn-primary flex-fill" type="submit" />
-              Log in
               <i class="bi bi-box-arrow-right" id="login-btn-icon"></i>
+              <div class="spinner-border spinner-border-sm"></div>
+              Log in
             </button>
           </div>
         </div>

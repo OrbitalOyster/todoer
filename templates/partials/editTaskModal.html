@@ -6,12 +6,17 @@
       find button[type='button'].btn-secondary,
       find button[type='submit']
     "
+    hx-indicator="#ok-btn-icon"
     hx-patch="/api/tasks"
     >
     <div class="modal-header position-relative">
       <h1 class="modal-title fs-5">Edit task</h1>
-      <div class="position-absolute top-50 end-0 translate-middle me-2"></div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <button
+        class="btn-close" 
+        type="button" 
+        data-bs-dismiss="modal" 
+        >
+      </button>
     </div>
     <div class="modal-body">
       <input type="hidden" name="taskId" value="{{ .Id }}"/>
@@ -29,7 +34,8 @@
         Cancel
       </button>
       <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-lg"></i>
+        <i class="bi bi-check-lg" id="ok-btn-icon"></i>
+        <div class="spinner-border spinner-border-sm"></div>
         Ok
       </button>
     </div>

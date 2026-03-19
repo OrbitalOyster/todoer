@@ -12,35 +12,27 @@ type TemplateDeclaration struct {
 	Partial string
 }
 
-var layoutsGlob = filepath.Join("templates", "layouts", "*.html")
-var partialsGlob = filepath.Join("templates", "partials", "*.html")
-var pagesFolder = filepath.Join("templates", "pages")
+var (
+	layoutsGlob  = filepath.Join("templates", "layouts", "*.html")
+	partialsGlob = filepath.Join("templates", "partials", "*.html")
+	modalsGlob   = filepath.Join("templates", "partials", "modals", "*.html")
+	pagesFolder  = filepath.Join("templates", "pages")
+	layouts      *template.Template
+	partials     *template.Template
+	parsed       = make(map[string]*template.Template)
+)
 
-var layouts *template.Template
-var partials *template.Template
-var parsed = make(map[string]	*template.Template)
-
-func init()  {
-	/* Parse layouts */
-	parsedLayouts, err := template.ParseGlob(layoutsGlob)
-	if err != nil {
-		panic(err)
-	}
-	/* Mix in partials */
-	layoutsWithPartials, err := parsedLayouts.ParseGlob(partialsGlob)
-	if err != nil {
-		panic(err)
-	}
-	layouts = layoutsWithPartials
-	/* Parse only partials */
-	parsedPartials, err := template.ParseGlob(partialsGlob)
-	if err != nil {
-		panic(err)
-	}
-	partials = parsedPartials
+func init() {
+	/* Layouts */
+	layouts = template.Must(template.ParseGlob(layoutsGlob))
+	template.Must(layouts.ParseGlob(partialsGlob))
+	template.Must(layouts.ParseGlob(modalsGlob))
+	/* Partials */
+	partials = template.Must(template.ParseGlob(partialsGlob))
+	template.Must(partials.ParseGlob(modalsGlob))
 }
 
-func Add(name string, layout string, page string)  {
+func Add(name string, layout string, page string) {
 	/* Clone layout */
 	clonedLayouts, err := layouts.Clone()
 	if err != nil {

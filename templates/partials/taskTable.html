@@ -38,7 +38,7 @@
                 <button
                   class="dropdown-item"
                   hx-get="/api/edit-task/{{ .Id }}"
-                  hx-indicator="#editTaskPlaceholder"
+                  hx-indicator="#editTaskModal > div:first-child > div:first-child"
                   hx-swap="beforeend"
                   hx-target="#editTaskModal > div:first-child"
                   onclick="showHTMXModal()"

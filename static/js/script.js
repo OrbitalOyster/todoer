@@ -40,24 +40,23 @@ let confirmMsg = null,
       modalEl = document.getElementById('confirmModal'),
       titleEl = modalEl.querySelector('#confirmModalTitle'),
       contentEl = modalEl.querySelector('#confirmModalContent'),
-      okBtn = modalEl.querySelector('#confirmModalOkBtn'),
-      cancelBtn = modalEl.querySelector('#confirmModalCancelBtn')
+      okBtn = modalEl.querySelector('#confirmModalOkBtn')
     titleEl.textContent = title
     contentEl.textContent = content
     confirmModal.show()
     return new Promise((resolve) => {
-      const ok = () => {
+      const confirmed = () => {
           resolve(true)
           cleanUp()
         },
-        cancel = () => cleanUp(),
         cleanUp = () => {
-          okBtn.removeEventListener('click', ok)
-          cancelBtn.removeEventListener('click', cleanUp)
+          okBtn.removeEventListener('click', confirmed)
+          modalEl.removeEventListener('hidden.bs.modal', cleanUp)
           confirmModal.hide()
+          console.log("cleanUp")
         }
-      okBtn.addEventListener('click', ok)
-      cancelBtn.addEventListener('click', cancel)
+      okBtn.addEventListener('click', confirmed)
+      modalEl.addEventListener('hidden.bs.modal', cleanUp)
     })
   }
 

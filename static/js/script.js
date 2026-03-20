@@ -53,7 +53,6 @@ let confirmMsg = null,
           okBtn.removeEventListener('click', confirmed)
           modalEl.removeEventListener('hidden.bs.modal', cleanUp)
           confirmModal.hide()
-          console.log("cleanUp")
         }
       okBtn.addEventListener('click', confirmed)
       modalEl.addEventListener('hidden.bs.modal', cleanUp)
@@ -66,8 +65,9 @@ let confirmMsg = null,
       .then(res => res && htmx.trigger(el, 'confirmed'))
 
   showHTMXModal = () => {
+    /* TODO: Jank */
     document.getElementById('editTaskForm')?.remove()
-    new bootstrap.Modal('#htmxModal').show()
+    new bootstrap.Modal('#editTaskModal').show()
   }
 
   /* On toast */

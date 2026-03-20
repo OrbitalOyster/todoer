@@ -38,9 +38,9 @@
                 <button
                   class="dropdown-item"
                   hx-get="/api/edit-task/{{ .Id }}"
-                  hx-target="#editTaskHtmx"
                   hx-indicator="#editTaskPlaceholder"
                   hx-swap="beforeend"
+                  hx-target="#editTaskModal > div:first-child"
                   onclick="showHTMXModal()"
                   >
                   <i class="bi bi-pencil-fill me-2"></i>

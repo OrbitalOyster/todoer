@@ -36,7 +36,7 @@ func EditTask(writer http.ResponseWriter, req *http.Request) {
 		Id:          id,
 		Description: task.Description,
 	}
-	templates.ExecutePartial(writer, "editTaskModal", data)
+	templates.ExecutePartial(writer, "editTask", data)
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {

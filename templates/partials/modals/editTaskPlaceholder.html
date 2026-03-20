@@ -1,16 +1,10 @@
 {{ define "editTaskPlaceholder" }} 
-<div class="fade modal modal-blur" id="htmxModal" tabindex="-1">
+<div class="modal fade" id="htmxModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" id="editTaskHtmx">
     <div class="modal-content htmx-indicator" id="editTaskPlaceholder">
       <div class="modal-header position-relative">
         <h1 class="modal-title fs-5">Edit task</h1>
-        <button
-          class="btn-close" 
-          type="button" 
-          data-bs-dismiss="modal" 
-          disabled
-          >
-        </button>
+        <button class="btn-close" disabled></button>
       </div>
       <div class="modal-body">
         <input class="form-control" type="text" disabled />

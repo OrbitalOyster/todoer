@@ -9,6 +9,7 @@ import (
 )
 
 type ToastSeverity int
+
 const (
 	success ToastSeverity = iota
 	info

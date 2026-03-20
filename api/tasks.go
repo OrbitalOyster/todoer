@@ -40,7 +40,7 @@ func EditTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	idStr, description := req.FormValue("taskId"), req.FormValue("taskDescription")
+	idStr, description := req.FormValue("id"), req.FormValue("description")
 	if description == "bogus" {
 		writer.WriteHeader(http.StatusBadRequest)
 		writer.Write([]byte("Bogus description"))
@@ -51,5 +51,8 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	tasks.Update(id, description)
+
+	writer.Header().Set("HX-Trigger", "hideModal")
+
 	toasts.Success(writer, "Task "+idStr, "Success")
 }

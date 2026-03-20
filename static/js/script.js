@@ -92,4 +92,8 @@ let confirmMsg = null,
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
   })
 
+  document.body.addEventListener('hideModal', function() {
+    console.log("Hide modal")
+  })
+
 })()

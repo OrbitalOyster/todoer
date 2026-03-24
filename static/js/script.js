@@ -66,12 +66,14 @@ let confirmMsg = null,
 
   showEditTaskModal = () => {
     document.getElementById('editTaskForm')?.remove()
-    new bootstrap.Modal('#editTaskModal').show()
+    document.getElementById('cloneTaskForm')?.remove()
+    new bootstrap.Modal('#modal').show()
   }
 
   showCloneTaskModal = () => {
+    document.getElementById('editTaskForm')?.remove()
     document.getElementById('cloneTaskForm')?.remove()
-    new bootstrap.Modal('#cloneTaskModal').show()
+    new bootstrap.Modal('#modal').show()
   }
 
   /* On toast */

@@ -38,9 +38,9 @@
                 <button
                   class="dropdown-item"
                   hx-get="/api/edit-task/{{ .Id }}"
-                  hx-indicator="#editTaskModal > div:first-child > div:first-child"
+                  hx-indicator="#editTaskPlaceholder"
                   hx-swap="beforeend"
-                  hx-target="#editTaskModal > div:first-child"
+                  hx-target="#modal > div:first-child"
                   onclick="showEditTaskModal()"
                   >
                   <i class="bi bi-pencil-fill me-2"></i>
@@ -51,9 +51,9 @@
                 <button
                   class="dropdown-item"
                   hx-get="/api/clone-task/{{ .Id }}"
-                  hx-indicator="#cloneTaskModal > div:first-child > div:first-child"
+                  hx-indicator="#cloneTaskPlaceholder"
                   hx-swap="beforeend"
-                  hx-target="#cloneTaskModal > div:first-child"
+                  hx-target="#modal > div:first-child"
                   onclick="showCloneTaskModal()"
                   >
                   <i class="bi bi-copy me-2"></i>

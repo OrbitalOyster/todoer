@@ -2,8 +2,8 @@
 
 let confirmMsg = null,
   htmxConfirmMsg = null,
-  showEditTaskModal = null,
-  showCloneTaskModal = null;
+  modal = null,
+  showHTMXModal = null;
 
 (function () {
 
@@ -17,6 +17,9 @@ let confirmMsg = null,
   /* Set up bootstrap toasts */
   const toastElList = document.querySelectorAll('.toast');
   [...toastElList].map(toastEl => new bootstrap.Toast(toastEl))
+
+  /* Set up bootstrap modals */
+  modal = new bootstrap.Modal('#modal')
 
   /* Toggle password buttons */
   const togglePasswordBtns = 
@@ -64,17 +67,17 @@ let confirmMsg = null,
     confirmMsg(title, content)
       .then(res => res && htmx.trigger(el, 'confirmed'))
 
-  showEditTaskModal = () => {
-    document.getElementById('editTaskForm')?.remove()
-    document.getElementById('cloneTaskForm')?.remove()
-    new bootstrap.Modal('#modal').show()
+  showHTMXModal = () => {
+    /* Remove previous HTMX content */
+    const toRemoveQuery = '#modal > div:first-child > :not(.htmx-indicator)',
+      toRemoveEls = document.querySelectorAll(toRemoveQuery)
+    toRemoveEls.forEach(el => el.remove())
+    modal.show()
   }
 
-  showCloneTaskModal = () => {
-    document.getElementById('editTaskForm')?.remove()
-    document.getElementById('cloneTaskForm')?.remove()
-    new bootstrap.Modal('#modal').show()
-  }
+  document.body.addEventListener('hideModal', function() {
+    modal.hide()
+  })
 
   /* On toast */
   document.body.addEventListener('toast', function() {
@@ -95,10 +98,6 @@ let confirmMsg = null,
     }
     /* Remove element after delay */
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
-  })
-
-  document.body.addEventListener('hideModal', function() {
-    console.log("Hide modal")
   })
 
 })()

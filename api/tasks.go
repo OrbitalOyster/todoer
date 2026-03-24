@@ -39,6 +39,27 @@ func EditTask(writer http.ResponseWriter, req *http.Request) {
 	templates.ExecutePartial(writer, "editTaskForm", data)
 }
 
+func CloneTask(writer http.ResponseWriter, req *http.Request) {
+	id, err := strconv.Atoi(req.PathValue("id"))
+	/* User sent stoopid */
+	if err != nil {
+		panic(err)
+	}
+	task, err := tasks.Get(id)
+	/* No such task */
+	if err != nil {
+		panic(err)
+	}
+	data := struct {
+		Id          int
+		User string
+	}{
+		Id:          id,
+		User: task.User,
+	}
+	templates.ExecutePartial(writer, "cloneTaskForm", data)
+}
+
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	idStr, description := req.FormValue("id"), req.FormValue("description")
 	if description == "bogus" {

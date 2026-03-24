@@ -3,7 +3,7 @@
 let confirmMsg = null,
   htmxConfirmMsg = null,
   showEditTaskModal = null,
-  showHTMXModal = null;
+  showCloneTaskModal = null;
 
 (function () {
 
@@ -64,10 +64,14 @@ let confirmMsg = null,
     confirmMsg(title, content)
       .then(res => res && htmx.trigger(el, 'confirmed'))
 
-  showHTMXModal = () => {
-    /* TODO: Jank */
+  showEditTaskModal = () => {
     document.getElementById('editTaskForm')?.remove()
     new bootstrap.Modal('#editTaskModal').show()
+  }
+
+  showCloneTaskModal = () => {
+    document.getElementById('cloneTaskForm')?.remove()
+    new bootstrap.Modal('#cloneTaskModal').show()
   }
 
   /* On toast */

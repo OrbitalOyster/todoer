@@ -1,0 +1,44 @@
+{{ define "cloneTaskForm" }}
+<div class="modal-content" id="cloneTaskForm">
+  <form
+    hx-disabled-elt="
+      find input[name='description'],
+      find button[type='button'].btn-secondary,
+      find button[type='submit']
+    "
+    hx-indicator="#ok-btn-icon"
+    hx-patch="/api/tasks"
+    >
+    <div class="modal-header position-relative">
+      <h1 class="modal-title fs-5">Clone task</h1>
+      <button
+        class="btn-close" 
+        type="button" 
+        data-bs-dismiss="modal" 
+        >
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" name="id" value="{{ .Id }}"/>
+      <input
+        type="text"
+        class="form-control"
+        name="user"
+        placeholder="Enter user"
+        value="{{ .User }}"
+      />
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-lg"></i>
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-lg" id="ok-btn-icon"></i>
+        <div class="spinner-border spinner-border-sm"></div>
+        Ok
+      </button>
+    </div>
+  </form>
+</div>
+{{ end }}

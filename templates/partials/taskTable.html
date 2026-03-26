@@ -37,7 +37,7 @@
               <li>
                 <button
                   class="dropdown-item"
-                  hx-get="/api/edit-task/{{ .Id }}"
+                  hx-get="/htmx/edit-task/{{ .Id }}"
                   hx-indicator="#editTaskPlaceholder"
                   hx-swap="beforeend"
                   hx-target="#modal > div:first-child"
@@ -50,7 +50,7 @@
               <li>
                 <button
                   class="dropdown-item"
-                  hx-get="/api/clone-task/{{ .Id }}"
+                  hx-get="/htmx/clone-task/{{ .Id }}"
                   hx-indicator="#cloneTaskPlaceholder"
                   hx-swap="beforeend"
                   hx-target="#modal > div:first-child"

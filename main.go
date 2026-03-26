@@ -7,6 +7,7 @@ import (
 	"todoer/routes"
 	"todoer/server"
 	"todoer/tasks"
+	"todoer/tasks/htmx"
 	"todoer/templates"
 )
 
@@ -25,15 +26,15 @@ func main() {
 	templates.Add("main", "base.html", "main.html")
 	/* Routes */
 	routerMap := map[string]server.RouterEntry{
-		"GET /{$}":                 routes.Main,
-		"GET /login":               routes.Login,
-		"POST /api/login":          api.LoginAttempt,
-		"POST /api/logout":         api.Logout,
-		"GET /api/tasks":           api.Tasks,
-		"GET /api/edit-task/{id}":  api.EditTask,
-		"GET /api/clone-task/{id}": api.CloneTask,
-		"PATCH /api/tasks":         api.PatchTask,
-		"GET /":                    routes.NotFoundHandler, // 404 page
+		"GET /{$}":                  routes.Main,
+		"GET /login":                routes.Login,
+		"POST /api/login":           api.LoginAttempt,
+		"POST /api/logout":          api.Logout,
+		"GET /htmx/tasks":           htmxTasks.GetAll,
+		"GET /htmx/edit-task/{id}":  htmxTasks.Edit,
+		"GET /htmx/clone-task/{id}": htmxTasks.Clone,
+		"PATCH /api/tasks":          api.PatchTask,
+		"GET /":                     routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)
 }

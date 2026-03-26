@@ -2,11 +2,11 @@ package tasks
 
 import (
 	"fmt"
-	"github.com/goccy/go-yaml"
 	"log"
 	"os"
 	"slices"
 	"time"
+	"github.com/goccy/go-yaml"
 )
 
 const (

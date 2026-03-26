@@ -8,6 +8,20 @@ import (
 	"todoer/toasts"
 )
 
+func checkTask(idStr string) tasks.Task {
+	id, err := strconv.Atoi(idStr)
+	/* User sent stoopid */
+	if err != nil {
+		panic(err)
+	}
+	task, err := tasks.Get(id)
+	/* No such task */
+	if err != nil {
+		panic(err)
+	}
+	return task
+}
+
 func Tasks(writer http.ResponseWriter, req *http.Request) {
 	taskList := tasks.GetAll()
 	data := struct {
@@ -19,45 +33,13 @@ func Tasks(writer http.ResponseWriter, req *http.Request) {
 }
 
 func EditTask(writer http.ResponseWriter, req *http.Request) {
-	id, err := strconv.Atoi(req.PathValue("id"))
-	/* User sent stoopid */
-	if err != nil {
-		panic(err)
-	}
-	task, err := tasks.Get(id)
-	/* No such task */
-	if err != nil {
-		panic(err)
-	}
-	data := struct {
-		Id          int
-		Description string
-	}{
-		Id:          id,
-		Description: task.Description,
-	}
-	templates.ExecutePartial(writer, "editTaskForm", data)
+	task := checkTask(req.PathValue("id"))
+	templates.ExecutePartial(writer, "editTaskForm", task)
 }
 
 func CloneTask(writer http.ResponseWriter, req *http.Request) {
-	id, err := strconv.Atoi(req.PathValue("id"))
-	/* User sent stoopid */
-	if err != nil {
-		panic(err)
-	}
-	task, err := tasks.Get(id)
-	/* No such task */
-	if err != nil {
-		panic(err)
-	}
-	data := struct {
-		Id          int
-		User string
-	}{
-		Id:          id,
-		User: task.User,
-	}
-	templates.ExecutePartial(writer, "cloneTaskForm", data)
+	task := checkTask(req.PathValue("id"))
+	templates.ExecutePartial(writer, "cloneTaskForm", task)
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {

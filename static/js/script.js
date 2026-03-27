@@ -14,9 +14,9 @@ let confirmMsg = null,
     tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
   )
 
-  /* Set up bootstrap toasts */
-  const toastElList = document.querySelectorAll('.toast');
-  [...toastElList].map(toastEl => new bootstrap.Toast(toastEl))
+  /* Set up bootstrap toasts TODO: Don't need this? */
+  // const toastElList = document.querySelectorAll('.toast');
+  // [...toastElList].map(toastEl => new bootstrap.Toast(toastEl))
 
   /* Set up bootstrap modals */
   modal = new bootstrap.Modal('#modal')
@@ -75,9 +75,7 @@ let confirmMsg = null,
     modal.show()
   }
 
-  document.body.addEventListener('hideModal', function() {
-    modal.hide()
-  })
+  document.body.addEventListener('hideModal', () => modal.hide())
 
   /* On toast */
   document.body.addEventListener('toast', function() {
@@ -98,6 +96,11 @@ let confirmMsg = null,
     }
     /* Remove element after delay */
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove())
+  })
+
+  /* On task update */
+  document.body.addEventListener('task-update', function() {
+    console.log("Task updated")
   })
 
 })()

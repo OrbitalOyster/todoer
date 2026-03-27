@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"todoer/tasks"
+	"todoer/templates"
 	"todoer/toasts"
 )
 
@@ -21,4 +22,5 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	tasks.Update(id, description)
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+idStr, "Success")
+	templates.ExecutePartial(writer, "foo", nil)
 }

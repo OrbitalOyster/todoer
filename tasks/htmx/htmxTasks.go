@@ -21,12 +21,16 @@ func checkTask(idStr string) tasks.Task {
 	return task
 }
 
+func Get(writer http.ResponseWriter, req *http.Request) {
+	task := checkTask(req.PathValue("id"))
+	templates.ExecutePartial(writer, "task", task)
+}
+
 func GetAll(writer http.ResponseWriter, req *http.Request) {
-	taskList := tasks.GetAll()
 	data := struct {
 		Tasks []tasks.Task
 	}{
-		Tasks: taskList,
+		Tasks: tasks.GetAll(),
 	}
 	templates.ExecutePartial(writer, "taskTable", data)
 }

@@ -1,0 +1,7 @@
+{{ define "task-oob" }}
+<template>
+  <tr id="task-{{ .Id }}" hx-swap-oob="true">
+    {{ template "task" . }}
+  </tr>
+</template>
+{{ end }}

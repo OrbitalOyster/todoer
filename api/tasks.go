@@ -20,7 +20,8 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	tasks.Update(id, description)
+	task := tasks.Check(idStr)
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+idStr, "Success")
-	templates.ExecutePartial(writer, "foo", nil)
+	templates.ExecutePartial(writer, "task-oob", task)
 }

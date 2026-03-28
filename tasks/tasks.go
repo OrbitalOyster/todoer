@@ -2,11 +2,12 @@ package tasks
 
 import (
 	"fmt"
+	"github.com/goccy/go-yaml"
 	"log"
 	"os"
 	"slices"
+	"strconv"
 	"time"
-	"github.com/goccy/go-yaml"
 )
 
 const (
@@ -25,6 +26,20 @@ type Task struct {
 }
 
 var list []Task
+
+func Check(idStr string) Task {
+	id, err := strconv.Atoi(idStr)
+	/* User sent stoopid */
+	if err != nil {
+		panic(err)
+	}
+	task, err := Get(id)
+	/* No such task */
+	if err != nil {
+		panic(err)
+	}
+	return task
+}
 
 func Load() {
 	log.Println("Loading tasks from", tasksFilename)

@@ -15,7 +15,9 @@
   </thead>
   <tbody class="table-group-divider">
     {{ range .Tasks }}
-      {{ template "task" . }}
+      <tr id="task-{{ .Id }}">
+        {{ template "task" . }}
+      </tr>
     {{ end }}
   </tbody>
 </table>

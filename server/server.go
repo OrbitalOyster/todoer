@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/klauspost/compress/gzhttp"
 	"log"
 	"net/http"
 	"todoer/config"
@@ -34,7 +35,7 @@ func Start(routerMap RouterMap) {
 		middlware.Auth(
 			middlware.HTMXHeaders(
 				middlware.Throttle(
-					mux,
+					gzhttp.GzipHandler(mux),
 				),
 			),
 		),

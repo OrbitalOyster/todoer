@@ -51,6 +51,7 @@ func Add(name string, layout string, page string) {
 func Execute(writer http.ResponseWriter, name string, data any) {
 	/* Check if page exists */
 	if page, found := parsed[name]; found {
+		writer.Header().Set("Content-Type", "text/html")
 		err := page.Execute(writer, data)
 		if err != nil {
 			panic(err)
@@ -61,6 +62,7 @@ func Execute(writer http.ResponseWriter, name string, data any) {
 }
 
 func ExecutePartial(writer http.ResponseWriter, name string, data any) {
+	writer.Header().Set("Content-Type", "text/html")
 	err := partials.ExecuteTemplate(writer, name, data)
 	if err != nil {
 		panic(err)

@@ -8,14 +8,6 @@ import (
 	"todoer/toasts"
 )
 
-const loginFailedMsg = `{
-	"toast": {
-		"type": "danger",
-		"title": "Login failed",
-		"msg": "Try again"
-	}
-}`
-
 func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	/* Check if form is ok */
 	if err := req.ParseForm(); err != nil {

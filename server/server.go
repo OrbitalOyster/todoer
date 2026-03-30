@@ -33,7 +33,7 @@ func Start(routerMap RouterMap) {
 	/* Middleware TODO: Looks like arse */
 	middlewared := middlware.Logger(
 		middlware.Auth(
-			middlware.HTMXHeaders(
+			middlware.UpdateCookie(
 				middlware.Throttle(
 					gzhttp.GzipHandler(mux),
 				),

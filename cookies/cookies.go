@@ -9,9 +9,13 @@ import (
 func Set(writer http.ResponseWriter, value string, longLifetime bool) {
 	expires := time.Now()
 	if longLifetime {
-		expires = expires.Add(time.Duration(config.CookieLifetime) * time.Second)
+		expires = expires.Add(
+			time.Duration(config.CookieLifetime) * time.Second,
+		)
 	} else {
-		expires = expires.Add(time.Hour)
+		expires = expires.Add(
+			time.Duration(config.CookieShortLifetime) * time.Second,
+		)
 	}
 	cookie := http.Cookie{
 		Name:     config.CookieName,

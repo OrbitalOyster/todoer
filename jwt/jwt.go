@@ -10,21 +10,25 @@ import (
 )
 
 type Claims struct {
-	UserID string `json:"user_id"`
+	UserID     string `json:"user_id"`
+	RememberMe bool   `json:"remember_me"`
 	jwt.RegisteredClaims
 }
 
 func Create(userID string, rememberMe bool) string {
 	expirationTime := time.Now()
-
 	if rememberMe {
-		expirationTime = expirationTime.Add(time.Duration(config.CookieLifetime) * time.Second)
+		expirationTime = expirationTime.Add(
+			time.Duration(config.CookieLifetime) * time.Second,
+		)
 	} else {
-		expirationTime = expirationTime.Add(time.Hour)
+		expirationTime = expirationTime.Add(
+			time.Duration(config.CookieShortLifetime) * time.Second,
+		)
 	}
-
 	claims := &Claims{
 		UserID: userID,
+		RememberMe: rememberMe,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},

@@ -29,8 +29,16 @@ func Start(routerMap RouterMap) {
 	for pattern := range routerMap {
 		mux.HandleFunc(pattern, routerMap[pattern])
 	}
-	/* Middleware */
-	middlewared := middlware.Throttle(middlware.Auth(middlware.Logger(mux)))
+	/* Middleware TODO: Looks like arse */
+	middlewared := middlware.Logger(
+		middlware.Auth(
+			middlware.HTMXHeaders(
+				middlware.Throttle(
+					mux,
+				),
+			),
+		),
+	)
 	/* Start */
 	log.Printf("Starting server on port %s", config.Port)
 	if err := http.ListenAndServe(":"+config.Port, middlewared); err != nil {

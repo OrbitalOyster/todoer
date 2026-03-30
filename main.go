@@ -34,7 +34,7 @@ func main() {
 		"GET /htmx/tasks/{id}":      htmxTasks.Get,
 		"GET /htmx/edit-task/{id}":  htmxTasks.Edit,
 		"GET /htmx/clone-task/{id}": htmxTasks.Clone,
-		"PATCH /api/tasks":          api.PatchTask,
+		"PATCH /htmx/tasks":         htmxTasks.Patch,
 		"GET /":                     routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)

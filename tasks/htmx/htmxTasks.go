@@ -1,6 +1,7 @@
 package htmxTasks
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"todoer/tasks"
@@ -14,6 +15,14 @@ func Get(writer http.ResponseWriter, req *http.Request) {
 }
 
 func GetAll(writer http.ResponseWriter, req *http.Request) {
+
+	/* Parse REST query */
+	query := req.URL.Query()
+	sort := query.Get("sort")
+	page := query.Get("page")
+	size := query.Get("size")
+	log.Printf("sort: %s, page: %s, size: %s", sort, page, size)
+
 	data := struct {
 		Tasks []tasks.Task
 	}{

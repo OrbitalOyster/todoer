@@ -9,6 +9,11 @@ import (
 	"todoer/toasts"
 )
 
+const (
+	defaultSize = 10
+	maxPageSize = 50
+)
+
 func Get(writer http.ResponseWriter, req *http.Request) {
 	task := tasks.Check(req.PathValue("id"))
 	templates.ExecutePartial(writer, "task", task)
@@ -18,15 +23,22 @@ func GetAll(writer http.ResponseWriter, req *http.Request) {
 
 	/* Parse REST query */
 	query := req.URL.Query()
+	filter := query.Get("filter")
 	sort := query.Get("sort")
-	page := query.Get("page")
-	size := query.Get("size")
-	log.Printf("sort: %s, page: %s, size: %s", sort, page, size)
+	size, err := strconv.Atoi(query.Get("size"))
+	if err != nil {
+		size = defaultSize
+	}
+	page, err := strconv.Atoi(query.Get("page"))
+	if err != nil {
+		page = 0
+	}
 
+	log.Printf("sort: %s, page: %d, size: %d, filter: %s", sort, page, size, filter)
 	data := struct {
 		Tasks []tasks.Task
 	}{
-		Tasks: tasks.GetAll(),
+		Tasks: tasks.GetAll(filter, size, page),
 	}
 	templates.ExecutePartial(writer, "taskTable", data)
 }

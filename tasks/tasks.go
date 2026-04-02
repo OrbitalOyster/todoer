@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/goccy/go-yaml"
 	"log"
+	"math"
 	"os"
 	"slices"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -64,8 +66,25 @@ func Load() {
 	log.Println("Tasks found:", len(list))
 }
 
-func GetAll() []Task {
-	return list
+func GetAll(filter string, size int, page int) []Task {
+	/* Filter */
+	result := slices.DeleteFunc(slices.Clone(list), func(t Task) bool {
+		return !strings.Contains(t.Description, filter)
+	})
+	/* Sort */
+
+	/* Pagination */
+	totalPages := int(math.Ceil(float64(len(result)) / float64(size)))
+	if page >= totalPages {
+		page = totalPages - 1
+	}
+	/* Final result */
+	startInd := size * page
+	endInd := startInd + size
+	if (endInd > len(result)) {
+		endInd = len(result)
+	}
+	return result[startInd:endInd]
 }
 
 func Get(id int) (Task, error) {

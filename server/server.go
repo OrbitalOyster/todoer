@@ -1,11 +1,13 @@
 package server
 
 import (
-	"github.com/klauspost/compress/gzhttp"
 	"log"
+	"math"
 	"net/http"
 	"todoer/config"
 	"todoer/middleware"
+
+	"github.com/klauspost/compress/gzhttp"
 )
 
 type RouterEntry func(http.ResponseWriter, *http.Request)
@@ -40,6 +42,9 @@ func Start(routerMap RouterMap) {
 			),
 		),
 	)
+
+	log.Printf("%d", int64(math.Ceil(50 / float64(10))))
+
 	/* Start */
 	log.Printf("Starting server on port %s", config.Port)
 	if err := http.ListenAndServe(":"+config.Port, middlewared); err != nil {

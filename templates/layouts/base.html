@@ -1,46 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- css -->
-    <link href="/css/reset.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
-    <!-- Funky Bootstrap -->
-    <link rel="stylesheet" href="/vendor/flatly.min.css">
-    <!-- Bootstrap icons -->
-    <link rel="stylesheet" href="/vendor/bootstrap-icons.min.css">
-    <!-- htmx -->
-    <script defer src="/vendor/htmx.min.js"></script>
-    <!-- Bootstrap js -->
-    <script defer src="/vendor/bootstrap.bundle.min.js"></script>
-    <!-- js -->
-    <script defer src="/js/script.js"></script>
-    <title>{{ .Title }}</title>
-  </head>
-  <body class="bg-primary bg-opacity-10">
-    <!-- Firefox flashing layout voodoo hack -->
-    <script>0</script>
-    {{ template "confirmModal" }}
-
-    <div class="modal fade" id="modal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        {{ template "editTaskModal" }}
-        {{ template "cloneTaskModal" }}
-      </div>
-    </div>
-
-    {{ template "page" . }}
-    <!-- Toasts -->
-    <div
-      class="
-        toast-container
-        position-fixed
-        top-0
-        end-0
-        p-3
-      "
-    >
-    </div>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- css -->
+		<link href="/css/reset.css" rel="stylesheet" />
+		<link href="/css/style.css" rel="stylesheet" />
+		<!-- Funky Bootstrap -->
+		<link rel="stylesheet" href="/vendor/flatly.min.css" />
+		<!-- Bootstrap icons -->
+		<link rel="stylesheet" href="/vendor/bootstrap-icons.min.css" />
+		<!-- htmx -->
+		<script defer src="/vendor/htmx.min.js"></script>
+		<!-- Bootstrap js -->
+		<script defer src="/vendor/bootstrap.bundle.min.js"></script>
+		<!-- js -->
+		<script defer src="/js/script.js"></script>
+		<title>{{ .Title }}</title>
+	</head>
+	<body class="bg-primary bg-opacity-10">
+		<!-- Firefox flashing layout voodoo hack -->
+		<script>
+			0;
+		</script>
+		{{ template "confirmModal" }}
+		<!-- Modals -->
+		<div class="modal fade" id="modal" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered">
+				{{ template "editTaskModal" }} {{ template "cloneTaskModal" }}
+			</div>
+		</div>
+		{{ template "page" . }}
+		<!-- Toasts -->
+		<div class="toast-container position-fixed top-0 end-0 p-3"></div>
+	</body>
 </html>

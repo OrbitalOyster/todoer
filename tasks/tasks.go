@@ -14,7 +14,7 @@ import (
 
 const (
 	tasksFilename = "tasks.yaml"
-	timeFormat = "2.01.2006 15:04:05"
+	timeFormat    = "2.01.2006 15:04:05"
 )
 
 type Task struct {
@@ -66,7 +66,9 @@ func Load() {
 	log.Println("Tasks found:", len(list))
 }
 
-func GetAll(filter string, size int, page int) []Task {
+func GetAll(filter string, size uint64, page uint64) []Task {
+	/* Total number of tasks */
+	total := uint64(len(list))
 	/* Filter */
 	result := slices.DeleteFunc(slices.Clone(list), func(t Task) bool {
 		return !strings.Contains(t.Description, filter)
@@ -74,21 +76,18 @@ func GetAll(filter string, size int, page int) []Task {
 	/* Sort */
 
 	/* Pagination */
-	totalPages := int(math.Ceil(float64(len(result)) / float64(size)))
+	totalPages := uint64(math.Ceil(float64(total) / float64(size)))
 	if page >= totalPages {
 		page = totalPages - 1
 	}
 	/* Final result */
 	startInd := size * page
-	endInd := startInd + size
-	if (endInd > len(result)) {
-		endInd = len(result)
-	}
+	endInd := min(startInd+size, total)
 	return result[startInd:endInd]
 }
 
 func Get(id int) (Task, error) {
-	ind := slices.IndexFunc(list, func (t Task) bool { 
+	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id
 	})
 	if ind == -1 {
@@ -98,7 +97,7 @@ func Get(id int) (Task, error) {
 }
 
 func Update(id int, newDescription string) error {
-	ind := slices.IndexFunc(list, func (t Task) bool { 
+	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id
 	})
 	if ind == -1 {

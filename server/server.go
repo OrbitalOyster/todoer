@@ -2,7 +2,6 @@ package server
 
 import (
 	"log"
-	"math"
 	"net/http"
 	"todoer/config"
 	"todoer/middleware"
@@ -42,9 +41,6 @@ func Start(routerMap RouterMap) {
 			),
 		),
 	)
-
-	log.Printf("%d", int64(math.Ceil(50 / float64(10))))
-
 	/* Start */
 	log.Printf("Starting server on port %s", config.Port)
 	if err := http.ListenAndServe(":"+config.Port, middlewared); err != nil {

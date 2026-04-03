@@ -44,7 +44,7 @@ func GetAll(writer http.ResponseWriter, req *http.Request) {
 	}{
 		Tasks: tasks.GetAll(filter, int(size), int(page)),
 	}
-	templates.ExecutePartial(writer, "task-table", data)
+	templates.ExecutePartial(writer, "task-table-body", data)
 }
 
 func Edit(writer http.ResponseWriter, req *http.Request) {

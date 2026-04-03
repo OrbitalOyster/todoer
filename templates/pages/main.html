@@ -13,12 +13,28 @@
 		<div class="card-body">
 			{{ template "task-filters" . }}
 			<hr />
-			<div id="spinner" class="htmx-indicator">
-				<div class="d-flex justify-content-center">
-					<div class="spinner-border"></div>
-				</div>
-			</div>
-			<div id="task-table"></div>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th class="text-center align-middle">
+							<input
+								class="form-check-input"
+								type="checkbox"
+								value=""
+							/>
+						</th>
+						<th class="text-center align-middle">#</th>
+						<th class="text-center align-middle">What</th>
+						<th class="text-center align-middle">When</th>
+						<th class="text-center align-middle">Who</th>
+						<th class="text-center align-middle">Done</th>
+						<th class="text-center align-middle">Actions</th>
+					</tr>
+				</thead>
+				<tbody class="table-group-divider" id="task-table">
+					{{ template "task-table" }}
+				</tbody>
+			</table>
 		</div>
 	</div>
 </main>

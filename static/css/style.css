@@ -1,15 +1,9 @@
-#spinner:not(.htmx-request) {
-  display: none;
-}
-
-.htmx-request + #task-table {
-  display: none;
-}
-
+/* Completely hide modal placeholders */
 .htmx-indicator.modal-content:not(.htmx-request) {
   display: none;
 }
 
+/* Button icons */
 i.htmx-request {
   display: none;
 }

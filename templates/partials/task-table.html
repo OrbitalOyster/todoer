@@ -1,24 +1,5 @@
-{{ define "task-table" }}
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th class="text-center align-middle">
-				<input class="form-check-input" type="checkbox" value="" />
-			</th>
-			<th class="text-center align-middle">#</th>
-			<th class="text-center align-middle">What</th>
-			<th class="text-center align-middle">When</th>
-			<th class="text-center align-middle">Who</th>
-			<th class="text-center align-middle">Done</th>
-			<th class="text-center align-middle">Actions</th>
-		</tr>
-	</thead>
-	<tbody class="table-group-divider">
-		{{ range .Tasks }}
-		<tr id="task-{{ .Id }}">
-			{{ template "task" . }}
-		</tr>
-		{{ end }}
-	</tbody>
-</table>
-{{ end }}
+{{ define "task-table" }} {{ range .Tasks }}
+<tr id="task-{{ .Id }}">
+	{{ template "task" . }}
+</tr>
+{{ end }} {{ end }}

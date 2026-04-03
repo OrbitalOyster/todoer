@@ -11,7 +11,7 @@ import (
 
 const (
 	defaultPageSize = 10
-	maxPageSize = 50
+	maxPageSize     = 50
 )
 
 func Get(writer http.ResponseWriter, req *http.Request) {
@@ -42,7 +42,7 @@ func GetAll(writer http.ResponseWriter, req *http.Request) {
 	data := struct {
 		Tasks []tasks.Task
 	}{
-		Tasks: tasks.GetAll(filter, size, page),
+		Tasks: tasks.GetAll(filter, int(size), int(page)),
 	}
 	templates.ExecutePartial(writer, "taskTable", data)
 }

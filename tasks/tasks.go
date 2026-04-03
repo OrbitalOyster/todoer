@@ -66,17 +66,22 @@ func Load() {
 	log.Println("Tasks found:", len(list))
 }
 
-func GetAll(filter string, size uint64, page uint64) []Task {
+func GetAll(filter string, size int, page int) []Task {
+	result := slices.Clone(list)
 	/* Total number of tasks */
-	total := uint64(len(list))
+	total := len(result)
 	/* Filter */
-	result := slices.DeleteFunc(slices.Clone(list), func(t Task) bool {
-		return !strings.Contains(t.Description, filter)
-	})
+	if filter != "" {
+		result = slices.DeleteFunc(result, func(t Task) bool {
+			return !strings.Contains(t.Description, filter)
+		})
+		total = len(result)
+	}
+
 	/* Sort */
 
 	/* Pagination */
-	totalPages := uint64(math.Ceil(float64(total) / float64(size)))
+	totalPages := int(math.Ceil(float64(total) / float64(size)))
 	if page >= totalPages {
 		page = totalPages - 1
 	}

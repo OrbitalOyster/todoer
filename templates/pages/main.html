@@ -1,40 +1,25 @@
 {{ define "page" }}
 <main class="col-xl-7 col-md-100 m-auto">
-  <header class="align-items-center d-flex justify-content-between p-2">
-    <h1>
-      <a href="/">
-        todoer
-      </a>
-    </h1>
-    {{ template "usercard" . }}
-  </header>
-  <div class="card shadow-sm">
-    <div class="card-header text-center">
-      <h4>Tasks</h4>
-      <button
-        class="btn btn-primary position-absolute top-0 end-0 m-1"
-        type="button"
-        data-bs-toggle="tooltip"
-        data-bs-placement="right"
-        data-bs-trigger="hover"
-        title="Refresh tasks"
-        hx-get="/htmx/tasks"
-        hx-target="#task-table"
-        hx-trigger="click, load"
-        hx-indicator="#spinner"
-      >
-        <i class="bi bi-arrow-repeat fs-5"></i>
-      </button>
-    </div>
-    <div class="card-body">
-      {{ template "task-filters" . }}
-      <div id="spinner" class="htmx-indicator">
-        <div class="d-flex justify-content-center">
-          <div class="spinner-border"></div>
-        </div>
-      </div>
-      <div id="task-table"></div>
-    </div>
-  </div>
+	<header class="align-items-center d-flex justify-content-between p-2">
+		<h1>
+			<a href="/"> todoer </a>
+		</h1>
+		{{ template "usercard" . }}
+	</header>
+	<div class="card shadow-sm">
+		<div class="card-header text-center">
+			<h4>Tasks</h4>
+		</div>
+		<div class="card-body">
+			{{ template "task-filters" . }}
+			<hr />
+			<div id="spinner" class="htmx-indicator">
+				<div class="d-flex justify-content-center">
+					<div class="spinner-border"></div>
+				</div>
+			</div>
+			<div id="task-table"></div>
+		</div>
+	</div>
 </main>
 {{ end }}

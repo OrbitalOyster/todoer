@@ -1,25 +1,40 @@
 {{ define "confirmModal" }}
 <div class="modal fade" id="confirmModal" tabindex="-1">
-  <div class="modal-dialog modal-sm modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="confirmModalTitle">[INSERT TITLE]</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" id="confirmModalContent">
-        [INSERT CONTENT]
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="confirmModalCancelBtn" data-bs-dismiss="modal">
-          <i class="bi bi-x-lg"></i>
-          Cancel
-        </button>
-        <button type="button" class="btn btn-primary" id="confirmModalOkBtn">
-          <i class="bi bi-check-lg"></i>
-          Ok
-        </button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog modal-sm modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="confirmModalTitle">
+					[INSERT TITLE]
+				</h1>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+				></button>
+			</div>
+			<div class="modal-body" id="confirmModalContent">
+				[INSERT CONTENT]
+			</div>
+			<div class="modal-footer">
+				<button
+					type="button"
+					class="btn btn-secondary"
+					id="confirmModalCancelBtn"
+					data-bs-dismiss="modal"
+				>
+					<i class="bi bi-x-lg"></i>
+					Cancel
+				</button>
+				<button
+					type="button"
+					class="btn btn-primary"
+					id="confirmModalOkBtn"
+				>
+					<i class="bi bi-check-lg"></i>
+					Ok
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
 {{ end }}

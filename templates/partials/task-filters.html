@@ -1,5 +1,5 @@
 {{ define "task-filters" }}
-<div class="d-flex">
+<div class="d-flex justify-content-between">
 	<div class="d-flex gap-2 align-items-center">
 		<label for="task-list-size"> Page size: </label>
 		<select class="form-select w-auto" id="task-list-size">
@@ -9,5 +9,19 @@
 			<option value="50">50</option>
 		</select>
 	</div>
+	<button
+		class="btn btn-primary"
+		type="button"
+		data-bs-toggle="tooltip"
+		data-bs-placement="right"
+		data-bs-trigger="hover"
+		title="Refresh tasks"
+		hx-get="/htmx/tasks"
+		hx-target="#task-table"
+		hx-trigger="click, load"
+		hx-indicator="#spinner"
+	>
+		<i class="bi bi-arrow-repeat fs-5"></i>
+	</button>
 </div>
 {{ end }}

@@ -11,15 +11,15 @@
   <div class="card shadow-sm">
     <div class="card-header text-center">
       <h4>Tasks</h4>
-      <button 
+      <button
         class="btn btn-primary position-absolute top-0 end-0 m-1"
-        type="button" 
+        type="button"
         data-bs-toggle="tooltip"
         data-bs-placement="right"
         data-bs-trigger="hover"
         title="Refresh tasks"
-        hx-get="/htmx/tasks" 
-        hx-target="#taskTable" 
+        hx-get="/htmx/tasks"
+        hx-target="#task-table"
         hx-trigger="click, load"
         hx-indicator="#spinner"
       >
@@ -27,12 +27,13 @@
       </button>
     </div>
     <div class="card-body">
+      {{ template "task-filters" . }}
       <div id="spinner" class="htmx-indicator">
         <div class="d-flex justify-content-center">
           <div class="spinner-border"></div>
         </div>
       </div>
-      <div id="taskTable"></div>
+      <div id="task-table"></div>
     </div>
   </div>
 </main>

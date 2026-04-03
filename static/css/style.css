@@ -2,7 +2,7 @@
   display: none;
 }
 
-.htmx-request + #taskTable {
+.htmx-request + #task-table {
   display: none;
 }
 

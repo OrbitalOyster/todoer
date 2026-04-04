@@ -3,6 +3,7 @@ package api
 import (
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
@@ -11,7 +12,11 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		http.Error(writer, "Haxxor alert!", http.StatusBadRequest)
 		return
 	}
-	size := req.FormValue("size")
-	log.Printf("Setting page size to %s", size)
+	size, err := strconv.ParseUint(req.FormValue("size"), 10, 64)
+	if err != nil {
+		size = 10 /* TODO: Magic number */
+	}
+	log.Printf("Setting page size to %d", size)
+	
 	writer.Write([]byte("Hello"))
 }

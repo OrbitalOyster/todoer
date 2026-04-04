@@ -25,7 +25,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	}
 	/* Auth mockup */
 	if username == "admin" && password == "password" {
-		token := jwt.Create(username, rememberMe)
+		token := jwt.Create(username, rememberMe, 10) /* TODO: Magic number */
 		cookies.Set(writer, token, rememberMe)
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)

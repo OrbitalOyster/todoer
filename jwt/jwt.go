@@ -9,13 +9,18 @@ import (
 	"todoer/cookies"
 )
 
-type Claims struct {
+type Payload struct {
 	UserID     string `json:"user_id"`
 	RememberMe bool   `json:"remember_me"`
+	PageSize   int    `json:"page_size"`
+}
+
+type Claims struct {
+	Payload
 	jwt.RegisteredClaims
 }
 
-func Create(userID string, rememberMe bool) string {
+func Create(userID string, rememberMe bool, pageSize int) string {
 	expirationTime := time.Now()
 	if rememberMe {
 		expirationTime = expirationTime.Add(
@@ -26,9 +31,12 @@ func Create(userID string, rememberMe bool) string {
 			time.Duration(config.CookieShortLifetime) * time.Second,
 		)
 	}
-	claims := &Claims{
-		UserID: userID,
-		RememberMe: rememberMe,
+	claims := Claims{
+		Payload: Payload{
+			UserID:     userID,
+			RememberMe: rememberMe,
+			PageSize:   pageSize,
+		},
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},

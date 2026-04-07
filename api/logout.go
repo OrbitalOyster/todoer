@@ -8,11 +8,11 @@ import (
 )
 
 func Logout(writer http.ResponseWriter, req *http.Request) {
-	claims, err := jwt.Validate(cookies.Get(req))
+	payload, err := jwt.Get(req)
 	if err != nil {
 		panic(err)
 	}
 	cookies.Clear(writer)
 	writer.Header().Set("HX-Redirect", "/login")
-	log.Printf("User %s logged out", claims.UserID)
+	log.Printf("User %s logged out", payload.UserID)
 }

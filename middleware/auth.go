@@ -3,9 +3,8 @@ package middlware
 import (
 	"net/http"
 	"slices"
-	"todoer/cookies"
-	"todoer/jwt"
 	"strings"
+	"todoer/jwt"
 )
 
 var publicURIs = []string{
@@ -25,14 +24,7 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 		/* Protected routes - check credentials */
-		cookie := cookies.Get(req)
-		/* No cookie */
-		if cookie == "" {
-			http.Redirect(writer, req, "/login", http.StatusSeeOther)
-			return
-		}
-		/* Invalid or expired token */
-		_, err := jwt.Validate(cookie)
+		_, err := jwt.Get(req)
 		if err != nil {
 			http.Redirect(writer, req, "/login", http.StatusSeeOther)
 			return

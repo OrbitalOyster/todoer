@@ -8,7 +8,7 @@ import (
 )
 
 func Main(writer http.ResponseWriter, req *http.Request) {
-	claims := jwt.Get(req)
+	payload, _ := jwt.Get(req)
 	taskList := tasks.GetAll("", 10, 0)
 	data := struct {
 		Title string
@@ -16,7 +16,7 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 		Tasks []tasks.Task
 	} {
 		Title: "todoer",
-		Username: claims.UserID,
+		Username: payload.UserID,
 		Tasks: taskList,
 	}
 	templates.Execute(writer, "main", data)

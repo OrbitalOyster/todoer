@@ -10,13 +10,9 @@ func UpdateCookie(next http.Handler) http.Handler {
 	handler := func(writer http.ResponseWriter, req *http.Request) {
 		cookie := cookies.Get(req)
 		if cookie != "" {
-			/* JWT is already validated */
-			claims, _ := jwt.Validate(cookie)
-			userId := claims.UserID
-			rememberMe := claims.RememberMe
-			pageSize := claims.PageSize
-			token := jwt.Create(userId, rememberMe, pageSize)
-			cookies.Set(writer, token, rememberMe)
+			payload, _ := jwt.GetPayload(cookie)
+			tokenStr := jwt.Set(*payload)
+			cookies.Set(writer, tokenStr, payload.RememberMe)
 		}
 		next.ServeHTTP(writer, req)
 	}

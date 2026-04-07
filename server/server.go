@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"todoer/config"
-	"todoer/middleware"
+	middlware "todoer/middleware"
 
 	"github.com/klauspost/compress/gzhttp"
 )

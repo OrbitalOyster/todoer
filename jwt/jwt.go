@@ -21,6 +21,32 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+func Set(payload Payload) string {
+	expirationTime := time.Now()
+	if payload.RememberMe {
+		expirationTime = expirationTime.Add(
+			time.Duration(config.CookieLifetime) * time.Second,
+		)
+	} else {
+		expirationTime = expirationTime.Add(
+			time.Duration(config.CookieShortLifetime) * time.Second,
+		)
+	}
+	claims := Claims{
+		Payload: payload,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenStr, err := token.SignedString(config.JWTSecret)
+	/* Something went terribly wrong */
+	if err != nil {
+		panic(err)
+	}
+	return tokenStr
+}
+
 func GetPayload(tokenStr string) (*Payload, error) {
 	claims := &Claims{}
 	parsed, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (any, error) {
@@ -48,30 +74,4 @@ func Get(req *http.Request) (*Payload, error) {
 		return nil, fmt.Errorf("Unable to read token: %w", err)
 	}
 	return payload, nil
-}
-
-func Set(payload Payload) string {
-	expirationTime := time.Now()
-	if payload.RememberMe {
-		expirationTime = expirationTime.Add(
-			time.Duration(config.CookieLifetime) * time.Second,
-		)
-	} else {
-		expirationTime = expirationTime.Add(
-			time.Duration(config.CookieShortLifetime) * time.Second,
-		)
-	}
-	claims := Claims{
-		Payload: payload,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
-		},
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenStr, err := token.SignedString(config.JWTSecret)
-	/* Something went terribly wrong */
-	if err != nil {
-		panic(err)
-	}
-	return tokenStr
 }

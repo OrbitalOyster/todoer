@@ -39,7 +39,7 @@ func Get(req *http.Request) string {
 	return cookie.Value
 }
 
-func Clear(writer http.ResponseWriter)  {
+func Clear(writer http.ResponseWriter) {
 	emptyCookie := http.Cookie{
 		Name:     config.CookieName,
 		Value:    "",

@@ -3,16 +3,17 @@
 	<div class="d-flex gap-2 align-items-center">
 		<label for="task-list-size"> Page size: </label>
 		<select
-      class="form-select w-auto"
-      id="task-list-size"
-      name="size"
-      hx-patch="/filters/page-size"
-      hx-target="#task-table-body"
-      >
-			<option value="5">5</option>
-			<option selected value="10">10</option>
-			<option value="25">25</option>
-			<option value="50">50</option>
+			class="form-select w-auto"
+			id="task-list-size"
+			name="size"
+			hx-patch="/filters/page-size"
+			hx-target="#task-table-body"
+		>
+			{{ range .PageSizes }}
+			<option {{ if eq $.SelectedPageSize	. }} selected {{ end }}	value="{{ . }}">
+				{{ . }}
+			</option>
+			{{ end }}
 		</select>
 	</div>
 	<div

@@ -1,9 +1,9 @@
 package htmxTasks
 
 import (
-	"log"
 	"net/http"
 	"strconv"
+	"todoer/jwt"
 	"todoer/tasks"
 	"todoer/templates"
 	"todoer/toasts"
@@ -20,31 +20,12 @@ func Get(writer http.ResponseWriter, req *http.Request) {
 }
 
 func GetAll(writer http.ResponseWriter, req *http.Request) {
-	/* Parse REST query */
-	query := req.URL.Query()
-	filter := query.Get("filter")
-	sort := query.Get("sort")
-	size, err := strconv.ParseUint(query.Get("size"), 10, 64)
+	payload, err := jwt.Get(req)
+	/* Should not happen */
 	if err != nil {
-		size = defaultPageSize
+		panic(err)
 	}
-	/* From 1 to defaultPageSize */
-	size = max(size, 1)
-	size = min(size, defaultPageSize)
-	page, err := strconv.ParseUint(query.Get("page"), 10, 64)
-	if err != nil {
-		page = 1
-	}
-	page--
-	/* At least 0 */
-	page = max(page, 0)
-	log.Printf("sort: %s, page: %d, size: %d, filter: %s", sort, page, size, filter)
-	data := struct {
-		Tasks []tasks.Task
-	}{
-		Tasks: tasks.GetAll(filter, int(size), int(page)),
-	}
-	templates.ExecutePartial(writer, "task-table-body", data)
+	templates.ExecutePartial(writer, "task-table-body", tasks.GetFromPayload(*payload))
 }
 
 func Edit(writer http.ResponseWriter, req *http.Request) {

@@ -1,4 +1,4 @@
-{{ define "task-table-body" }} {{ range .Tasks }}
+{{ define "task-table-body" }} {{ range . }}
 <tr id="task-{{ .Id }}">
 	{{ template "task" . }}
 </tr>

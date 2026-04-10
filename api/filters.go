@@ -25,17 +25,15 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 	}
 	log.Printf("Setting page size to %d", size)
 	/* Update token/cookies */
-	payload, _ := jwt.Get(req)
+	payload, err := jwt.Get(req)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
 	payload.PageSize = int(size)
 	token := jwt.Set(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 
 	/* Return updated task table */
-	page := 0
-	data := struct {
-		Tasks []tasks.Task
-	}{
-		Tasks: tasks.GetAll("", int(size), int(page)),
-	}
-	templates.ExecutePartial(writer, "task-table-body", data)
+	templates.ExecutePartial(writer, "task-table-body", tasks.GetFromPayload(*payload))
 }

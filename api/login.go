@@ -3,6 +3,7 @@ package api
 import (
 	"log"
 	"net/http"
+	"todoer/config"
 	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/toasts"
@@ -28,7 +29,9 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		payload := jwt.Payload{
 			UserID:     username,
 			RememberMe: rememberMe,
-			PageSize:   10, /* TODO Default value */
+			PageSize:   config.DefaultPageSize,
+			Page:       0,
+			Filter:     "",
 		}
 		token := jwt.Set(payload)
 		cookies.Set(writer, token, rememberMe)

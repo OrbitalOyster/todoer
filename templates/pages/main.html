@@ -2,7 +2,7 @@
 <main class="col-xl-7 col-md-100 m-auto">
 	<header class="align-items-center d-flex justify-content-between p-2">
 		<h1>
-			<a href="/"> todoer </a>
+			<a href="/">todoer</a>
 		</h1>
 		{{ template "usercard" . }}
 	</header>
@@ -32,9 +32,34 @@
 					</tr>
 				</thead>
 				<tbody class="table-group-divider" id="task-table-body">
-					{{ template "task-table-body" . }}
+					{{ template "task-table-body" .Tasks }}
 				</tbody>
 			</table>
+			<!-- Pagination -->
+			<div class="d-flex justify-content-center">
+				<ul class="pagination">
+					<li class="page-item">
+						<a class="page-link" href="#">
+							<i class="bi bi-chevron-left"></i>
+						</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">1</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">2</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">3</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">
+							<i class="bi bi-chevron-right"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+
 		</div>
 	</div>
 </main>

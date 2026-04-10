@@ -2,7 +2,6 @@ package tasks
 
 import (
 	"fmt"
-	"github.com/goccy/go-yaml"
 	"log"
 	"math"
 	"os"
@@ -10,6 +9,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"todoer/jwt"
+
+	"github.com/goccy/go-yaml"
 )
 
 const (
@@ -66,10 +68,12 @@ func Load() {
 	log.Println("Tasks found:", len(list))
 }
 
-func GetAll(filter string, size int, page int) []Task {
+func GetFromPayload(payload jwt.Payload) []Task {
 	result := slices.Clone(list)
-	/* Total number of tasks */
 	total := len(result)
+	filter := payload.Filter
+	page := payload.Page
+	pageSize := payload.PageSize
 	/* Filter */
 	if filter != "" {
 		result = slices.DeleteFunc(result, func(t Task) bool {
@@ -77,17 +81,14 @@ func GetAll(filter string, size int, page int) []Task {
 		})
 		total = len(result)
 	}
-
-	/* Sort */
-
 	/* Pagination */
-	totalPages := int(math.Ceil(float64(total) / float64(size)))
+	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))
 	if page >= totalPages {
 		page = totalPages - 1
 	}
 	/* Final result */
-	startInd := size * page
-	endInd := min(startInd+size, total)
+	startInd := pageSize * page
+	endInd := min(startInd+pageSize, total)
 	return result[startInd:endInd]
 }
 

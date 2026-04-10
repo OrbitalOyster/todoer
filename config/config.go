@@ -14,7 +14,8 @@ var (
 	CookieLifetime      int
 	CookieShortLifetime int
 	JWTSecret           []byte
-	PageSizes			[]int
+	PageSizes           []int
+	DefaultPageSize     int
 )
 
 func Load() {
@@ -50,4 +51,5 @@ func Load() {
 
 	/* TODO: Load from somewhere */
 	PageSizes = []int{5, 10, 25, 50}
+	DefaultPageSize = 10
 }

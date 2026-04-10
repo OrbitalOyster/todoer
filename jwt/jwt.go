@@ -13,6 +13,8 @@ import (
 type Payload struct {
 	UserID     string `json:"user_id"`
 	RememberMe bool   `json:"remember_me"`
+	Filter     string `json:"filter"`
+	Page       int    `json:"page"`
 	PageSize   int    `json:"page_size"`
 }
 

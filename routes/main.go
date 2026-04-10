@@ -9,8 +9,11 @@ import (
 )
 
 func Main(writer http.ResponseWriter, req *http.Request) {
-	payload, _ := jwt.Get(req)
-	taskList := tasks.GetAll("", payload.PageSize, 0)
+	payload, err := jwt.Get(req)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
 	data := struct {
 		Title            string
 		Username         string
@@ -20,7 +23,7 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 	}{
 		Title:            "todoer",
 		Username:         payload.UserID,
-		Tasks:            taskList,
+		Tasks:            tasks.GetFromPayload(*payload),
 		PageSizes:        config.PageSizes,
 		SelectedPageSize: payload.PageSize,
 	}

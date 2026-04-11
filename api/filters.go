@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"slices"
 	"strconv"
+	"todoer/config"
 	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/tasks"
@@ -19,9 +20,9 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		http.Error(writer, "Haxxor alert!", http.StatusBadRequest)
 		return
 	}
-	size, err := strconv.ParseInt(req.FormValue("size"), 10, 64)
-	if err != nil || !slices.Contains(pageSizes, int(size)) {
-		size = 10 /* TODO: Magic number */
+	size, err := strconv.Atoi(req.FormValue("size"))
+	if err != nil || !slices.Contains(pageSizes, size) {
+		size = config.DefaultPageSize
 	}
 	log.Printf("Setting page size to %d", size)
 	/* Update token/cookies */
@@ -30,7 +31,7 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	payload.PageSize = int(size)
+	payload.PageSize = size
 	token := jwt.Set(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 

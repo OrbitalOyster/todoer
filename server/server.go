@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"todoer/config"
-	middlware "todoer/middleware"
+	"todoer/middleware"
 
 	"github.com/klauspost/compress/gzhttp"
 )
@@ -32,10 +32,10 @@ func Start(routerMap RouterMap) {
 		mux.HandleFunc(pattern, routerMap[pattern])
 	}
 	/* Middleware TODO: Looks like arse */
-	middlewared := middlware.Logger(
-		middlware.Auth(
-			middlware.UpdateCookie(
-				middlware.Throttle(
+	middlewared := middleware.Logger(
+		middleware.Auth(
+			middleware.UpdateCookie(
+				middleware.Throttle(
 					gzhttp.GzipHandler(mux),
 				),
 			),

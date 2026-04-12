@@ -6,7 +6,6 @@ import (
 	"todoer/routes"
 	"todoer/server"
 	"todoer/tasks"
-	htmxTasks "todoer/tasks/htmx"
 	"todoer/templates"
 )
 
@@ -29,11 +28,11 @@ func main() {
 		"GET /login":                routes.Login,
 		"POST /login":               routes.LoginAttempt,
 		"POST /logout":              routes.Logout,
-		"GET /htmx/tasks":           htmxTasks.GetAll,
-		"GET /htmx/tasks/{id}":      htmxTasks.Get,
-		"GET /htmx/edit-task/{id}":  htmxTasks.Edit,
-		"GET /htmx/clone-task/{id}": htmxTasks.Clone,
-		"PATCH /htmx/tasks":         htmxTasks.Patch,
+		"GET /htmx/tasks":           routes.GetAllTasks,
+		"GET /htmx/tasks/{id}":      routes.GetSingleTask,
+		"GET /htmx/edit-task/{id}":  routes.GetEditTaskForm,
+		"GET /htmx/clone-task/{id}": routes.GetCloneTaskForm,
+		"PATCH /htmx/tasks":         routes.PatchTask,
 		"PATCH /filters/page-size":  routes.SetTaskTablePageSize,
 		"GET /":                     routes.NotFoundHandler, // 404 page
 	}

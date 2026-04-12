@@ -6,8 +6,8 @@ import (
 	"todoer/routes"
 	"todoer/server"
 	"todoer/tasks"
-	"todoer/templates"
 	htmxTasks "todoer/tasks/htmx"
+	"todoer/templates"
 )
 
 func main() {
@@ -27,8 +27,8 @@ func main() {
 	routerMap := map[string]server.RouterEntry{
 		"GET /{$}":                  routes.Main,
 		"GET /login":                routes.Login,
-		"POST /login":           routes.LoginAttempt,
-		"POST /logout":          routes.Logout,
+		"POST /login":               routes.LoginAttempt,
+		"POST /logout":              routes.Logout,
 		"GET /htmx/tasks":           htmxTasks.GetAll,
 		"GET /htmx/tasks/{id}":      htmxTasks.Get,
 		"GET /htmx/edit-task/{id}":  htmxTasks.Edit,

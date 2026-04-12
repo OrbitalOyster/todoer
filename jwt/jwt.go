@@ -23,7 +23,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func Set(payload Payload) string {
+func Create(payload Payload) string {
 	expirationTime := time.Now()
 	if payload.RememberMe {
 		expirationTime = expirationTime.Add(

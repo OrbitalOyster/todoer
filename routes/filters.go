@@ -32,7 +32,7 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	payload.PageSize = size
-	token := jwt.Set(*payload)
+	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 
 	/* Return updated task table */

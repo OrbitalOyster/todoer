@@ -11,7 +11,7 @@ func UpdateCookie(next http.Handler) http.Handler {
 		cookie := cookies.Get(req)
 		if cookie != "" {
 			payload, _ := jwt.GetPayload(cookie)
-			tokenStr := jwt.Set(*payload)
+			tokenStr := jwt.Create(*payload)
 			cookies.Set(writer, tokenStr, payload.RememberMe)
 		}
 		next.ServeHTTP(writer, req)

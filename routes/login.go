@@ -41,7 +41,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			Page:       0,
 			Filter:     "",
 		}
-		token := jwt.Set(payload)
+		token := jwt.Create(payload)
 		cookies.Set(writer, token, rememberMe)
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)

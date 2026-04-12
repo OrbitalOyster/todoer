@@ -2,13 +2,12 @@ package main
 
 import (
 	"log"
-	"todoer/api"
 	"todoer/config"
 	"todoer/routes"
 	"todoer/server"
 	"todoer/tasks"
-	htmxTasks "todoer/tasks/htmx"
 	"todoer/templates"
+	htmxTasks "todoer/tasks/htmx"
 )
 
 func main() {
@@ -28,14 +27,14 @@ func main() {
 	routerMap := map[string]server.RouterEntry{
 		"GET /{$}":                  routes.Main,
 		"GET /login":                routes.Login,
-		"POST /api/login":           api.LoginAttempt,
-		"POST /api/logout":          api.Logout,
+		"POST /login":           routes.LoginAttempt,
+		"POST /logout":          routes.Logout,
 		"GET /htmx/tasks":           htmxTasks.GetAll,
 		"GET /htmx/tasks/{id}":      htmxTasks.Get,
 		"GET /htmx/edit-task/{id}":  htmxTasks.Edit,
 		"GET /htmx/clone-task/{id}": htmxTasks.Clone,
 		"PATCH /htmx/tasks":         htmxTasks.Patch,
-		"PATCH /filters/page-size":  api.SetTaskTablePageSize,
+		"PATCH /filters/page-size":  routes.SetTaskTablePageSize,
 		"GET /":                     routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)

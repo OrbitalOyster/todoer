@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 	"slices"
 	"strings"
@@ -25,6 +26,7 @@ func Auth(next http.Handler) http.Handler {
 		/* Protected routes - check credentials */
 		_, err := jwt.Get(req)
 		if err != nil {
+			log.Printf("Redirecting user to login: %s", err)
 			http.Redirect(writer, req, "/login", http.StatusSeeOther)
 			return
 		}

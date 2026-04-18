@@ -68,7 +68,7 @@ func Load() {
 	log.Println("Tasks found:", len(list))
 }
 
-func GetFromPayload(payload jwt.Payload) []Task {
+func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	result := slices.Clone(list)
 	total := len(result)
 	filter := payload.Filter
@@ -89,7 +89,8 @@ func GetFromPayload(payload jwt.Payload) []Task {
 	/* Final result */
 	startInd := pageSize * page
 	endInd := min(startInd+pageSize, total)
-	return result[startInd:endInd]
+	log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
+	return result[startInd:endInd], page, totalPages
 }
 
 func Get(id int) (Task, error) {

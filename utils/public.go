@@ -1,8 +1,8 @@
 package utils
 
 import (
-  "slices"
-  "strings"
+	"slices"
+	"strings"
 )
 
 var publicURIs = []string{
@@ -14,5 +14,5 @@ var publicURIs = []string{
 }
 
 func IsPublicURL(URL string) bool {
-		return slices.Contains(publicURIs, URL) || strings.HasPrefix(URL, "/vendor/")
+	return slices.Contains(publicURIs, URL) || strings.HasPrefix(URL, "/vendor/")
 }

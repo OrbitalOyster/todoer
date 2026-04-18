@@ -14,18 +14,23 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
 	data := struct {
 		Title            string
 		Username         string
-		Tasks            []tasks.Task
 		PageSizes        []int
 		SelectedPageSize int
+		Tasks            []tasks.Task
+		Page             int
+		TotalPages       int
 	}{
 		Title:            "todoer",
 		Username:         payload.UserID,
-		Tasks:            tasks.GetFromPayload(*payload),
 		PageSizes:        config.PageSizes,
 		SelectedPageSize: payload.PageSize,
+		Tasks:            selectedTasks,
+		Page:             page,
+		TotalPages:       totalPages,
 	}
 	templates.Execute(writer, "main", data)
 }

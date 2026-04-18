@@ -18,6 +18,7 @@ func Auth(next http.Handler) http.Handler {
 		_, err := jwt.Get(req)
 		if err != nil {
 			log.Printf("Redirecting user to login: %s", err)
+			/* Add HTMX redirect header on HTMX requests, otherwise redirect */
 			if req.Header.Get("HX-Request") == "true" {
 				writer.Header().Set("HX-Redirect", "/login")
 			} else {

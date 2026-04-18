@@ -7,7 +7,7 @@
 			id="task-list-size"
 			name="size"
 			hx-patch="/filters/page-size"
-			hx-target="#task-table-body"
+			hx-target="#tasks-list"
 		>
 			{{ range .PageSizes }}
 			<option {{ if eq $.SelectedPageSize	. }} selected {{ end }}	value="{{ . }}">

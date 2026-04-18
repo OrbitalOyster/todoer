@@ -21,7 +21,7 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 	size, err := strconv.Atoi(req.FormValue("size"))
-	if err != nil || !slices.Contains(pageSizes, size) {
+	if err != nil || !slices.Contains(config.PageSizes, size) {
 		size = config.DefaultPageSize
 	}
 	log.Printf("Setting page size to %d", size)
@@ -36,5 +36,16 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 	cookies.Set(writer, token, payload.RememberMe)
 
 	/* Return updated task table */
-	templates.ExecutePartial(writer, "task-table-body", tasks.GetFromPayload(*payload))
+	// templates.ExecutePartial(writer, "task-table-body", tasks.GetFromPayload(*payload))
+	selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
+	data := struct {
+		Tasks            []tasks.Task
+		Page             int
+		TotalPages       int
+	}{
+		Tasks:            selectedTasks,
+		Page:             page,
+		TotalPages:       totalPages,
+	}
+	templates.ExecutePartial(writer, "task-list", data)
 }

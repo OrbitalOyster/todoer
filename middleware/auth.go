@@ -3,23 +3,14 @@ package middleware
 import (
 	"log"
 	"net/http"
-	"slices"
-	"strings"
 	"todoer/jwt"
+	"todoer/utils"
 )
-
-var publicURIs = []string{
-	"/login",
-	"/favicon.ico",
-	"/css/reset.css",
-	"/css/style.css",
-	"/js/script.js",
-}
 
 func Auth(next http.Handler) http.Handler {
 	handler := func(writer http.ResponseWriter, req *http.Request) {
 		/* Public routes */
-		if slices.Contains(publicURIs, req.URL.Path) || strings.HasPrefix(req.URL.Path, "/vendor/") {
+		if utils.IsPublicURL(req.URL.Path) {
 			next.ServeHTTP(writer, req)
 			return
 		}
@@ -27,7 +18,11 @@ func Auth(next http.Handler) http.Handler {
 		_, err := jwt.Get(req)
 		if err != nil {
 			log.Printf("Redirecting user to login: %s", err)
-			http.Redirect(writer, req, "/login", http.StatusSeeOther)
+			if req.Header.Get("HX-Request") == "true" {
+				writer.Header().Set("HX-Redirect", "/login")
+			} else {
+				http.Redirect(writer, req, "/login", http.StatusSeeOther)
+			}
 			return
 		}
 		/* All good */

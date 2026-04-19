@@ -20,7 +20,6 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	// selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
 	selectedTasks, _, _ := tasks.GetFromPayload(*payload)
 	templates.ExecutePartial(writer, "task-table-body", selectedTasks)
 }

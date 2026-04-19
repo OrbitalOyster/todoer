@@ -24,17 +24,18 @@ func main() {
 	templates.Add("main", "base.html", "main.html")
 	/* Routes */
 	routerMap := map[string]server.RouterEntry{
-		"GET /{$}":                  routes.Main,
-		"GET /login":                routes.Login,
-		"POST /login":               routes.LoginAttempt,
-		"POST /logout":              routes.Logout,
-		"GET /htmx/tasks":           routes.GetAllTasks,
-		"GET /htmx/tasks/{id}":      routes.GetSingleTask,
-		"GET /htmx/edit-task/{id}":  routes.GetEditTaskForm,
-		"GET /htmx/clone-task/{id}": routes.GetCloneTaskForm,
-		"PATCH /htmx/tasks":         routes.PatchTask,
-		"PATCH /filters/page-size":  routes.SetTaskTablePageSize,
-		"GET /":                     routes.NotFoundHandler, // 404 page
+		"GET /{$}":                   routes.Main,
+		"GET /login":                 routes.Login,
+		"POST /login":                routes.LoginAttempt,
+		"POST /logout":               routes.Logout,
+		"GET /htmx/tasks":            routes.GetAllTasks,
+		"GET /htmx/tasks/{id}":       routes.GetSingleTask,
+		"GET /htmx/edit-task/{id}":   routes.GetEditTaskForm,
+		"GET /htmx/clone-task/{id}":  routes.GetCloneTaskForm,
+		"PATCH /htmx/tasks":          routes.PatchTask,
+		"PATCH /filters/page-size":   routes.SetTaskTablePageSize,
+		"PATCH /filters/page/{page}": routes.SetPage,
+		"GET /":                      routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)
 }

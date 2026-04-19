@@ -27,9 +27,16 @@
         </a>
       </li>
       {{ range .TotalPages }}
-        <li class="page-item">
-          <a class="page-link" href="#">{{ . }}</a>
-        </li>
+      <li class="page-item">
+        <a
+          class="page-link {{ if eq $.Page	. }} active {{ end }}"
+     			hx-patch="/filters/page/{{ . }}"
+     			hx-target="#tasks-list"
+          href="#"
+        >
+          {{ . }}
+        </a>
+      </li>
       {{ end }}
       <li class="page-item">
         <a class="page-link" href="#">

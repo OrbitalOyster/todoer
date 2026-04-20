@@ -12,7 +12,7 @@ import (
 
 /* GET */
 func Login(writer http.ResponseWriter, req *http.Request) {
-	data := struct { Title string } { "Login" }
+	data := struct{ Title string }{"Login"}
 	templates.Execute(writer, "login", data)
 }
 

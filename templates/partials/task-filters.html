@@ -10,7 +10,7 @@
 			hx-target="#tasks-list"
 		>
 			{{ range .PageSizes }}
-			<option {{ if eq $.SelectedPageSize	. }} selected {{ end }}	value="{{ . }}">
+			<option	{{ if eq $.SelectedPageSize . }} selected {{ end }} value="{{ . }}">
 				{{ . }}
 			</option>
 			{{ end }}

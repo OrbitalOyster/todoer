@@ -2,13 +2,12 @@ package middleware
 
 import (
 	"net/http"
-	"strings"
 	"time"
 )
 
 func Throttle(next http.Handler) http.Handler {
 	handler := func(writer http.ResponseWriter, req *http.Request) {
-		if strings.HasPrefix(req.URL.Path, "/htmx/") {
+		if req.Header.Get("HX-Request") == "true" {
 			time.Sleep(time.Second)
 		}
 		next.ServeHTTP(writer, req)

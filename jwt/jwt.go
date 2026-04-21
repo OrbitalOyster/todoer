@@ -6,16 +6,19 @@ import (
 	"time"
 	"todoer/config"
 	"todoer/cookies"
+	"todoer/utils"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type Payload struct {
-	UserID     string `json:"user_id"`
-	RememberMe bool   `json:"remember_me"`
-	Filter     string `json:"filter"`
-	Page       int    `json:"page"`
-	PageSize   int    `json:"page_size"`
+	UserID     string               `json:"user_id"`
+	RememberMe bool                 `json:"remember_me"`
+	Filter     string               `json:"filter"`
+	Page       int                  `json:"page"`
+	PageSize   int                  `json:"page_size"`
+	SortBy     utils.SortableColumn `json:"sort_by"`
+	SortAsc    bool                 `json:"sort_asc"`
 }
 
 type Claims struct {

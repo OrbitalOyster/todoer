@@ -6,6 +6,7 @@ import (
 	"todoer/jwt"
 	"todoer/tasks"
 	"todoer/templates"
+	"todoer/utils"
 )
 
 func Main(writer http.ResponseWriter, req *http.Request) {
@@ -23,6 +24,8 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 		Tasks            []tasks.Task
 		Page             int
 		TotalPages       int
+		SortBy           utils.SortableColumn
+		SortAsc          bool
 	}{
 		Title:            "todoer",
 		Username:         payload.UserID,
@@ -31,6 +34,8 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 		Tasks:            selectedTasks,
 		Page:             page,
 		TotalPages:       totalPages,
+		SortBy:           payload.SortBy,
+		SortAsc:          payload.SortAsc,
 	}
 	templates.Execute(writer, "main", data)
 }

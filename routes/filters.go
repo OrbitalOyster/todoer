@@ -10,6 +10,7 @@ import (
 	"todoer/jwt"
 	"todoer/tasks"
 	"todoer/templates"
+	"todoer/utils"
 )
 
 func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
@@ -37,10 +38,14 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		Tasks      []tasks.Task
 		Page       int
 		TotalPages int
+		SortBy     utils.SortableColumn
+		SortAsc    bool
 	}{
 		Tasks:      selectedTasks,
 		Page:       page,
 		TotalPages: totalPages,
+		SortBy:     payload.SortBy,
+		SortAsc:    payload.SortAsc,
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }
@@ -51,7 +56,6 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		page = 0
 	}
-	log.Printf("Setting page to %d", page)
 	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
@@ -67,10 +71,53 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 		Tasks      []tasks.Task
 		Page       int
 		TotalPages int
+		SortBy     utils.SortableColumn
+		SortAsc    bool
 	}{
 		Tasks:      selectedTasks,
 		Page:       page,
 		TotalPages: totalPages,
+		SortBy:     payload.SortBy,
+		SortAsc:    payload.SortAsc,
+	}
+	templates.ExecutePartial(writer, "task-list", data)
+}
+
+func SetSortBy(writer http.ResponseWriter, req *http.Request) {
+	columnStr := req.PathValue("column")
+	column, err := strconv.Atoi(columnStr)
+	if err != nil {
+		column = 0
+	}
+	log.Printf("Setting sort by to %d", column)
+	/* Update token/cookies */
+	payload, err := jwt.Get(req)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+
+	if payload.SortBy == utils.SortableColumn(column) {
+		payload.SortAsc = !payload.SortAsc
+	}
+
+	payload.SortBy = utils.SortableColumn(column)
+	token := jwt.Create(*payload)
+	cookies.Set(writer, token, payload.RememberMe)
+	/* Return updated task table */
+	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
+	data := struct {
+		Tasks      []tasks.Task
+		Page       int
+		TotalPages int
+		SortBy     utils.SortableColumn
+		SortAsc    bool
+	}{
+		Tasks:      selectedTasks,
+		Page:       column,
+		TotalPages: totalPages,
+		SortBy:     payload.SortBy,
+		SortAsc:    payload.SortAsc,
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }

@@ -40,6 +40,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			PageSize:   config.DefaultPageSize,
 			Page:       0,
 			Filter:     "",
+			SortBy:     1,
+			SortAsc:    true,
 		}
 		token := jwt.Create(payload)
 		cookies.Set(writer, token, rememberMe)

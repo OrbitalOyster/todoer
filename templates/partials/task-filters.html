@@ -24,9 +24,23 @@
 				size="32"
 				hx-patch="/filters/searchBy"
 				hx-target="#task-list"
-				hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
+				hx-trigger="input changed delay:500ms, keyup[key=='Enter'], load"
+				value="{{ .SearchBy }}"
 			/>
 			<i class="input-group-text bi bi-search"></i>
+		</div>
+		<!-- Dates -->
+		<div class="d-flex align-items-center">
+			<input
+				class="form-control"
+				type="date"
+				name="fromDate"
+				value="{{ .FromDate }}"
+				hx-patch="/filters/fromDate"
+				hx-target="#task-list"
+			>
+			<i class="bi bi-slash-lg"></i>
+			<input class="form-control" type="date" name="to" value="2026-04-30">
 		</div>
 	</div>
 	<div

@@ -19,6 +19,7 @@ type Payload struct {
 	PageSize   int                  `json:"page_size"`
 	SortBy     utils.SortableColumn `json:"sort_by"`
 	SortAsc    bool                 `json:"sort_asc"`
+	FromDate   string               `json:"from_date"`
 }
 
 type Claims struct {

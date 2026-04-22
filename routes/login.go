@@ -3,6 +3,7 @@ package routes
 import (
 	"log"
 	"net/http"
+	"time"
 	"todoer/config"
 	"todoer/cookies"
 	"todoer/jwt"
@@ -33,6 +34,10 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		rememberMe = true
 	}
 	/* Auth mockup */
+
+    now := time.Now()
+    fromDate := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
+
 	if username == "admin" && password == "password" {
 		payload := jwt.Payload{
 			UserID:     username,
@@ -42,6 +47,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			SearchBy:   "",
 			SortBy:     1,
 			SortAsc:    true,
+			FromDate: fromDate.Format("2006-01-02"),
 		}
 		token := jwt.Create(payload)
 		cookies.Set(writer, token, rememberMe)

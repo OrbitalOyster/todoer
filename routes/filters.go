@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"slices"
 	"strconv"
+	"time"
 	"todoer/config"
 	"todoer/cookies"
 	"todoer/jwt"
@@ -123,7 +124,6 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 
 func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	s := req.FormValue("searchBy")
-	log.Println("Setting searchBy to", s)
 	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
@@ -131,6 +131,43 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	payload.SearchBy = s
+	token := jwt.Create(*payload)
+	cookies.Set(writer, token, payload.RememberMe)
+	/* Return updated task table */
+	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
+	data := struct {
+		Tasks      []tasks.Task
+		Page       int
+		TotalPages int
+		SortBy     utils.SortableColumn
+		SortAsc    bool
+	}{
+		Tasks:      selectedTasks,
+		Page:       column,
+		TotalPages: totalPages,
+		SortBy:     payload.SortBy,
+		SortAsc:    payload.SortAsc,
+	}
+	templates.ExecutePartial(writer, "task-list", data)
+}
+
+func SetFromDate(writer http.ResponseWriter, req *http.Request) {
+	fromDateStr := req.FormValue("fromDate")
+
+	fromDate, err := time.Parse("2006-01-02", fromDateStr)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("Setting fromDate to", fromDate)
+
+	/* Update token/cookies */
+	payload, err := jwt.Get(req)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+	payload.FromDate = fromDateStr
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */

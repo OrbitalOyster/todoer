@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"cmp"
 	"fmt"
 	"log"
 	"math"
@@ -10,6 +11,7 @@ import (
 	"strings"
 	"time"
 	"todoer/jwt"
+	"todoer/utils"
 
 	"github.com/goccy/go-yaml"
 )
@@ -81,6 +83,23 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 		})
 		total = len(result)
 	}
+	/* Sorting */
+	switch payload.SortBy {
+	case utils.Description:
+		slices.SortFunc(result, func(t1, t2 Task) int {
+			return cmp.Compare(t1.Description, t2.Description)
+		})
+	case utils.Date:
+		slices.SortFunc(result, func(t1, t2 Task) int {
+			return t1.DatetimeParsed.Compare(t2.DatetimeParsed)
+		})
+	default:
+	}
+	/* On reverse order */
+	if !payload.SortAsc {
+		slices.Reverse(result)
+	}
+
 	/* Pagination */
 	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))
 	if page >= totalPages {

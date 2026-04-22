@@ -2,13 +2,13 @@ package middleware
 
 import (
 	"net/http"
-	"time"
+	//"time"
 )
 
 func Throttle(next http.Handler) http.Handler {
 	handler := func(writer http.ResponseWriter, req *http.Request) {
 		if req.Header.Get("HX-Request") == "true" {
-			time.Sleep(time.Second)
+			// time.Sleep(time.Second)
 		}
 		next.ServeHTTP(writer, req)
 	}

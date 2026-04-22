@@ -73,15 +73,19 @@ func Load() {
 func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	result := slices.Clone(list)
 	total := len(result)
-	filter := payload.Filter
+	searchBy := payload.SearchBy
 	page := payload.Page
 	pageSize := payload.PageSize
-	/* Filter */
-	if filter != "" {
+	/* Search */
+	if searchBy != "" {
 		result = slices.DeleteFunc(result, func(t Task) bool {
-			return !strings.Contains(t.Description, filter)
+			return !strings.Contains(t.Description, searchBy)
 		})
 		total = len(result)
+		/* Nothing found - stop */
+		if total == 0 {
+			return nil, 0, 0
+		}
 	}
 	/* Sorting */
 	switch payload.SortBy {
@@ -99,7 +103,6 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	if !payload.SortAsc {
 		slices.Reverse(result)
 	}
-
 	/* Pagination */
 	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))
 	if page >= totalPages {

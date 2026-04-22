@@ -1,7 +1,7 @@
 {{ define "task-filters" }}
 <div class="d-flex justify-content-between">
 	<div class="d-flex gap-2 align-items-center">
-		<label for="task-list-size"> Page size: </label>
+		<label class="text-nowrap" for="task-list-size"> Page size: </label>
 		<select
 			class="form-select w-auto"
 			id="task-list-size"
@@ -10,11 +10,24 @@
 			hx-target="#task-list"
 		>
 			{{ range .PageSizes }}
-			<option	{{ if eq $.SelectedPageSize . }} selected {{ end }} value="{{ . }}">
+			<option	{{ if eq $.SelectedPageSize . }} selected {{ end }}	value="{{ . }}">
 				{{ . }}
 			</option>
 			{{ end }}
 		</select>
+		<!-- Search input -->
+		<div class="input-group">
+			<input
+				class="form-control"
+				name="searchBy"
+				type="text"
+				size="32"
+				hx-patch="/filters/searchBy"
+				hx-target="#task-list"
+				hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
+			/>
+			<i class="input-group-text bi bi-search"></i>
+		</div>
 	</div>
 	<div
 		class="d-flex justify-content-center align-items-center htmx-indicator"

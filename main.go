@@ -36,6 +36,7 @@ func main() {
 		"PATCH /filters/page-size":       routes.SetTaskTablePageSize,
 		"PATCH /filters/page/{page}":     routes.SetPage,
 		"PATCH /filters/sortBy/{column}": routes.SetSortBy,
+		"PATCH /filters/searchBy":        routes.SetSearchBy,
 		"GET /":                          routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)

@@ -14,7 +14,7 @@ import (
 type Payload struct {
 	UserID     string               `json:"user_id"`
 	RememberMe bool                 `json:"remember_me"`
-	Filter     string               `json:"filter"`
+	SearchBy   string               `json:"search_by"`
 	Page       int                  `json:"page"`
 	PageSize   int                  `json:"page_size"`
 	SortBy     utils.SortableColumn `json:"sort_by"`

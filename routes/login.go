@@ -39,7 +39,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			RememberMe: rememberMe,
 			PageSize:   config.DefaultPageSize,
 			Page:       0,
-			Filter:     "",
+			SearchBy:   "",
 			SortBy:     1,
 			SortAsc:    true,
 		}

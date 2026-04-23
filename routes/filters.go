@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"log"
 	"net/http"
 	"slices"
 	"strconv"
@@ -13,6 +12,15 @@ import (
 	"todoer/templates"
 	"todoer/utils"
 )
+
+type taskListData struct {
+	Tasks      []tasks.Task
+	Page       int
+	TotalPages int
+	SortBy     utils.SortableColumn
+	SortAsc    bool
+	Bogus      int
+}
 
 func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 	/* Check if form is ok */
@@ -35,13 +43,7 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
 	selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
-	data := struct {
-		Tasks      []tasks.Task
-		Page       int
-		TotalPages int
-		SortBy     utils.SortableColumn
-		SortAsc    bool
-	}{
+	data := taskListData{
 		Tasks:      selectedTasks,
 		Page:       page,
 		TotalPages: totalPages,
@@ -68,13 +70,7 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
 	selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
-	data := struct {
-		Tasks      []tasks.Task
-		Page       int
-		TotalPages int
-		SortBy     utils.SortableColumn
-		SortAsc    bool
-	}{
+	data := taskListData{
 		Tasks:      selectedTasks,
 		Page:       page,
 		TotalPages: totalPages,
@@ -106,13 +102,7 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
 	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
-	data := struct {
-		Tasks      []tasks.Task
-		Page       int
-		TotalPages int
-		SortBy     utils.SortableColumn
-		SortAsc    bool
-	}{
+	data := taskListData{
 		Tasks:      selectedTasks,
 		Page:       column,
 		TotalPages: totalPages,
@@ -135,13 +125,7 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
 	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
-	data := struct {
-		Tasks      []tasks.Task
-		Page       int
-		TotalPages int
-		SortBy     utils.SortableColumn
-		SortAsc    bool
-	}{
+	data := taskListData{
 		Tasks:      selectedTasks,
 		Page:       column,
 		TotalPages: totalPages,
@@ -153,14 +137,10 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 
 func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 	fromDateStr := req.FormValue("fromDate")
-
-	fromDate, err := time.Parse("2006-01-02", fromDateStr)
+	_, err := time.Parse("2006-01-02", fromDateStr)
 	if err != nil {
 		panic(err)
 	}
-
-	log.Println("Setting fromDate to", fromDate)
-
 	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
@@ -172,13 +152,7 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
 	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
-	data := struct {
-		Tasks      []tasks.Task
-		Page       int
-		TotalPages int
-		SortBy     utils.SortableColumn
-		SortAsc    bool
-	}{
+	data := taskListData{
 		Tasks:      selectedTasks,
 		Page:       column,
 		TotalPages: totalPages,
@@ -190,14 +164,10 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 
 func SetToDate(writer http.ResponseWriter, req *http.Request) {
 	toDateStr := req.FormValue("toDate")
-
-	toDate, err := time.Parse("2006-01-02", toDateStr)
+	_, err := time.Parse("2006-01-02", toDateStr)
 	if err != nil {
 		panic(err)
 	}
-
-	log.Println("Setting toDate to", toDate)
-
 	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
@@ -209,13 +179,7 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
 	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
-	data := struct {
-		Tasks      []tasks.Task
-		Page       int
-		TotalPages int
-		SortBy     utils.SortableColumn
-		SortAsc    bool
-	}{
+	data := taskListData{
 		Tasks:      selectedTasks,
 		Page:       column,
 		TotalPages: totalPages,

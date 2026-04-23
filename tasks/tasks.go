@@ -88,7 +88,8 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	}
 	/* Date */
 	result = slices.DeleteFunc(result, func(t Task) bool {
-		return t.DatetimeParsed.Before(fromDate) || t.DatetimeParsed.After(toDate)
+		/* "Not after 20/03/2026" meaning "Not after 20/03/2026 23:59:59"  */
+		return t.DatetimeParsed.Before(fromDate) || t.DatetimeParsed.After(toDate.Add(time.Hour*24-time.Second))
 	})
 	/* Search */
 	if searchBy != "" {

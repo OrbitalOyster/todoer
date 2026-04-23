@@ -15,11 +15,8 @@ import (
 
 type taskListData struct {
 	Tasks      []tasks.Task
-	Page       int
 	TotalPages int
-	SortBy     utils.SortableColumn
-	SortAsc    bool
-	Bogus      int
+	Payload jwt.Payload
 }
 
 func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
@@ -42,13 +39,11 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
-		Page:       page,
 		TotalPages: totalPages,
-		SortBy:     payload.SortBy,
-		SortAsc:    payload.SortAsc,
+		Payload: jwt.Payload(*payload),
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }
@@ -70,12 +65,10 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
 	selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
-	data := taskListData{
+	data := taskListData {
 		Tasks:      selectedTasks,
-		Page:       page,
 		TotalPages: totalPages,
-		SortBy:     payload.SortBy,
-		SortAsc:    payload.SortAsc,
+		Payload: jwt.Payload(*payload),
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }
@@ -101,13 +94,11 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
-		Page:       column,
 		TotalPages: totalPages,
-		SortBy:     payload.SortBy,
-		SortAsc:    payload.SortAsc,
+		Payload: jwt.Payload(*payload),
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }
@@ -124,13 +115,11 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
-		Page:       column,
 		TotalPages: totalPages,
-		SortBy:     payload.SortBy,
-		SortAsc:    payload.SortAsc,
+		Payload: jwt.Payload(*payload),
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }
@@ -151,13 +140,11 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
-		Page:       column,
 		TotalPages: totalPages,
-		SortBy:     payload.SortBy,
-		SortAsc:    payload.SortAsc,
+		Payload: jwt.Payload(*payload),
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }
@@ -178,13 +165,11 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
-		Page:       column,
 		TotalPages: totalPages,
-		SortBy:     payload.SortBy,
-		SortAsc:    payload.SortAsc,
+		Payload: jwt.Payload(*payload),
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }

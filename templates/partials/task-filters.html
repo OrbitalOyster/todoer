@@ -10,7 +10,7 @@
 			hx-target="#task-list"
 		>
 			{{ range .PageSizes }}
-			<option	{{ if eq $.SelectedPageSize . }} selected {{ end }}	value="{{ . }}">
+			<option	{{ if eq $.Payload.PageSize . }} selected {{ end }}	value="{{ . }}">
 				{{ . }}
 			</option>
 			{{ end }}
@@ -25,7 +25,7 @@
 				hx-patch="/filters/searchBy"
 				hx-target="#task-list"
 				hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
-				value="{{ .SearchBy }}"
+				value="{{ .Payload.SearchBy }}"
 			/>
 			<i class="input-group-text bi bi-search"></i>
 		</div>
@@ -37,7 +37,7 @@
 				name="fromDate"
 				hx-patch="/filters/fromDate"
 				hx-target="#task-list"
-				value="{{ .FromDate }}"
+				value="{{ .Payload.FromDate }}"
 			>
 			<i class="bi bi-slash-lg"></i>
 			<input
@@ -46,7 +46,7 @@
 				name="toDate"
 				hx-patch="/filters/toDate"
 				hx-target="#task-list"
-				value="{{ .ToDate }}"
+				value="{{ .Payload.ToDate }}"
 			>
 		</div>
 	</div>

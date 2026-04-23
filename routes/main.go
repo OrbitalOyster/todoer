@@ -6,8 +6,15 @@ import (
 	"todoer/jwt"
 	"todoer/tasks"
 	"todoer/templates"
-	"todoer/utils"
 )
+
+type mainPageData struct {
+	Title      string
+	PageSizes  []int
+	TotalPages int
+	Tasks      []tasks.Task
+	Payload    jwt.Payload
+}
 
 func Main(writer http.ResponseWriter, req *http.Request) {
 	payload, err := jwt.Get(req)
@@ -15,33 +22,13 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
-	data := struct {
-		Title            string
-		Username         string
-		PageSizes        []int
-		SelectedPageSize int
-		Tasks            []tasks.Task
-		Page             int
-		TotalPages       int
-		SortBy           utils.SortableColumn
-		SortAsc          bool
-		SearchBy         string
-		FromDate         string
-		ToDate           string
-	}{
-		Title:            "todoer",
-		Username:         payload.UserID,
-		PageSizes:        config.PageSizes,
-		SelectedPageSize: payload.PageSize,
-		Tasks:            selectedTasks,
-		Page:             page,
-		TotalPages:       totalPages,
-		SortBy:           payload.SortBy,
-		SortAsc:          payload.SortAsc,
-		SearchBy:         payload.SearchBy,
-		FromDate:         payload.FromDate,
-		ToDate:           payload.ToDate,
+	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
+	data := mainPageData{
+		Title:      "todoer",
+		PageSizes:  config.PageSizes,
+		Tasks:      selectedTasks,
+		TotalPages: totalPages,
+		Payload:    jwt.Payload(*payload),
 	}
 	templates.Execute(writer, "main", data)
 }

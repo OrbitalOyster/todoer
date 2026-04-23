@@ -20,6 +20,7 @@ type Payload struct {
 	SortBy     utils.SortableColumn `json:"sort_by"`
 	SortAsc    bool                 `json:"sort_asc"`
 	FromDate   string               `json:"from_date"`
+	ToDate     string               `json:"to_date"`
 }
 
 type Claims struct {

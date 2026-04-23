@@ -28,6 +28,7 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 		SortAsc          bool
 		SearchBy         string
 		FromDate         string
+		ToDate           string
 	}{
 		Title:            "todoer",
 		Username:         payload.UserID,
@@ -40,6 +41,7 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 		SortAsc:          payload.SortAsc,
 		SearchBy:         payload.SearchBy,
 		FromDate:         payload.FromDate,
+		ToDate:           payload.ToDate,
 	}
 	templates.Execute(writer, "main", data)
 }

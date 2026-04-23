@@ -187,3 +187,40 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 	}
 	templates.ExecutePartial(writer, "task-list", data)
 }
+
+func SetToDate(writer http.ResponseWriter, req *http.Request) {
+	toDateStr := req.FormValue("toDate")
+
+	toDate, err := time.Parse("2006-01-02", toDateStr)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("Setting toDate to", toDate)
+
+	/* Update token/cookies */
+	payload, err := jwt.Get(req)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+	payload.ToDate = toDateStr
+	token := jwt.Create(*payload)
+	cookies.Set(writer, token, payload.RememberMe)
+	/* Return updated task table */
+	selectedTasks, column, totalPages := tasks.GetFromPayload(*payload)
+	data := struct {
+		Tasks      []tasks.Task
+		Page       int
+		TotalPages int
+		SortBy     utils.SortableColumn
+		SortAsc    bool
+	}{
+		Tasks:      selectedTasks,
+		Page:       column,
+		TotalPages: totalPages,
+		SortBy:     payload.SortBy,
+		SortAsc:    payload.SortAsc,
+	}
+	templates.ExecutePartial(writer, "task-list", data)
+}

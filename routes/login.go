@@ -35,8 +35,9 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	}
 	/* Auth mockup */
 
-    now := time.Now()
-    fromDate := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
+	now := time.Now()
+	fromDate := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
+	toDate := fromDate.AddDate(0, 1, -1)
 
 	if username == "admin" && password == "password" {
 		payload := jwt.Payload{
@@ -47,7 +48,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			SearchBy:   "",
 			SortBy:     1,
 			SortAsc:    true,
-			FromDate: fromDate.Format("2006-01-02"),
+			FromDate:   fromDate.Format("2006-01-02"),
+			ToDate:     toDate.Format("2006-01-02"),
 		}
 		token := jwt.Create(payload)
 		cookies.Set(writer, token, rememberMe)

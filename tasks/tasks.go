@@ -76,16 +76,31 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	searchBy := payload.SearchBy
 	page := payload.Page
 	pageSize := payload.PageSize
+	fromDate, err := time.Parse("2006-01-02", payload.FromDate)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+	toDate, err := time.Parse("2006-01-02", payload.ToDate)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+	/* Date */
+	result = slices.DeleteFunc(result, func(t Task) bool {
+		return t.DatetimeParsed.Before(fromDate) || t.DatetimeParsed.After(toDate)
+	})
 	/* Search */
 	if searchBy != "" {
 		result = slices.DeleteFunc(result, func(t Task) bool {
 			return !strings.Contains(t.Description, searchBy)
 		})
-		total = len(result)
-		/* Nothing found - stop */
-		if total == 0 {
-			return nil, 0, 0
-		}
+	}
+	total = len(result)
+	/* Nothing found - stop */
+	if total == 0 {
+		log.Println("Nothing found")
+		return nil, 0, 0
 	}
 	/* Sorting */
 	switch payload.SortBy {

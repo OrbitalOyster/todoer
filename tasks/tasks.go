@@ -70,7 +70,7 @@ func Load() {
 	log.Println("Tasks found:", len(list))
 }
 
-func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
+func GetFromPayload(payload jwt.Payload) ([]Task, int) {
 	result := slices.Clone(list)
 	total := len(result)
 	searchBy := payload.SearchBy
@@ -100,8 +100,7 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	total = len(result)
 	/* Nothing found - stop */
 	if total == 0 {
-		log.Println("Nothing found")
-		return nil, 0, 0
+		return nil, 0
 	}
 	/* Sorting */
 	switch payload.SortBy {
@@ -128,7 +127,7 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	startInd := pageSize * page
 	endInd := min(startInd+pageSize, total)
 	log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
-	return result[startInd:endInd], page, totalPages
+	return result[startInd:endInd], totalPages
 }
 
 func Get(id int) (Task, error) {

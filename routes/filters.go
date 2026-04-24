@@ -39,7 +39,7 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
@@ -64,7 +64,7 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, page, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData {
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
@@ -94,7 +94,7 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
@@ -115,7 +115,7 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
@@ -140,7 +140,7 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
@@ -165,7 +165,7 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
 	data := taskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,

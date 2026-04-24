@@ -22,7 +22,7 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	selectedTasks, _, totalPages := tasks.GetFromPayload(*payload)
+	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
 	data := mainPageData{
 		Title:      "todoer",
 		PageSizes:  config.PageSizes,

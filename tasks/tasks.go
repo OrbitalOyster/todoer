@@ -70,7 +70,7 @@ func Load() {
 	log.Println("Tasks found:", len(list))
 }
 
-func GetFromPayload(payload jwt.Payload) ([]Task, int) {
+func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	result := slices.Clone(list)
 	total := len(result)
 	searchBy := payload.SearchBy
@@ -100,7 +100,7 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int) {
 	total = len(result)
 	/* Nothing found - stop */
 	if total == 0 {
-		return nil, 0
+		return nil, 0, 1
 	}
 	/* Sorting */
 	switch payload.SortBy {
@@ -120,15 +120,20 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int) {
 	}
 	/* Pagination */
 	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))
+
 	if page >= totalPages {
 		page = totalPages
 	}
+    if page <= 0 {
+		page = 1
+	}
+
 	/* Final result */
 	startInd := pageSize * (page - 1)
 	endInd := min(startInd+pageSize, total)
-	// log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
-	// log.Printf("startInd %d: endInd %d", startInd, endInd)
-	return result[startInd:endInd], totalPages
+	log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
+	log.Printf("startInd %d: endInd %d", startInd, endInd)
+	return result[startInd:endInd], totalPages, page
 }
 
 func Get(id int) (Task, error) {

@@ -21,11 +21,17 @@ type taskListData struct {
 }
 
 func executeResult(writer http.ResponseWriter, payload *jwt.Payload) {
+	/* Get data */
+	selectedTasks, totalPages, page := tasks.GetFromPayload(*payload)
+
+	if payload.Page != page {
+		payload.Page = page
+	}
+
 	/* Set cookies */
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
-	/* Get data */
-	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
+
 	data := taskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,

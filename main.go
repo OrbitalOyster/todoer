@@ -35,6 +35,8 @@ func main() {
 		"PATCH /htmx/tasks":              routes.PatchTask,
 		"PATCH /filters/page-size":       routes.SetTaskTablePageSize,
 		"PATCH /filters/page/{page}":     routes.SetPage,
+		"PATCH /filters/next-page":       routes.NextPage,
+		"PATCH /filters/previous-page":   routes.PreviousPage,
 		"PATCH /filters/sortBy/{column}": routes.SetSortBy,
 		"PATCH /filters/searchBy":        routes.SetSearchBy,
 		"PATCH /filters/fromDate":        routes.SetFromDate,

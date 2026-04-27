@@ -37,29 +37,6 @@
 </table>
 <!-- Pagination -->
 <div class="d-flex justify-content-center">
-	<ul class="pagination">
-		<li class="page-item">
-			<a class="page-link" href="#">
-				<i class="bi bi-chevron-left"></i>
-			</a>
-		</li>
-		{{ range .TotalPages }}
-		<li class="page-item">
-			<a
-				class="page-link {{ if eq $.Payload.Page . }} active {{ end }}"
-				hx-patch="/filters/page/{{ . }}"
-				hx-target="#task-list"
-				href="#"
-			>
-				{{ . }}
-			</a>
-		</li>
-		{{ end }}
-		<li class="page-item">
-			<a class="page-link" href="#">
-				<i class="bi bi-chevron-right"></i>
-			</a>
-		</li>
-	</ul>
+  {{ template "pagination" . }}
 </div>
 {{ end }}

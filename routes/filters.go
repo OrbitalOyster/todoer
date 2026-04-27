@@ -16,7 +16,24 @@ import (
 type taskListData struct {
 	Tasks      []tasks.Task
 	TotalPages int
+	Pagination []int
 	Payload jwt.Payload
+}
+
+func executeResult(writer http.ResponseWriter, payload *jwt.Payload) {
+	/* Set cookies */
+	token := jwt.Create(*payload)
+	cookies.Set(writer, token, payload.RememberMe)
+	/* Get data */
+	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
+	data := taskListData{
+		Tasks:      selectedTasks,
+		TotalPages: totalPages,
+		Pagination: utils.GetPagination(totalPages, payload.Page),
+		Payload: jwt.Payload(*payload),
+	}
+	/* Render template */
+	templates.ExecutePartial(writer, "task-list", data)
 }
 
 func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
@@ -36,16 +53,8 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	payload.PageSize = size
-	token := jwt.Create(*payload)
-	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
-	data := taskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Payload: jwt.Payload(*payload),
-	}
-	templates.ExecutePartial(writer, "task-list", data)
+	executeResult(writer, payload)
 }
 
 func SetPage(writer http.ResponseWriter, req *http.Request) {
@@ -61,16 +70,32 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	payload.Page = page
-	token := jwt.Create(*payload)
-	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
-	data := taskListData {
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Payload: jwt.Payload(*payload),
+	executeResult(writer, payload)
+}
+
+func NextPage(writer http.ResponseWriter, req *http.Request) {
+	payload, err := jwt.Get(req)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
 	}
-	templates.ExecutePartial(writer, "task-list", data)
+	page := payload.Page + 1
+	payload.Page = page
+	/* Return updated task table */
+	executeResult(writer, payload)
+}
+
+func PreviousPage(writer http.ResponseWriter, req *http.Request) {
+	payload, err := jwt.Get(req)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+	page := payload.Page - 1
+	payload.Page = page
+	/* Return updated task table */
+	executeResult(writer, payload)
 }
 
 func SetSortBy(writer http.ResponseWriter, req *http.Request) {
@@ -79,49 +104,30 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		column = 0
 	}
-	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
 	if err != nil {
 		panic(err)
 	}
-
+	/* Reverse sort */
 	if payload.SortBy == utils.SortableColumn(column) {
 		payload.SortAsc = !payload.SortAsc
 	}
-
 	payload.SortBy = utils.SortableColumn(column)
-	token := jwt.Create(*payload)
-	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
-	data := taskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Payload: jwt.Payload(*payload),
-	}
-	templates.ExecutePartial(writer, "task-list", data)
+	executeResult(writer, payload)
 }
 
 func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	s := req.FormValue("searchBy")
-	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
 	if err != nil {
 		panic(err)
 	}
 	payload.SearchBy = s
-	token := jwt.Create(*payload)
-	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
-	data := taskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Payload: jwt.Payload(*payload),
-	}
-	templates.ExecutePartial(writer, "task-list", data)
+	executeResult(writer, payload)
 }
 
 func SetFromDate(writer http.ResponseWriter, req *http.Request) {
@@ -130,23 +136,14 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
 	if err != nil {
 		panic(err)
 	}
 	payload.FromDate = fromDateStr
-	token := jwt.Create(*payload)
-	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
-	data := taskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Payload: jwt.Payload(*payload),
-	}
-	templates.ExecutePartial(writer, "task-list", data)
+	executeResult(writer, payload)
 }
 
 func SetToDate(writer http.ResponseWriter, req *http.Request) {
@@ -155,21 +152,12 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
 	if err != nil {
 		panic(err)
 	}
 	payload.ToDate = toDateStr
-	token := jwt.Create(*payload)
-	cookies.Set(writer, token, payload.RememberMe)
 	/* Return updated task table */
-	selectedTasks, totalPages := tasks.GetFromPayload(*payload)
-	data := taskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Payload: jwt.Payload(*payload),
-	}
-	templates.ExecutePartial(writer, "task-list", data)
+	executeResult(writer, payload)
 }

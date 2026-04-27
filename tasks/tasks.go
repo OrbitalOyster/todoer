@@ -74,7 +74,7 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int) {
 	result := slices.Clone(list)
 	total := len(result)
 	searchBy := payload.SearchBy
-	page := payload.Page
+	page := payload.Page /* NOTE: Starts from 1 */
 	pageSize := payload.PageSize
 	fromDate, err := time.Parse("2006-01-02", payload.FromDate)
 	/* Should not happen */
@@ -121,12 +121,13 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int) {
 	/* Pagination */
 	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))
 	if page >= totalPages {
-		page = totalPages - 1
+		page = totalPages
 	}
 	/* Final result */
-	startInd := pageSize * page
+	startInd := pageSize * (page - 1)
 	endInd := min(startInd+pageSize, total)
-	log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
+	// log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
+	// log.Printf("startInd %d: endInd %d", startInd, endInd)
 	return result[startInd:endInd], totalPages
 }
 

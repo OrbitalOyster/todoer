@@ -6,6 +6,7 @@ import (
 	"todoer/jwt"
 	"todoer/tasks"
 	"todoer/templates"
+	"todoer/utils"
 )
 
 type mainPageData struct {
@@ -13,6 +14,7 @@ type mainPageData struct {
 	PageSizes  []int
 	TotalPages int
 	Tasks      []tasks.Task
+	Pagination []int
 	Payload    jwt.Payload
 }
 
@@ -26,8 +28,9 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 	data := mainPageData{
 		Title:      "todoer",
 		PageSizes:  config.PageSizes,
-		Tasks:      selectedTasks,
 		TotalPages: totalPages,
+		Tasks:      selectedTasks,
+		Pagination: utils.GetPagination(totalPages, payload.Page),
 		Payload:    jwt.Payload(*payload),
 	}
 	templates.Execute(writer, "main", data)

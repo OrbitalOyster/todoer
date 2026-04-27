@@ -1,0 +1,40 @@
+{{ define "pagination" }}
+<ul class="pagination">
+	{{ if gt .TotalPages 1 }}
+	<li class="page-item">
+		<a
+			class="page-link"
+			hx-patch="/filters/previous-page"
+			hx-target="#task-list"
+			href="#"
+		>
+			<i class="bi bi-chevron-left"></i>
+		</a>
+	</li>
+	{{ end }} {{ range .Pagination }} {{ if eq . 0 }}
+	<i class="bi bi-three-dots fs-4 text-secondary"></i>
+	{{ else }}
+	<li class="page-item">
+		<a
+			class="page-link {{ if eq $.Payload.Page . }} active {{ end }}"
+			hx-patch="/filters/page/{{ . }}"
+			hx-target="#task-list"
+			href="#"
+		>
+			{{ . }}
+		</a>
+	</li>
+	{{ end }} {{ end }} {{ if gt .TotalPages 1 }}
+	<li class="page-item">
+		<a
+			class="page-link"
+			hx-patch="/filters/next-page"
+			hx-target="#task-list"
+			href="#"
+		>
+			<i class="bi bi-chevron-right"></i>
+		</a>
+	</li>
+	{{ end }}
+</ul>
+{{ end }}

@@ -124,15 +124,15 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	if page >= totalPages {
 		page = totalPages
 	}
-    if page <= 0 {
+	if page <= 0 {
 		page = 1
 	}
 
 	/* Final result */
 	startInd := pageSize * (page - 1)
 	endInd := min(startInd+pageSize, total)
-	log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
-	log.Printf("startInd %d: endInd %d", startInd, endInd)
+	// log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
+	// log.Printf("startInd %d: endInd %d", startInd, endInd)
 	return result[startInd:endInd], totalPages, page
 }
 

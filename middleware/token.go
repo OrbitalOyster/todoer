@@ -3,19 +3,20 @@ package middleware
 import (
 	"log"
 	"net/http"
+	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/utils"
 )
 
-func Auth(next http.Handler) http.Handler {
-	handler := func(writer http.ResponseWriter, req *http.Request) {
+func Token(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		/* Public routes */
 		if utils.IsPublicURL(req.URL.Path) {
 			next.ServeHTTP(writer, req)
 			return
 		}
 		/* Protected routes - check credentials */
-		_, err := jwt.Get(req)
+		payload, err := jwt.Get(req)
 		if err != nil {
 			log.Printf("Redirecting user to login: %s", err)
 			/* Add HTMX redirect header on HTMX requests, otherwise redirect */
@@ -26,8 +27,10 @@ func Auth(next http.Handler) http.Handler {
 			}
 			return
 		}
-		/* All good */
+		/* Update cookie */
+		tokenStr := jwt.Create(*payload)
+		cookies.Set(writer, tokenStr, payload.RememberMe)
+		/* Done */
 		next.ServeHTTP(writer, req)
-	}
-	return http.HandlerFunc(handler)
+	})
 }

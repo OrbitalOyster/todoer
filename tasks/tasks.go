@@ -72,7 +72,6 @@ func Load() {
 
 func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	result := slices.Clone(list)
-	total := len(result)
 	searchBy := payload.SearchBy
 	page := payload.Page /* NOTE: Starts from 1 */
 	pageSize := payload.PageSize
@@ -88,7 +87,7 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	}
 	/* Date */
 	result = slices.DeleteFunc(result, func(t Task) bool {
-		/* "Not after 20/03/2026" meaning "Not after 20/03/2026 23:59:59"  */
+		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
 		return t.DatetimeParsed.Before(fromDate) || t.DatetimeParsed.After(toDate.Add(time.Hour*24-time.Second))
 	})
 	/* Search */
@@ -97,7 +96,8 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 			return !strings.Contains(t.Description, searchBy)
 		})
 	}
-	total = len(result)
+	/* Number of tasks after all filtering */
+	total := len(result)
 	/* Nothing found - stop */
 	if total == 0 {
 		return nil, 0, 1
@@ -120,19 +120,15 @@ func GetFromPayload(payload jwt.Payload) ([]Task, int, int) {
 	}
 	/* Pagination */
 	totalPages := int(math.Ceil(float64(total) / float64(pageSize)))
-
 	if page >= totalPages {
 		page = totalPages
 	}
 	if page <= 0 {
 		page = 1
 	}
-
 	/* Final result */
 	startInd := pageSize * (page - 1)
 	endInd := min(startInd+pageSize, total)
-	// log.Printf("page %d: %d out of %d", page, pageSize, totalPages)
-	// log.Printf("startInd %d: endInd %d", startInd, endInd)
 	return result[startInd:endInd], totalPages, page
 }
 

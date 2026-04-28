@@ -17,17 +17,13 @@ type taskListData struct {
 	Tasks      []tasks.Task
 	TotalPages int
 	Pagination []int
-	Payload jwt.Payload
+	Payload    jwt.Payload
 }
 
 func executeResult(writer http.ResponseWriter, payload *jwt.Payload) {
 	/* Get data */
 	selectedTasks, totalPages, page := tasks.GetFromPayload(*payload)
-
-	if payload.Page != page {
-		payload.Page = page
-	}
-
+	jwt.HealthCheck(payload, page, writer)
 	/* Set cookies */
 	token := jwt.Create(*payload)
 	cookies.Set(writer, token, payload.RememberMe)
@@ -36,7 +32,7 @@ func executeResult(writer http.ResponseWriter, payload *jwt.Payload) {
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, payload.Page),
-		Payload: jwt.Payload(*payload),
+		Payload:    jwt.Payload(*payload),
 	}
 	/* Render template */
 	templates.ExecutePartial(writer, "task-list", data)

@@ -28,6 +28,14 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+func HealthCheck(payload *Payload, page int, writer http.ResponseWriter) {
+	if payload.Page != page {
+		payload.Page = page
+		token := Create(*payload)
+		cookies.Set(writer, token, payload.RememberMe)
+	}
+}
+
 func Create(payload Payload) string {
 	expirationTime := time.Now()
 	if payload.RememberMe {

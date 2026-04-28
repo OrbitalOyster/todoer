@@ -3,7 +3,6 @@ package routes
 import (
 	"net/http"
 	"strconv"
-	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/tasks"
 	"todoer/templates"
@@ -22,13 +21,7 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	selectedTasks, _, page := tasks.GetFromPayload(*payload)
-
-	if payload.Page != page {
-		payload.Page = page
-		token := jwt.Create(*payload)
-		cookies.Set(writer, token, payload.RememberMe)
-	}
-
+	jwt.HealthCheck(payload, page, writer)
 	templates.ExecutePartial(writer, "task-table-body", selectedTasks)
 }
 

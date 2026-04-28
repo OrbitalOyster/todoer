@@ -3,7 +3,6 @@ package routes
 import (
 	"net/http"
 	"todoer/config"
-	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/tasks"
 	"todoer/templates"
@@ -26,13 +25,7 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	selectedTasks, totalPages, page := tasks.GetFromPayload(*payload)
-
-	if payload.Page != page {
-		payload.Page = page
-		token := jwt.Create(*payload)
-		cookies.Set(writer, token, payload.RememberMe)
-	}
-
+	jwt.HealthCheck(payload, page, writer)
 	data := mainPageData{
 		Title:      "todoer",
 		PageSizes:  config.PageSizes,

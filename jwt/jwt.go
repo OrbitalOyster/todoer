@@ -63,7 +63,7 @@ func Create(payload Payload) string {
 	return tokenStr
 }
 
-func Update(payload *Payload, key string, value any) error {
+func Update(payload *Payload, key string, value any, writer http.ResponseWriter) error {
 	reflectValue := reflect.ValueOf(payload).Elem()
 	field := reflectValue.FieldByName(key)
 	if !field.IsValid() || !field.CanSet() {
@@ -77,11 +77,11 @@ func Update(payload *Payload, key string, value any) error {
 		}
 		field.SetString(valueStr)
 	case "Page", "PageSize":
-		valueInt, ok := value.(int64)
+		valueInt, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("Invalid payload type (must be int)")
 		}
-		field.SetInt(valueInt)
+		field.SetInt(int64(valueInt))
 	case "SortBy":
 		valueInt, ok := value.(int)
 		if !ok {
@@ -97,6 +97,8 @@ func Update(payload *Payload, key string, value any) error {
 	default:
 		return fmt.Errorf("Invalid payload key: %s", key)
 	}
+	token := Create(*payload)
+	cookies.Set(writer, token, payload.RememberMe)
 	return nil
 }
 

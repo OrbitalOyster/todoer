@@ -3,6 +3,7 @@ package jwt
 import (
 	"fmt"
 	"net/http"
+	"reflect"
 	"time"
 	"todoer/config"
 	"todoer/cookies"
@@ -62,6 +63,43 @@ func Create(payload Payload) string {
 	return tokenStr
 }
 
+func Update(payload *Payload, key string, value any) error {
+	reflectValue := reflect.ValueOf(payload).Elem()
+	field := reflectValue.FieldByName(key)
+	if !field.IsValid() || !field.CanSet() {
+		return fmt.Errorf("Invalid payload key: %s", key)
+	}
+	switch key {
+	case "UserID", "SearchBy", "FromDate", "ToDate":
+		valueStr, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("Invalid payload type (must be string)")
+		}
+		field.SetString(valueStr)
+	case "Page", "PageSize":
+		valueInt, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("Invalid payload type (must be int)")
+		}
+		field.SetInt(valueInt)
+	case "SortBy":
+		valueInt, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("Invalid payload type (must be int)")
+		}
+		field.SetInt(int64(utils.SortableColumn(valueInt)))
+	case "RememberMe", "SortAsc":
+		valueBool, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("Invalid payload type (must be bool)")
+		}
+		field.SetBool(valueBool)
+	default:
+		return fmt.Errorf("Invalid payload key: %s", key)
+	}
+	return nil
+}
+
 func GetPayload(tokenStr string) (*Payload, error) {
 	claims := &Claims{}
 	parsed, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (any, error) {
@@ -89,4 +127,9 @@ func Get(req *http.Request) (*Payload, error) {
 		return nil, fmt.Errorf("Unable to read token: %w", err)
 	}
 	return payload, nil
+}
+
+func Set(writer http.ResponseWriter, payload *Payload, rememberMe bool) {
+	token := Create(*payload)
+	cookies.Set(writer, token, rememberMe)
 }

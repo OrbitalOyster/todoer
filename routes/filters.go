@@ -45,10 +45,10 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 	size, err := strconv.Atoi(req.FormValue("size"))
+	/* Wrong page size, somehow */
 	if err != nil || !slices.Contains(config.PageSizes, size) {
 		size = config.DefaultPageSize
 	}
-	/* Update token/cookies */
 	payload, err := jwt.Get(req)
 	/* Should not happen */
 	if err != nil {

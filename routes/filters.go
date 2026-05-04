@@ -19,20 +19,16 @@ type taskListData struct {
 	Payload    jwt.Payload
 }
 
-func executeResult(writer http.ResponseWriter, payload *jwt.Payload) {
-	/* Get data */
-	selectedTasks, totalPages, page := tasks.GetFromPayload(*payload)
-	jwt.HealthCheck(payload, page, writer)
-	/* Update token */
-	jwt.Create(*payload, writer)
-	data := taskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Pagination: utils.GetPagination(totalPages, payload.Page),
-		Payload:    jwt.Payload(*payload),
-	}
-	/* Render template */
-	templates.ExecutePartial(writer, "task-list", data)
+func executeTemplate(writer http.ResponseWriter, payload *jwt.Payload, selectedTasks []tasks.Task, totalPages int, page int) {
+	templates.ExecutePartial(
+		writer,
+		"task-list",
+		taskListData{
+			Tasks:      selectedTasks,
+			TotalPages: totalPages,
+			Pagination: utils.GetPagination(totalPages, page),
+			Payload:    jwt.Payload(*payload),
+		})
 }
 
 func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
@@ -47,13 +43,46 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		size = config.DefaultPageSize
 	}
 	payload, err := jwt.Get(req)
-	/* Should not happen */
+	/* Major screw up */
 	if err != nil {
 		panic(err)
 	}
-	payload.PageSize = size
-	/* Return updated task table */
-	executeResult(writer, payload)
+	/* Get tasks */
+	selectedTasks, totalPages, page := tasks.GetSome(
+		payload.FromDate, payload.ToDate,
+		payload.SearchBy,
+		payload.Page, size,
+		payload.SortBy, payload.SortAsc)
+	/* Update token */
+	err = jwt.Update(payload, "PageSize", size, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	err = jwt.Update(payload, "Page", page, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	/* Done */
+	executeTemplate(writer, payload, selectedTasks, totalPages, page)
+}
+
+func setPage(page int, payload *jwt.Payload, writer http.ResponseWriter) {
+	/* Get tasks */
+	selectedTasks, totalPages, page := tasks.GetSome(
+		payload.FromDate, payload.ToDate,
+		payload.SearchBy,
+		page, payload.PageSize,
+		payload.SortBy, payload.SortAsc)
+	/* Update token */
+	err := jwt.Update(payload, "Page", page, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	/* Done */
+	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
 
 func SetPage(writer http.ResponseWriter, req *http.Request) {
@@ -67,11 +96,86 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	setPage(page, payload, writer)
+}
+
+func NextPage(writer http.ResponseWriter, req *http.Request) {
+	payload, err := jwt.Get(req)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	page := payload.Page + 1
+	/* Return updated task table */
+	setPage(page, payload, writer)
+}
+
+func PreviousPage(writer http.ResponseWriter, req *http.Request) {
+	payload, err := jwt.Get(req)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	page := payload.Page - 1
+	/* Return updated task table */
+	setPage(page, payload, writer)
+}
+
+func SetSortBy(writer http.ResponseWriter, req *http.Request) {
+	columnStr := req.PathValue("column")
+	columnInt, err := strconv.Atoi(columnStr)
+	if err != nil {
+		columnInt = 0
+	}
+	column := utils.SortableColumn(columnInt)
+	payload, err := jwt.Get(req)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	sortAsc := payload.SortAsc
+	/* Reverse sort */
+	if payload.SortBy == column {
+		sortAsc = !sortAsc
+	}
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.GetSome(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
-		page, payload.PageSize,
+		payload.Page, payload.PageSize,
+		column, sortAsc)
+	/* Update token */
+	err = jwt.Update(payload, "Page", page, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	err = jwt.Update(payload, "SortBy", column, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	err = jwt.Update(payload, "SortAsc", sortAsc, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	/* Done */
+	executeTemplate(writer, payload, selectedTasks, totalPages, page)
+}
+
+func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
+	searchBy := req.FormValue("searchBy")
+	payload, err := jwt.Get(req)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	/* Get tasks */
+	selectedTasks, totalPages, page := tasks.GetSome(
+		payload.FromDate, payload.ToDate,
+		searchBy,
+		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
 	err = jwt.Update(payload, "Page", page, writer)
@@ -79,88 +183,47 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	/* Return updated task table */
-	templates.ExecutePartial(
-		writer,
-		"task-list",
-		taskListData{
-			Tasks:      selectedTasks,
-			TotalPages: totalPages,
-			Pagination: utils.GetPagination(totalPages, payload.Page),
-			Payload:    jwt.Payload(*payload),
-		})
-}
-
-func NextPage(writer http.ResponseWriter, req *http.Request) {
-	payload, err := jwt.Get(req)
-	/* Should not happen */
+	err = jwt.Update(payload, "SearchBy", searchBy, writer)
+	/* Major screw up */
 	if err != nil {
 		panic(err)
 	}
-	page := payload.Page + 1
-	payload.Page = page
-	/* Return updated task table */
-	executeResult(writer, payload)
-}
-
-func PreviousPage(writer http.ResponseWriter, req *http.Request) {
-	payload, err := jwt.Get(req)
-	/* Should not happen */
-	if err != nil {
-		panic(err)
-	}
-	page := payload.Page - 1
-	payload.Page = page
-	/* Return updated task table */
-	executeResult(writer, payload)
-}
-
-func SetSortBy(writer http.ResponseWriter, req *http.Request) {
-	columnStr := req.PathValue("column")
-	column, err := strconv.Atoi(columnStr)
-	if err != nil {
-		column = 0
-	}
-	payload, err := jwt.Get(req)
-	/* Should not happen */
-	if err != nil {
-		panic(err)
-	}
-	/* Reverse sort */
-	if payload.SortBy == utils.SortableColumn(column) {
-		payload.SortAsc = !payload.SortAsc
-	}
-	payload.SortBy = utils.SortableColumn(column)
-	/* Return updated task table */
-	executeResult(writer, payload)
-}
-
-func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
-	s := req.FormValue("searchBy")
-	payload, err := jwt.Get(req)
-	/* Should not happen */
-	if err != nil {
-		panic(err)
-	}
-	payload.SearchBy = s
-	/* Return updated task table */
-	executeResult(writer, payload)
+	/* Done */
+	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
 
 func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 	fromDateStr := req.FormValue("fromDate")
 	_, err := time.Parse("2006-01-02", fromDateStr)
+	/* User sent stoopid */
 	if err != nil {
-		panic(err)
+		fromDate, _ := utils.GetMonthBounds()
+		fromDateStr = fromDate.Format("2006-01-02")
 	}
 	payload, err := jwt.Get(req)
-	/* Should not happen */
+	/* Major screw up */
 	if err != nil {
 		panic(err)
 	}
-	payload.FromDate = fromDateStr
-	/* Return updated task table */
-	executeResult(writer, payload)
+	/* Get tasks */
+	selectedTasks, totalPages, page := tasks.GetSome(
+		fromDateStr, payload.ToDate,
+		payload.SearchBy,
+		payload.Page, payload.PageSize,
+		payload.SortBy, payload.SortAsc)
+	/* Update token */
+	err = jwt.Update(payload, "Page", page, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	err = jwt.Update(payload, "FromDate", fromDateStr, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	/* Done */
+	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
 
 func SetToDate(writer http.ResponseWriter, req *http.Request) {
@@ -168,15 +231,31 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 	_, err := time.Parse("2006-01-02", toDateStr)
 	/* User sent stoopid */
 	if err != nil {
-		_, toDate := utils.GetMonthBounds()
+		toDate, _ := utils.GetMonthBounds()
 		toDateStr = toDate.Format("2006-01-02")
 	}
 	payload, err := jwt.Get(req)
-	/* Should not happen */
+	/* Major screw up */
 	if err != nil {
 		panic(err)
 	}
-	payload.ToDate = toDateStr
-	/* Return updated task table */
-	executeResult(writer, payload)
+	/* Get tasks */
+	selectedTasks, totalPages, page := tasks.GetSome(
+		payload.FromDate, toDateStr,
+		payload.SearchBy,
+		payload.Page, payload.PageSize,
+		payload.SortBy, payload.SortAsc)
+	/* Update token */
+	err = jwt.Update(payload, "Page", page, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	err = jwt.Update(payload, "ToDate", toDateStr, writer)
+	/* Major screw up */
+	if err != nil {
+		panic(err)
+	}
+	/* Done */
+	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }

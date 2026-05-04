@@ -76,7 +76,6 @@ func CreateFresh(username string, rememberMe bool, writer http.ResponseWriter) {
 		ToDate:     toDate.Format("2006-01-02"),
 	}
 	Create(payload, writer)
-
 }
 
 func Update(payload *Payload, key string, value any, writer http.ResponseWriter) error {
@@ -117,9 +116,13 @@ func Update(payload *Payload, key string, value any, writer http.ResponseWriter)
 	return nil
 }
 
-func GetPayload(tokenStr string) (*Payload, error) {
+func Get(req *http.Request) (*Payload, error) {
+	cookie := cookies.Get(req)
+	if cookie == "" {
+		return nil, fmt.Errorf("Empty cookie")
+	}
 	claims := &Claims{}
-	parsed, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (any, error) {
+	parsed, err := jwt.ParseWithClaims(cookie, claims, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
@@ -132,16 +135,4 @@ func GetPayload(tokenStr string) (*Payload, error) {
 		return nil, fmt.Errorf("Invalid token")
 	}
 	return &claims.Payload, nil
-}
-
-func Get(req *http.Request) (*Payload, error) {
-	cookie := cookies.Get(req)
-	if cookie == "" {
-		return nil, fmt.Errorf("Empty cookie")
-	}
-	payload, err := GetPayload(cookie)
-	if err != nil {
-		return nil, fmt.Errorf("Unable to read token: %w", err)
-	}
-	return payload, nil
 }

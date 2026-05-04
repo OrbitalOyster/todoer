@@ -16,7 +16,7 @@ func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 	payload, err := jwt.Get(req)
-	/* Should not happen */
+	/* Major screw up */
 	if err != nil {
 		panic(err)
 	}

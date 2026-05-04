@@ -20,7 +20,7 @@ type mainPageData struct {
 
 func Main(writer http.ResponseWriter, req *http.Request) {
 	payload, err := jwt.Get(req)
-	/* Should not happen */
+	/* Major screw up */
 	if err != nil {
 		panic(err)
 	}

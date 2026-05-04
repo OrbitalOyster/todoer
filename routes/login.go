@@ -43,6 +43,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 
 func Logout(writer http.ResponseWriter, req *http.Request) {
 	payload, err := jwt.Get(req)
+	/* Major screw up */
 	if err != nil {
 		panic(err)
 	}

@@ -55,7 +55,7 @@ func Create(payload Payload, writer http.ResponseWriter) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenStr, err := token.SignedString(config.JWTSecret)
-	/* Something went terribly wrong */
+	/* Major screw up */
 	if err != nil {
 		panic(err)
 	}

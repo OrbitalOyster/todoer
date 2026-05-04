@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 	"slices"
 	"strconv"
@@ -89,7 +90,7 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	pageStr := req.PathValue("page")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
-		page = 0
+		page = 1
 	}
 	payload, err := jwt.Get(req)
 	/* Major screw up */

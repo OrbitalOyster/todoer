@@ -99,7 +99,7 @@ func GetSome(fromDateStr string, toDateStr string, searchBy string, page int, pa
 	total := len(result)
 	/* Nothing found - stop */
 	if total == 0 {
-		return nil, 1, 0
+		return nil, 1, 1
 	}
 	/* Sorting */
 	switch sortBy {

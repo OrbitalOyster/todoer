@@ -3,8 +3,6 @@ package routes
 import (
 	"log"
 	"net/http"
-	"time"
-	"todoer/config"
 	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/templates"
@@ -34,25 +32,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		rememberMe = true
 	}
 	/* Auth mockup */
-
-	now := time.Now()
-	fromDate := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
-	toDate := fromDate.AddDate(0, 1, -1)
-
 	if username == "admin" && password == "password" {
-		payload := jwt.Payload{
-			UserID:     username,
-			RememberMe: rememberMe,
-			PageSize:   config.DefaultPageSize,
-			Page:       1,
-			SearchBy:   "",
-			SortBy:     1,
-			SortAsc:    true,
-			FromDate:   fromDate.Format("2006-01-02"),
-			ToDate:     toDate.Format("2006-01-02"),
-		}
-		token := jwt.Create(payload)
-		cookies.Set(writer, token, rememberMe)
+		jwt.CreateFresh(username, rememberMe, writer)
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {

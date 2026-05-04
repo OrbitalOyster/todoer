@@ -3,7 +3,6 @@ package middleware
 import (
 	"log"
 	"net/http"
-	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/utils"
 )
@@ -27,9 +26,8 @@ func Token(next http.Handler) http.Handler {
 			}
 			return
 		}
-		/* Update cookie */
-		tokenStr := jwt.Create(*payload)
-		cookies.Set(writer, tokenStr, payload.RememberMe)
+		/* Update token */
+		jwt.Create(*payload, writer)
 		/* Done */
 		next.ServeHTTP(writer, req)
 	})

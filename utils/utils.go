@@ -1,11 +1,23 @@
 package utils
 
+import (
+	"time"
+)
+
 type SortableColumn int
 
 const (
 	Description SortableColumn = iota
 	Date
 )
+
+/* Returns first and last day of current month */
+func GetMonthBounds() (time.Time, time.Time) {
+	now := time.Now()
+	fromDate := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
+	toDate := fromDate.AddDate(0, 1, -1)
+	return fromDate, toDate
+}
 
 func GetPagination(totalPages int, selectedPage int) []int {
 	result := make([]int, 0, totalPages)

@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 	"todoer/config"
-	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/tasks"
 	"todoer/templates"
@@ -24,10 +23,8 @@ func executeResult(writer http.ResponseWriter, payload *jwt.Payload) {
 	/* Get data */
 	selectedTasks, totalPages, page := tasks.GetFromPayload(*payload)
 	jwt.HealthCheck(payload, page, writer)
-	/* Set cookies */
-	token := jwt.Create(*payload)
-	cookies.Set(writer, token, payload.RememberMe)
-
+	/* Update token */
+	jwt.Create(*payload, writer)
 	data := taskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
@@ -169,8 +166,10 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 func SetToDate(writer http.ResponseWriter, req *http.Request) {
 	toDateStr := req.FormValue("toDate")
 	_, err := time.Parse("2006-01-02", toDateStr)
+	/* User sent stoopid */
 	if err != nil {
-		panic(err)
+		_, toDate := utils.GetMonthBounds()
+		toDateStr = toDate.Format("2006-01-02")
 	}
 	payload, err := jwt.Get(req)
 	/* Should not happen */

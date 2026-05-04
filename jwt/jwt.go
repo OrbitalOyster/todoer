@@ -32,12 +32,11 @@ type Claims struct {
 func HealthCheck(payload *Payload, page int, writer http.ResponseWriter) {
 	if payload.Page != page {
 		payload.Page = page
-		token := Create(*payload)
-		cookies.Set(writer, token, payload.RememberMe)
+		Create(*payload, writer)
 	}
 }
 
-func Create(payload Payload) string {
+func Create(payload Payload, writer http.ResponseWriter) {
 	expirationTime := time.Now()
 	if payload.RememberMe {
 		expirationTime = expirationTime.Add(
@@ -60,7 +59,24 @@ func Create(payload Payload) string {
 	if err != nil {
 		panic(err)
 	}
-	return tokenStr
+	cookies.Set(writer, tokenStr, payload.RememberMe)
+}
+
+func CreateFresh(username string, rememberMe bool, writer http.ResponseWriter) {
+	fromDate, toDate := utils.GetMonthBounds()
+	payload := Payload{
+		UserID:     username,
+		RememberMe: rememberMe,
+		PageSize:   config.DefaultPageSize,
+		Page:       1,
+		SearchBy:   "",
+		SortBy:     1,
+		SortAsc:    true,
+		FromDate:   fromDate.Format("2006-01-02"),
+		ToDate:     toDate.Format("2006-01-02"),
+	}
+	Create(payload, writer)
+
 }
 
 func Update(payload *Payload, key string, value any, writer http.ResponseWriter) error {
@@ -97,8 +113,7 @@ func Update(payload *Payload, key string, value any, writer http.ResponseWriter)
 	default:
 		return fmt.Errorf("Invalid payload key: %s", key)
 	}
-	token := Create(*payload)
-	cookies.Set(writer, token, payload.RememberMe)
+	Create(*payload, writer)
 	return nil
 }
 
@@ -129,9 +144,4 @@ func Get(req *http.Request) (*Payload, error) {
 		return nil, fmt.Errorf("Unable to read token: %w", err)
 	}
 	return payload, nil
-}
-
-func Set(writer http.ResponseWriter, payload *Payload, rememberMe bool) {
-	token := Create(*payload)
-	cookies.Set(writer, token, rememberMe)
 }

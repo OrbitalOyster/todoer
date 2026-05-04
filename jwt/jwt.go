@@ -29,13 +29,6 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func HealthCheck(payload *Payload, page int, writer http.ResponseWriter) {
-	if payload.Page != page {
-		payload.Page = page
-		Create(*payload, writer)
-	}
-}
-
 func Create(payload Payload, writer http.ResponseWriter) {
 	expirationTime := time.Now()
 	if payload.RememberMe {

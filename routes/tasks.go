@@ -20,8 +20,13 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	selectedTasks, _, page := tasks.GetFromPayload(*payload)
-	jwt.HealthCheck(payload, page, writer)
+	selectedTasks, _, page := tasks.Get(
+		payload.FromDate, payload.ToDate,
+		payload.SearchBy,
+		payload.Page, payload.PageSize,
+		payload.SortBy, payload.SortAsc,
+	)
+	jwt.Update(payload, "Page", page, writer)
 	templates.ExecutePartial(writer, "task-table-body", selectedTasks)
 }
 

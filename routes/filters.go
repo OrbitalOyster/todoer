@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"log"
 	"net/http"
 	"slices"
 	"strconv"
@@ -32,7 +31,7 @@ func executeTemplate(writer http.ResponseWriter, payload *jwt.Payload, selectedT
 		})
 }
 
-func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
+func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 	/* Check if form is ok */
 	if err := req.ParseForm(); err != nil {
 		http.Error(writer, "Haxxor alert!", http.StatusBadRequest)
@@ -49,7 +48,7 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	/* Get tasks */
-	selectedTasks, totalPages, page := tasks.GetSome(
+	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
 		payload.Page, size,
@@ -71,7 +70,7 @@ func SetTaskTablePageSize(writer http.ResponseWriter, req *http.Request) {
 
 func setPage(page int, payload *jwt.Payload, writer http.ResponseWriter) {
 	/* Get tasks */
-	selectedTasks, totalPages, page := tasks.GetSome(
+	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
 		page, payload.PageSize,
@@ -140,7 +139,7 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 		sortAsc = !sortAsc
 	}
 	/* Get tasks */
-	selectedTasks, totalPages, page := tasks.GetSome(
+	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
 		payload.Page, payload.PageSize,
@@ -173,7 +172,7 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	/* Get tasks */
-	selectedTasks, totalPages, page := tasks.GetSome(
+	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		searchBy,
 		payload.Page, payload.PageSize,
@@ -207,7 +206,7 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	/* Get tasks */
-	selectedTasks, totalPages, page := tasks.GetSome(
+	selectedTasks, totalPages, page := tasks.Get(
 		fromDateStr, payload.ToDate,
 		payload.SearchBy,
 		payload.Page, payload.PageSize,
@@ -241,7 +240,7 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	/* Get tasks */
-	selectedTasks, totalPages, page := tasks.GetSome(
+	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, toDateStr,
 		payload.SearchBy,
 		payload.Page, payload.PageSize,

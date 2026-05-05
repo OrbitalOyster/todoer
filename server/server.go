@@ -33,9 +33,11 @@ func Start(routerMap RouterMap) {
 	}
 	/* Middleware TODO: Looks like arse */
 	middlewared := middleware.Logger(
-		middleware.Token(
-			middleware.Throttle(
-				gzhttp.GzipHandler(mux),
+		middleware.Recovery(
+			middleware.Token(
+				middleware.Throttle(
+					gzhttp.GzipHandler(mux),
+				),
 			),
 		),
 	)

@@ -15,11 +15,7 @@ func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	selectedTasks, _, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,

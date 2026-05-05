@@ -48,7 +48,7 @@ func Add(name string, layout string, page string) {
 	log.Printf("Added page \"%s\"\n", name)
 }
 
-func Execute(writer http.ResponseWriter, name string, data any) {
+func ExecutePage(writer http.ResponseWriter, name string, data any) {
 	/* Check if page exists */
 	if page, found := parsed[name]; found {
 		writer.Header().Set("Content-Type", "text/html")

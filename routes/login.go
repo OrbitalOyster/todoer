@@ -10,9 +10,9 @@ import (
 )
 
 /* GET */
-func Login(writer http.ResponseWriter, req *http.Request) {
+func GetLoginPage(writer http.ResponseWriter, req *http.Request) {
 	data := struct{ Title string }{"Login"}
-	templates.Execute(writer, "login", data)
+	templates.ExecutePage(writer, "login", data)
 }
 
 /* POST */
@@ -42,11 +42,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 }
 
 func Logout(writer http.ResponseWriter, req *http.Request) {
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	cookies.Clear(writer)
 	writer.Header().Set("HX-Redirect", "/login")
 	log.Printf("User %s logged out", payload.UserID)

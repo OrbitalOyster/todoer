@@ -24,8 +24,8 @@ func main() {
 	templates.Add("main", "base.html", "main.html")
 	/* Routes */
 	routerMap := map[string]server.RouterEntry{
-		"GET /{$}":                       routes.Main,
-		"GET /login":                     routes.Login,
+		"GET /{$}":                       routes.GetMainPage,
+		"GET /login":                     routes.GetLoginPage,
 		"POST /login":                    routes.LoginAttempt,
 		"POST /logout":                   routes.Logout,
 		"GET /htmx/tasks":                routes.GetAllTasks,

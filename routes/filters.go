@@ -42,11 +42,7 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 	if err != nil || !slices.Contains(config.PageSizes, size) {
 		size = config.DefaultPageSize
 	}
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -91,31 +87,19 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		page = 1
 	}
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	setPage(page, payload, writer)
 }
 
 func NextPage(writer http.ResponseWriter, req *http.Request) {
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	page := payload.Page + 1
 	/* Return updated task table */
 	setPage(page, payload, writer)
 }
 
 func PreviousPage(writer http.ResponseWriter, req *http.Request) {
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	page := payload.Page - 1
 	/* Return updated task table */
 	setPage(page, payload, writer)
@@ -128,11 +112,7 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 		columnInt = 0
 	}
 	column := utils.SortableColumn(columnInt)
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	sortAsc := payload.SortAsc
 	/* Reverse sort */
 	if payload.SortBy == column {
@@ -166,11 +146,7 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 
 func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	searchBy := req.FormValue("searchBy")
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -178,7 +154,7 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	err = jwt.Update(payload, "Page", page, writer)
+	err := jwt.Update(payload, "Page", page, writer)
 	/* Major screw up */
 	if err != nil {
 		panic(err)
@@ -200,11 +176,7 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 		fromDate, _ := utils.GetMonthBounds()
 		fromDateStr = fromDate.Format("2006-01-02")
 	}
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		fromDateStr, payload.ToDate,
@@ -234,11 +206,7 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 		toDate, _ := utils.GetMonthBounds()
 		toDateStr = toDate.Format("2006-01-02")
 	}
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	payload := jwt.Get(req)
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, toDateStr,

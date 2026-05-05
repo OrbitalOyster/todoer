@@ -18,12 +18,8 @@ type mainPageData struct {
 	Payload    jwt.Payload
 }
 
-func Main(writer http.ResponseWriter, req *http.Request) {
-	payload, err := jwt.Get(req)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+func GetMainPage(writer http.ResponseWriter, req *http.Request) {
+	payload := jwt.Get(req)
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
@@ -39,5 +35,5 @@ func Main(writer http.ResponseWriter, req *http.Request) {
 		Pagination: utils.GetPagination(totalPages, payload.Page),
 		Payload:    jwt.Payload(*payload),
 	}
-	templates.Execute(writer, "main", data)
+	templates.ExecutePage(writer, "main", data)
 }

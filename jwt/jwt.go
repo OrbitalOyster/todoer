@@ -109,23 +109,23 @@ func Update(payload *Payload, key string, value any, writer http.ResponseWriter)
 	return nil
 }
 
-func Get(req *http.Request) (*Payload, error) {
+func Get(req *http.Request) *Payload {
 	cookie := cookies.Get(req)
 	if cookie == "" {
-		return nil, fmt.Errorf("Empty cookie")
+		panic("Empty cookie")
 	}
 	claims := &Claims{}
 	parsed, err := jwt.ParseWithClaims(cookie, claims, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			panic(fmt.Errorf("Unexpected signing method: %v", token.Header["alg"]))
 		}
 		return config.JWTSecret, nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("Unable to parse token: %w", err)
+		panic(fmt.Errorf("Unable to parse token: %w", err))
 	}
 	if !parsed.Valid {
-		return nil, fmt.Errorf("Invalid token")
+		panic("Invalid token")
 	}
-	return &claims.Payload, nil
+	return &claims.Payload
 }

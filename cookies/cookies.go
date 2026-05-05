@@ -6,9 +6,9 @@ import (
 	"todoer/config"
 )
 
-func Set(writer http.ResponseWriter, value string, longLifetime bool) {
+func Set(writer http.ResponseWriter, value string, rememberMe bool) {
 	expires := time.Now()
-	if longLifetime {
+	if rememberMe {
 		expires = expires.Add(
 			time.Duration(config.CookieLifetime) * time.Second,
 		)

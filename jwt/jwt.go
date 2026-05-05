@@ -71,42 +71,41 @@ func CreateFresh(username string, rememberMe bool, writer http.ResponseWriter) {
 	Create(payload, writer)
 }
 
-func Update(payload *Payload, key string, value any, writer http.ResponseWriter) error {
+func Update(payload *Payload, key string, value any, writer http.ResponseWriter) {
 	reflectValue := reflect.ValueOf(payload).Elem()
 	field := reflectValue.FieldByName(key)
 	if !field.IsValid() || !field.CanSet() {
-		return fmt.Errorf("Invalid payload key: %s", key)
+		panic(fmt.Errorf("Invalid payload key: %s", key))
 	}
 	switch key {
 	case "UserID", "SearchBy", "FromDate", "ToDate":
 		valueStr, ok := value.(string)
 		if !ok {
-			return fmt.Errorf("Invalid payload type (must be string)")
+			panic("Invalid payload type (must be string)")
 		}
 		field.SetString(valueStr)
 	case "Page", "PageSize":
 		valueInt, ok := value.(int)
 		if !ok {
-			return fmt.Errorf("Invalid payload type (must be int)")
+			panic("Invalid payload type (must be int)")
 		}
 		field.SetInt(int64(valueInt))
 	case "SortBy":
-		valueInt, ok := value.(int)
+		valueInt, ok := value.(utils.SortableColumn)
 		if !ok {
-			return fmt.Errorf("Invalid payload type (must be int)")
+			panic("Invalid payload type (must be SortableColumn)")
 		}
 		field.SetInt(int64(utils.SortableColumn(valueInt)))
 	case "RememberMe", "SortAsc":
 		valueBool, ok := value.(bool)
 		if !ok {
-			return fmt.Errorf("Invalid payload type (must be bool)")
+			panic("Invalid payload type (must be bool)")
 		}
 		field.SetBool(valueBool)
 	default:
-		return fmt.Errorf("Invalid payload key: %s", key)
+		panic(fmt.Errorf("Invalid payload key: %s", key))
 	}
 	Create(*payload, writer)
-	return nil
 }
 
 func Get(req *http.Request) *Payload {

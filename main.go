@@ -41,6 +41,7 @@ func main() {
 		"PATCH /filters/searchBy":        routes.SetSearchBy,
 		"PATCH /filters/fromDate":        routes.SetFromDate,
 		"PATCH /filters/toDate":          routes.SetToDate,
+		"GET /panic":                     routes.Panic,
 		"GET /":                          routes.NotFoundHandler, // 404 page
 	}
 	server.Start(routerMap)

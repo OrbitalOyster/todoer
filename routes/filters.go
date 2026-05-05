@@ -50,16 +50,8 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, size,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	err = jwt.Update(payload, "PageSize", size, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
-	err = jwt.Update(payload, "Page", page, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	jwt.Update(payload, "PageSize", size, writer)
+	jwt.Update(payload, "Page", page, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -72,11 +64,7 @@ func setPage(page int, payload *jwt.Payload, writer http.ResponseWriter) {
 		page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	err := jwt.Update(payload, "Page", page, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	jwt.Update(payload, "Page", page, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -125,21 +113,9 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		column, sortAsc)
 	/* Update token */
-	err = jwt.Update(payload, "Page", page, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
-	err = jwt.Update(payload, "SortBy", column, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
-	err = jwt.Update(payload, "SortAsc", sortAsc, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	jwt.Update(payload, "Page", page, writer)
+	jwt.Update(payload, "SortBy", column, writer)
+	jwt.Update(payload, "SortAsc", sortAsc, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -154,16 +130,8 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	err := jwt.Update(payload, "Page", page, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
-	err = jwt.Update(payload, "SearchBy", searchBy, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	jwt.Update(payload, "Page", page, writer)
+	jwt.Update(payload, "SearchBy", searchBy, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -184,16 +152,8 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	err = jwt.Update(payload, "Page", page, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
-	err = jwt.Update(payload, "FromDate", fromDateStr, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	jwt.Update(payload, "Page", page, writer)
+	jwt.Update(payload, "FromDate", fromDateStr, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -214,16 +174,8 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	err = jwt.Update(payload, "Page", page, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
-	err = jwt.Update(payload, "ToDate", toDateStr, writer)
-	/* Major screw up */
-	if err != nil {
-		panic(err)
-	}
+	jwt.Update(payload, "Page", page, writer)
+	jwt.Update(payload, "ToDate", toDateStr, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }

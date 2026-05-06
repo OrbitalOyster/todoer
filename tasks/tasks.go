@@ -15,19 +15,14 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-const (
-	tasksFilename = "tasks.yaml"
-	timeFormat    = "2.01.2006 15:04:05"
-)
+const tasksFilename = "tasks.yaml"
 
 type Task struct {
-	Id                int    `yaml:"id"`
-	User              string `yaml:"user"`
-	Datetime          string `yaml:"datetime"`
-	DatetimeParsed    time.Time
-	DatetimeFormatted string
-	Description       string `yaml:"description"`
-	Done              bool   `yaml:"done"`
+	Id          int       `yaml:"id"`
+	User        string    `yaml:"user"`
+	Datetime    time.Time `yaml:"datetime"`
+	Description string    `yaml:"description"`
+	Done        bool      `yaml:"done"`
 }
 
 var list []Task
@@ -57,15 +52,6 @@ func Load() {
 	if err := yaml.Unmarshal(listRaw, &list); err != nil {
 		panic(err)
 	}
-	/* Format datetime */
-	for i, task := range list {
-		time, err := time.Parse(time.DateTime, task.Datetime)
-		if err != nil {
-			panic(err)
-		}
-		list[i].DatetimeParsed = time
-		list[i].DatetimeFormatted = time.Format(timeFormat)
-	}
 	log.Println("Tasks found:", len(list))
 }
 
@@ -79,12 +65,11 @@ func getNextId() int {
 func Add(user string, description string) {
 	now := time.Now()
 	result := Task{
-		Id:                getNextId(),
-		User:              user,
-		Description:       description,
-		DatetimeParsed:    now,
-		DatetimeFormatted: now.Format(timeFormat),
-		Done:              false,
+		Id:          getNextId(),
+		User:        user,
+		Description: description,
+		Datetime:    now,
+		Done:        false,
 	}
 	log.Println(result)
 	list = append(list, result)
@@ -108,7 +93,7 @@ func Get(fromDateStr string, toDateStr string,
 	}
 	result = slices.DeleteFunc(result, func(t Task) bool {
 		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
-		return t.DatetimeParsed.Before(fromDate) || t.DatetimeParsed.After(toDate.Add(time.Hour*24-time.Second))
+		return t.Datetime.Before(fromDate) || t.Datetime.After(toDate.Add(time.Hour*24-time.Second))
 	})
 	/* Search */
 	if searchBy != "" {
@@ -130,7 +115,7 @@ func Get(fromDateStr string, toDateStr string,
 		})
 	case utils.Date:
 		slices.SortFunc(result, func(t1, t2 Task) int {
-			return t1.DatetimeParsed.Compare(t2.DatetimeParsed)
+			return t1.Datetime.Compare(t2.Datetime)
 		})
 	default:
 	}

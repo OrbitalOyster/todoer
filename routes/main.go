@@ -32,7 +32,7 @@ func GetMainPage(writer http.ResponseWriter, req *http.Request) {
 		PageSizes:  config.PageSizes,
 		TotalPages: totalPages,
 		Tasks:      selectedTasks,
-		Pagination: utils.GetPagination(totalPages, payload.Page),
+		Pagination: utils.GetPagination(totalPages, page),
 		Payload:    jwt.Payload(*payload),
 	}
 	templates.ExecutePage(writer, "main", data)

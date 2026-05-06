@@ -13,14 +13,8 @@ let confirmMsg = null,
 	[...tooltipTriggerList].map(
 		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
 	);
-
-	/* Set up bootstrap toasts TODO: Don't need this? */
-	// const toastElList = document.querySelectorAll('.toast');
-	// [...toastElList].map(toastEl => new bootstrap.Toast(toastEl))
-
 	/* Set up bootstrap modals */
 	modal = new bootstrap.Modal("#modal");
-
 	/* Toggle password buttons */
 	const togglePasswordBtns = document.getElementsByClassName(
 		"toggle-password-btn",
@@ -34,7 +28,6 @@ let confirmMsg = null,
 		if (input.type === "password") input.type = "text";
 		else input.type = "password";
 	}
-
 	/* Confirm modal */
 	confirmMsg = async (title, content) => {
 		const confirmModal = new bootstrap.Modal("#confirmModal"),
@@ -59,13 +52,11 @@ let confirmMsg = null,
 			modalEl.addEventListener("hidden.bs.modal", cleanUp);
 		});
 	};
-
 	/* Confirm modal for htmx events */
 	htmxConfirmMsg = (el, title, content) =>
 		confirmMsg(title, content).then(
 			(res) => res && htmx.trigger(el, "confirmed"),
 		);
-
 	showHTMXModal = () => {
 		/* Remove previous HTMX content */
 		const toRemoveQuery = "#modal > div:first-child > :not(.htmx-indicator)",
@@ -73,9 +64,7 @@ let confirmMsg = null,
 		toRemoveEls.forEach((el) => el.remove());
 		modal.show();
 	};
-
 	document.body.addEventListener("hideModal", () => modal.hide());
-
 	/* On toast */
 	document.body.addEventListener("toast", function () {
 		const toastEl = document.querySelector(".toast-container").lastElementChild;
@@ -96,7 +85,6 @@ let confirmMsg = null,
 		/* Remove element after delay */
 		toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
 	});
-
 	/* On task update */
 	document.body.addEventListener("task-update", function () {
 		console.log("Task updated");

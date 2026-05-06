@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 )
 
 type TemplateDeclaration struct {
@@ -22,13 +23,22 @@ var (
 	parsed       = make(map[string]*template.Template)
 )
 
+const timeFormat = "2.01.2006 15:04:05"
+
+var funcMap = template.FuncMap{
+	"formatTime": func(t time.Time) string {
+		return t.Format(timeFormat)
+	},
+	"greet": func(name string) string {
+		return "Hello, " + name + "!"
+	},
+}
+
 func init() {
 	/* Layouts */
-	layouts = template.Must(template.ParseGlob(layoutsGlob))
-	template.Must(layouts.ParseGlob(partialsGlob))
-	template.Must(layouts.ParseGlob(modalsGlob))
+	layouts = template.Must(template.ParseGlob(layoutsGlob)).Funcs(funcMap)
 	/* Partials */
-	partials = template.Must(template.ParseGlob(partialsGlob))
+	partials = template.Must(layouts.ParseGlob(partialsGlob))
 	template.Must(partials.ParseGlob(modalsGlob))
 }
 

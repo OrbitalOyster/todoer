@@ -4,7 +4,7 @@
 </td>
 <td class="text-center align-middle">{{ .Id }}</td>
 <td class="text-center align-middle">{{ .Description }}</td>
-<td class="text-center align-middle">{{ .Datetime }}</td>
+<td class="text-center align-middle">{{ formatTime .Datetime }}</td>
 <td class="text-center align-middle">{{ .User }}</td>
 <td class="text-center align-middle">
 	{{ if .Done }}

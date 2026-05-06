@@ -1,0 +1,21 @@
+{{ define "editTaskPlaceholderModal" }}
+<div class="modal-content htmx-indicator" id="editTaskPlaceholder">
+	<div class="modal-header position-relative">
+		<h1 class="modal-title fs-5">Edit task</h1>
+		<button class="btn-close" disabled></button>
+	</div>
+	<div class="modal-body">
+		<input class="form-control" type="text" disabled />
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-secondary" disabled>
+			<i class="bi bi-x-lg"></i>
+			Cancel
+		</button>
+		<button class="btn btn-primary" disabled>
+			<i class="bi bi-check-lg"></i>
+			Ok
+		</button>
+	</div>
+</div>
+{{ end }}

@@ -26,6 +26,10 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 	templates.ExecutePartial(writer, "task-table-body", selectedTasks)
 }
 
+func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
+	templates.ExecutePartial(writer, "addTaskForm", nil)
+}
+
 func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
 	task := tasks.Check(req.PathValue("id"))
 	templates.ExecutePartial(writer, "editTaskForm", task)
@@ -34,6 +38,15 @@ func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
 func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
 	task := tasks.Check(req.PathValue("id"))
 	templates.ExecutePartial(writer, "cloneTaskForm", task)
+}
+
+func AddTask(writer http.ResponseWriter, req *http.Request) {
+	payload := jwt.Get(req)
+	user := payload.UserID
+	description := req.FormValue("description")
+	tasks.Add(user, description)
+	writer.Header().Set("HX-Trigger", "hideModal")
+	toasts.Success(writer, "New task", "Success")
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {

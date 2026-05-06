@@ -69,7 +69,31 @@ func Load() {
 	log.Println("Tasks found:", len(list))
 }
 
-func Get(fromDateStr string, toDateStr string, searchBy string, page int, pageSize int, sortBy utils.SortableColumn, sortAsc bool) ([]Task, int, int) {
+func getNextId() int {
+	result := slices.MaxFunc(list, func(a, b Task) int {
+		return cmp.Compare(a.Id, b.Id)
+	})
+	return result.Id + 1
+}
+
+func Add(user string, description string) {
+	now := time.Now()
+	result := Task{
+		Id:                getNextId(),
+		User:              user,
+		Description:       description,
+		DatetimeParsed:    now,
+		DatetimeFormatted: now.Format(timeFormat),
+		Done:              false,
+	}
+	log.Println(result)
+	list = append(list, result)
+}
+
+func Get(fromDateStr string, toDateStr string,
+	searchBy string,
+	page int, pageSize int,
+	sortBy utils.SortableColumn, sortAsc bool) ([]Task, int, int) {
 	result := slices.Clone(list)
 	/* Date */
 	fromDate, err := time.Parse("2006-01-02", fromDateStr)

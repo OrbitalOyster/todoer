@@ -56,19 +56,38 @@
 	>
 		<div class="spinner-border spinner-border-sm"></div>
 	</div>
-	<button
-		class="btn btn-primary"
-		type="button"
-		data-bs-toggle="tooltip"
-		data-bs-placement="right"
-		data-bs-trigger="hover"
-		title="Refresh tasks"
-		hx-get="/htmx/tasks"
-		hx-target="#task-table-body"
-		hx-trigger="click"
-		hx-indicator="#spinner"
-	>
-		<i class="bi bi-arrow-repeat fs-5"></i>
-	</button>
+	<div class="d-flex gap-1">
+		<!-- New task -->
+		<button
+			class="btn btn-primary"
+			type="button"
+			data-bs-toggle="tooltip"
+			data-bs-placement="top"
+			data-bs-trigger="hover"
+			hx-get="/htmx/add-task"
+			hx-indicator="#addTaskPlaceholder"
+			hx-swap="beforeend"
+			hx-target="#modal > div:first-child"
+			onclick="showHTMXModal()"
+			title="Add task"
+		>
+			<i class="bi bi-plus-lg fs-4"></i>
+		</button>
+		<!-- Refresh tasks -->
+		<button
+			class="btn btn-primary"
+			type="button"
+			data-bs-toggle="tooltip"
+			data-bs-placement="top"
+			data-bs-trigger="hover"
+			title="Refresh tasks"
+			hx-get="/htmx/tasks"
+			hx-target="#task-table-body"
+			hx-trigger="click"
+			hx-indicator="#spinner"
+		>
+			<i class="bi bi-arrow-repeat fs-4"></i>
+		</button>
+	</div>
 </div>
 {{ end }}

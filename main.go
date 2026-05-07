@@ -19,9 +19,9 @@ func main() {
 	}()
 	config.Load()
 	tasks.Load()
-	/* Templates */
-	templates.Add("login", "base.html", "login.html")
-	templates.Add("main", "base.html", "main.html")
+	/* Pages */
+	templates.AddPage("login", "login")
+	templates.AddPage("main", "base")
 	/* Routes */
 	routerMap := map[string]server.RouterEntry{
 		"GET /{$}":                       routes.GetMainPage,

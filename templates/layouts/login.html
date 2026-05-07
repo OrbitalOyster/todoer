@@ -16,7 +16,7 @@
 		<script defer src="/vendor/bootstrap.bundle.min.js"></script>
 		<!-- js -->
 		<script defer src="/js/script.js"></script>
-		<title>{{ .Title }}</title>
+		<title>Login - todoer</title>
 	</head>
 	<body class="bg-primary bg-opacity-10">
 		<!-- Firefox flashing layout voodoo hack -->
@@ -24,14 +24,7 @@
 			0;
 		</script>
 		<!-- Modals -->
-		{{ template "confirmModal" }}
-		<div class="modal fade" id="modal" tabindex="-1">
-			<div class="modal-dialog modal-dialog-centered">
-				{{ template "addTaskPlaceholderModal" }}
-				{{ template "editTaskPlaceholderModal" }}
-				{{ template "cloneTaskPlaceholderModal" }}
-			</div>
-		</div>
+		<div class="modal fade" id="modal" tabindex="-1"></div>
 		<!-- Toasts -->
 		<div class="toast-container position-fixed top-0 end-0 p-3"></div>
 		<!-- Page -->

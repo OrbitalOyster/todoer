@@ -5,23 +5,12 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
-	"time"
+	"todoer/utils"
 )
 
 type TemplateDeclaration struct {
 	Layout  string
 	Partial string
-}
-
-const timeFormat = "2.01.2006 15:04:05"
-
-var funcMap = template.FuncMap{
-	"formatTime": func(t time.Time) string {
-		return t.Format(timeFormat)
-	},
-	"greet": func(name string) string {
-		return "Hello, " + name + "!"
-	},
 }
 
 var (
@@ -35,7 +24,7 @@ var (
 
 func init() {
 	pages = make(map[string]*template.Template)
-	partials = template.New("partials").Funcs(funcMap)
+	partials = template.New("partials").Funcs(utils.TemplateFuncMap)
 	template.Must(partials.ParseGlob(partialsGlob))
 	template.Must(partials.ParseGlob(modalsGlob))
 }
@@ -44,7 +33,7 @@ func AddPage(page string, layout string) {
 	layoutFullFilename := filepath.Join(layoutsFolder, layout+".html")
 	pageFullFilename := filepath.Join(pagesFolder, page+".html")
 	/* Create new template, add custom functions */
-	newPage := template.New(layout + ".html").Funcs(funcMap)
+	newPage := template.New(layout + ".html").Funcs(utils.TemplateFuncMap)
 	template.Must(newPage.ParseFiles(layoutFullFilename, pageFullFilename))
 	/* Mix in partials */
 	template.Must(newPage.ParseGlob(partialsGlob))

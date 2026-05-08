@@ -1,44 +1,50 @@
 {{ define "task-list" }}
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th class="text-center align-middle">
-				<input class="form-check-input" type="checkbox" value="" />
-			</th>
-			<th class="text-center align-middle">#</th>
-			<th class="text-center align-middle">
-				<a hx-patch="/filters/sortBy/0" hx-target="#task-list" href="#">
-					What
-				</a>
-				{{ if eq .Payload.SortBy 0 }}
-					{{ if eq .Payload.SortAsc true }}
-						<i class="bi bi-sort-down-alt"></i>
-					{{ else }}
-						<i class="bi bi-sort-down"></i>
+<!-- More than zero tasks found -->
+{{ if gt (len .Tasks) 0 }}
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th class="text-center align-middle">
+					<input class="form-check-input" type="checkbox" value="" />
+				</th>
+				<th class="text-center align-middle">#</th>
+				<th class="text-center align-middle">
+					<a hx-patch="/filters/sortBy/0" hx-target="#task-list" href="#">
+						What
+					</a>
+					{{ if eq .Payload.SortBy 0 }}
+						{{ if eq .Payload.SortAsc true }}
+							<i class="bi bi-sort-down-alt"></i>
+						{{ else }}
+							<i class="bi bi-sort-down"></i>
+						{{ end }}
 					{{ end }}
-				{{ end }}
-			</th>
-			<th class="text-center align-middle">
-				<a hx-patch="/filters/sortBy/1" hx-target="#task-list" href="#">
-					When
-				</a>
-				{{ if eq .Payload.SortBy 1 }}
-					{{ if eq .Payload.SortAsc true }}
-						<i class="bi bi-sort-down-alt"></i>
-					{{ else }}
-						<i class="bi bi-sort-down"></i>
+				</th>
+				<th class="text-center align-middle">
+					<a hx-patch="/filters/sortBy/1" hx-target="#task-list" href="#">
+						When
+					</a>
+					{{ if eq .Payload.SortBy 1 }}
+						{{ if eq .Payload.SortAsc true }}
+							<i class="bi bi-sort-down-alt"></i>
+						{{ else }}
+							<i class="bi bi-sort-down"></i>
+						{{ end }}
 					{{ end }}
-				{{ end }}
-			</th>
-			<th class="text-center align-middle">Who</th>
-			<th class="text-center align-middle">Done</th>
-			<th class="text-center align-middle">Actions</th>
-		</tr>
-	</thead>
-	<tbody class="table-group-divider" id="task-table-body">
-		{{ template "task-table-body" .Tasks }}
-	</tbody>
-</table>
-<!-- Pagination -->
-{{ template "pagination" . }}
+				</th>
+				<th class="text-center align-middle">Who</th>
+				<th class="text-center align-middle">Done</th>
+				<th class="text-center align-middle">Actions</th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider" id="task-table-body">
+			{{ template "task-table-body" .Tasks }}
+		</tbody>
+	</table>
+	<!-- Pagination -->
+	{{ template "pagination" . }}
+	<!-- Nothing found -->
+	{{ else }}
+		{{ template "task-empty" . }}
+	{{ end }}
 {{ end }}

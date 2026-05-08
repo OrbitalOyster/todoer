@@ -2,6 +2,7 @@ package utils
 
 import (
 	"time"
+	"html/template"
 )
 
 type SortableColumn int
@@ -10,6 +11,17 @@ const (
 	Description SortableColumn = iota
 	Date
 )
+
+/* FuncMap for HTML templates */
+var TemplateFuncMap = template.FuncMap{
+	/* Human-readable date formatting */
+	"formatTime": func(t time.Time) string {
+		return t.Format("2.01.2006 15:04:05")
+	},
+	"greet": func(name string) string {
+		return "Hello, " + name + "!"
+	},
+}
 
 /* Returns first and last day of current month */
 func GetMonthBounds() (time.Time, time.Time) {

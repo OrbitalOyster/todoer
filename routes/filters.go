@@ -12,18 +12,11 @@ import (
 	"todoer/utils"
 )
 
-type taskListData struct {
-	Tasks      []tasks.Task
-	TotalPages int
-	Pagination []int
-	Payload    jwt.Payload
-}
-
 func executeTemplate(writer http.ResponseWriter, payload *jwt.Payload, selectedTasks []tasks.Task, totalPages int, page int) {
 	templates.ExecutePartial(
 		writer,
 		"task-list",
-		taskListData{
+		TaskListData{
 			Tasks:      selectedTasks,
 			TotalPages: totalPages,
 			Pagination: utils.GetPagination(totalPages, page),

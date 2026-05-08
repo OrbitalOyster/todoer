@@ -7,6 +7,7 @@ import (
 	"todoer/tasks"
 	"todoer/templates"
 	"todoer/toasts"
+	"todoer/utils"
 )
 
 func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
@@ -16,14 +17,19 @@ func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 	payload := jwt.Get(req)
-	selectedTasks, _, page := tasks.Get(
+	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc,
 	)
 	jwt.Update(payload, "Page", page, writer)
-	templates.ExecutePartial(writer, "task-table-body", selectedTasks)
+	templates.ExecutePartial(writer, "task-list", TaskListData{
+		Tasks:      selectedTasks,
+		TotalPages: totalPages,
+		Pagination: utils.GetPagination(totalPages, page),
+		Payload:    jwt.Payload(*payload),
+	})
 }
 
 func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
@@ -47,6 +53,7 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 	tasks.Add(user, description)
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "New task", "Success")
+	// GetAllTasks(writer, req)
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {

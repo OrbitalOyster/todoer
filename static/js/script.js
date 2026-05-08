@@ -14,9 +14,8 @@ let confirmMsg = null,
 		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
 	);
 	/* Set up bootstrap modals */
-	const modalEl = document.getElementById("modal")
-	if (modalEl)
-		modal = new bootstrap.Modal("#modal");
+	const modalEl = document.getElementById("modal");
+	if (modalEl) modal = new bootstrap.Modal("#modal");
 	/* Toggle password buttons */
 	const togglePasswordBtns = document.getElementsByClassName(
 		"toggle-password-btn",
@@ -32,11 +31,11 @@ let confirmMsg = null,
 	}
 	/* Confirm modal */
 	confirmMsg = async (title, content) => {
-		const confirmModal = new bootstrap.Modal("#confirmModal"),
-			modalEl = document.getElementById("confirmModal"),
-			titleEl = modalEl.querySelector("#confirmModalTitle"),
-			contentEl = modalEl.querySelector("#confirmModalContent"),
-			okBtn = modalEl.querySelector("#confirmModalOkBtn");
+		const confirmModal = new bootstrap.Modal("#confirm-modal"),
+			modalEl = document.getElementById("confirm-modal"),
+			titleEl = modalEl.querySelector("#confirm-modal-title"),
+			contentEl = modalEl.querySelector("#confirm-modal-content"),
+			okBtn = modalEl.querySelector("#confirm-modal-ok-btn");
 		titleEl.textContent = title;
 		contentEl.textContent = content;
 		confirmModal.show();
@@ -61,7 +60,7 @@ let confirmMsg = null,
 		);
 	showHTMXModal = () => {
 		/* Remove previous HTMX content */
-		const toRemoveQuery = "#modal > div:first-child > :not(.htmx-indicator)",
+		const toRemoveQuery = "#modal > div:first-child > :not(.modal-placeholder)",
 			toRemoveEls = document.querySelectorAll(toRemoveQuery);
 		toRemoveEls.forEach((el) => el.remove());
 		modal.show();

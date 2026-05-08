@@ -9,15 +9,6 @@ import (
 	"todoer/utils"
 )
 
-type mainPageData struct {
-	Title      string
-	PageSizes  []int
-	TotalPages int
-	Tasks      []tasks.Task
-	Pagination []int
-	Payload    jwt.Payload
-}
-
 func GetMainPage(writer http.ResponseWriter, req *http.Request) {
 	payload := jwt.Get(req)
 	selectedTasks, totalPages, page := tasks.Get(
@@ -27,13 +18,12 @@ func GetMainPage(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	jwt.Update(payload, "Page", page, writer)
-	data := mainPageData{
+	templates.ExecutePage(writer, "main", MainPageData{
 		Title:      "todoer",
 		PageSizes:  config.PageSizes,
 		TotalPages: totalPages,
 		Tasks:      selectedTasks,
 		Pagination: utils.GetPagination(totalPages, page),
 		Payload:    jwt.Payload(*payload),
-	}
-	templates.ExecutePage(writer, "main", data)
+	})
 }

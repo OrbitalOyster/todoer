@@ -5,6 +5,7 @@
 		class="btn btn-primary"
 		hx-patch="/filters/previous-page"
 		hx-target="#task-list"
+		hx-indicator="#task-list"
 	>
 		<i class="bi bi-chevron-left"></i>
 	</button>
@@ -19,6 +20,7 @@
 				class="page-link {{ if eq $.Payload.Page . }} active {{ end }}"
 				hx-patch="/filters/page/{{ . }}"
 				hx-target="#task-list"
+				hx-indicator="#task-list"
 				href="#"
 			>
 				{{ . }}
@@ -31,6 +33,7 @@
 		class="btn btn-primary"
 		hx-patch="/filters/next-page"
 		hx-target="#task-list"
+		hx-indicator="#task-list"
 	>
 		<i class="bi bi-chevron-right"></i>
 	</button>

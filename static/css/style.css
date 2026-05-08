@@ -1,13 +1,43 @@
 /* Completely hide modal placeholders */
-.htmx-indicator.modal-content:not(.htmx-request) {
-  display: none;
+.modal-placeholder.modal-content:not(.htmx-request) {
+	display: none;
 }
 
 /* Button icons */
 i.htmx-request {
-  display: none;
+	display: none;
 }
 
 i:not(.htmx-request) + .spinner-border {
-  display: none;
+	display: none;
+}
+
+#task-list {
+	transition: filter 0.25s ease-in-out;
+}
+
+/* On task list update */
+#task-list.htmx-request {
+	filter: blur(0.25rem);
+}
+
+/* Columns */
+th.checkbox {
+	width: 3rem;
+}
+
+th.task-id {
+	width: 6rem;
+}
+
+th.datetime {
+	width: 12rem;
+}
+
+th.done {
+	width: 6rem;
+}
+
+th.actions {
+	width: 6rem;
 }

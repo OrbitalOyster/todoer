@@ -4,10 +4,10 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th class="text-center align-middle">
+				<th class="text-center align-middle checkbox">
 					<input class="form-check-input" type="checkbox" value="" />
 				</th>
-				<th class="text-center align-middle">#</th>
+				<th class="text-center align-middle task-id">#</th>
 				<th class="text-center align-middle">
 					<a hx-patch="/filters/sortBy/0" hx-target="#task-list" href="#">
 						What
@@ -20,7 +20,7 @@
 						{{ end }}
 					{{ end }}
 				</th>
-				<th class="text-center align-middle">
+				<th class="text-center align-middle datetime">
 					<a hx-patch="/filters/sortBy/1" hx-target="#task-list" href="#">
 						When
 					</a>
@@ -33,8 +33,8 @@
 					{{ end }}
 				</th>
 				<th class="text-center align-middle">Who</th>
-				<th class="text-center align-middle">Done</th>
-				<th class="text-center align-middle">Actions</th>
+				<th class="text-center align-middle done">Done</th>
+				<th class="text-center align-middle actions">Actions</th>
 			</tr>
 		</thead>
 		<tbody class="table-group-divider" id="task-table-body">

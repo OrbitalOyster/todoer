@@ -21,7 +21,7 @@
 				<button
 					class="dropdown-item"
 					hx-get="/htmx/edit-task/{{ .Id }}"
-					hx-indicator="#editTaskPlaceholder"
+					hx-indicator="#edit-task-placeholder"
 					hx-swap="beforeend"
 					hx-target="#modal > div:first-child"
 					onclick="showHTMXModal()"
@@ -34,7 +34,7 @@
 				<button
 					class="dropdown-item"
 					hx-get="/htmx/clone-task/{{ .Id }}"
-					hx-indicator="#cloneTaskPlaceholder"
+					hx-indicator="#clone-task-placeholder"
 					hx-swap="beforeend"
 					hx-target="#modal > div:first-child"
 					onclick="showHTMXModal()"

@@ -53,14 +53,24 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	idStr, description := req.FormValue("id"), req.FormValue("description")
 	if description == "bogus" {
 		writer.WriteHeader(http.StatusBadRequest)
-		writer.Write([]byte("Bogus description"))
+		_, err := writer.Write([]byte("Bogus description"))
+		if err != nil {
+			panic(err)
+		}
 		return
 	}
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		panic(err)
 	}
-	tasks.Update(id, description)
+	err = tasks.Update(id, description)
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		_, err = writer.Write([]byte("Unable to update task:" + err.Error()))
+		if err != nil {
+			panic(err)
+		}
+	}
 	task := tasks.Check(idStr)
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+idStr, "Success")

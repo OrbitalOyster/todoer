@@ -6,5 +6,8 @@ import (
 
 func NotFoundHandler(writer http.ResponseWriter, req *http.Request) {
 	writer.WriteHeader(http.StatusNotFound)
-	writer.Write([]byte("Nothing here"))
+	_, err := writer.Write([]byte("Nothing here"))
+	if err != nil {
+		panic(err)
+	}
 }

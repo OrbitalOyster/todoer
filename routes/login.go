@@ -23,11 +23,11 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 	/* Credentials mock up */
-	username, password, rememberMeStr :=
+	username, password, rememberMeStr, rememberMe :=
 		req.FormValue("username"),
 		req.FormValue("password"),
-		req.FormValue("rememberMe")
-	rememberMe := false
+		req.FormValue("rememberMe"),
+		false
 	if rememberMeStr == "on" {
 		rememberMe = true
 	}

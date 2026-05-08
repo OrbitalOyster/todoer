@@ -14,7 +14,9 @@ let confirmMsg = null,
 		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
 	);
 	/* Set up bootstrap modals */
-	modal = new bootstrap.Modal("#modal");
+	const modalEl = document.getElementById("modal")
+	if (modalEl)
+		modal = new bootstrap.Modal("#modal");
 	/* Toggle password buttons */
 	const togglePasswordBtns = document.getElementsByClassName(
 		"toggle-password-btn",

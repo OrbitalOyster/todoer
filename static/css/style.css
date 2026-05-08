@@ -13,12 +13,12 @@ i:not(.htmx-request) + .spinner-border {
 }
 
 #task-list {
-	transition: filter 0.25s ease-in-out;
+	transition: filter .1s ease-in-out;
 }
 
 /* On task list update */
 #task-list.htmx-request {
-	filter: blur(0.25rem);
+	filter: blur(.25rem);
 }
 
 /* Columns */

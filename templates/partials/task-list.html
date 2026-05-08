@@ -2,14 +2,19 @@
 <!-- More than zero tasks found -->
 {{ if gt (len .Tasks) 0 }}
 	<table class="table table-striped">
-		<thead>
+		<thead class="sticky-top">
 			<tr>
 				<th class="text-center align-middle checkbox">
 					<input class="form-check-input" type="checkbox" value="" />
 				</th>
 				<th class="text-center align-middle task-id">#</th>
 				<th class="text-center align-middle">
-					<a hx-patch="/filters/sortBy/0" hx-target="#task-list" href="#">
+					<a
+						hx-patch="/filters/sortBy/0"
+						hx-target="#task-list"
+						hx-indicator="#task-list"
+						href="#"
+					>
 						What
 					</a>
 					{{ if eq .Payload.SortBy 0 }}
@@ -21,7 +26,12 @@
 					{{ end }}
 				</th>
 				<th class="text-center align-middle datetime">
-					<a hx-patch="/filters/sortBy/1" hx-target="#task-list" href="#">
+					<a
+						hx-patch="/filters/sortBy/1"
+						hx-target="#task-list"
+						hx-indicator="#task-list"
+						href="#"
+					>
 						When
 					</a>
 					{{ if eq .Payload.SortBy 1 }}

@@ -3,6 +3,10 @@
 	{{ if gt .TotalPages 1 }}
 	<button
 		class="btn btn-primary"
+		data-bs-toggle="tooltip"
+		data-bs-placement="left"
+		data-bs-trigger="hover"
+		title="Previous page"
 		hx-patch="/filters/previous-page"
 		hx-target="#task-list"
 		hx-indicator="#task-list"
@@ -31,6 +35,10 @@
 	{{ if gt .TotalPages 1 }}
 	<button
 		class="btn btn-primary"
+		data-bs-toggle="tooltip"
+		data-bs-placement="right"
+		data-bs-trigger="hover"
+		title="Next page"
 		hx-patch="/filters/next-page"
 		hx-target="#task-list"
 		hx-indicator="#task-list"

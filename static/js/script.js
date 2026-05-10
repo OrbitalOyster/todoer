@@ -3,16 +3,32 @@
 let confirmMsg = null,
 	htmxConfirmMsg = null,
 	modal = null,
-	showHTMXModal = null;
+  showHTMXModal = null,
+  removeActiveTooltips = null,
+  updateTooltips = null;
 
 (function () {
 	/* Set up bootstrap tooltips */
-	const tooltipTriggerList = document.querySelectorAll(
-		'[data-bs-toggle="tooltip"]',
-	);
-	[...tooltipTriggerList].map(
-		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
-	);
+  removeActiveTooltips = () => {
+    const activeTooltips = document.querySelectorAll('.tooltip');
+    activeTooltips.forEach(function(tooltip) {
+      tooltip.remove()
+    });
+	}
+  updateTooltips = (el) => {
+    const tooltipTriggerList = el.querySelectorAll(
+  		'[data-bs-toggle="tooltip"]',
+  	);
+  	[...tooltipTriggerList].map(
+  		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+  	);
+	}
+  /* Update tooltips after any htmx DOM swap */
+  document.addEventListener('htmx:beforeRequest', removeActiveTooltips);
+  document.addEventListener('htmx:afterSettle', (event) => {
+    updateTooltips(event.detail.elt)
+  });
+  updateTooltips(document);
 	/* Set up bootstrap modals */
 	const modalEl = document.getElementById("modal");
 	if (modalEl) modal = new bootstrap.Modal("#modal");
@@ -22,7 +38,6 @@ let confirmMsg = null,
 	);
 	for (let i = 0; i < togglePasswordBtns.length; i++)
 		togglePasswordBtns[i].addEventListener("click", togglePassword);
-
 	function togglePassword() {
 		const input = this.previousElementSibling;
 		if (!input) return;

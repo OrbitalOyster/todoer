@@ -11,9 +11,7 @@ let confirmMsg = null,
 	/* Set up bootstrap tooltips */
   removeActiveTooltips = () => {
     const activeTooltips = document.querySelectorAll('.tooltip');
-    activeTooltips.forEach(function(tooltip) {
-      tooltip.remove()
-    });
+    activeTooltips.forEach(t => t.remove());
 	}
   updateTooltips = (el) => {
     const tooltipTriggerList = el.querySelectorAll(
@@ -99,10 +97,6 @@ let confirmMsg = null,
 			);
 		}
 		/* Remove element after delay */
-		toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
-	});
-	/* On task update */
-	document.body.addEventListener("task-update", function () {
-		console.log("Task updated");
+		toastEl.addEventListener("hidden.bs.toast", toastEl.remove);
 	});
 })();

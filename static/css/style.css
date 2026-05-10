@@ -3,7 +3,7 @@
 	display: none;
 }
 
-#modal {
+#modal, #confirm-modal {
   backdrop-filter: blur(.25rem);
 }
 

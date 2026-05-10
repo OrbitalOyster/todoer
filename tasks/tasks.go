@@ -71,7 +71,6 @@ func Add(user string, description string) {
 		Datetime:    now,
 		Done:        false,
 	}
-	log.Println(result)
 	list = append(list, result)
 }
 
@@ -137,6 +136,7 @@ func Get(fromDateStr string, toDateStr string,
 	return result[startInd:endInd], totalPages, page
 }
 
+/* TODO: Lots of repeats */
 func GetOne(id int) (Task, error) {
 	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id
@@ -147,13 +147,24 @@ func GetOne(id int) (Task, error) {
 	return list[ind], nil
 }
 
-func Update(id int, newDescription string) error {
+func Update(id int, newDescription string) (Task, error) {
+	ind := slices.IndexFunc(list, func(t Task) bool {
+		return t.Id == id
+	})
+	if ind == -1 {
+		return Task{}, fmt.Errorf("Task not found: %d", id)
+	}
+	list[ind].Description = newDescription
+	return list[ind], nil
+}
+
+func Delete(id int) error  {
 	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id
 	})
 	if ind == -1 {
 		return fmt.Errorf("Task not found: %d", id)
 	}
-	list[ind].Description = newDescription
+	list = slices.Delete(list, ind, ind + 1)
 	return nil
 }

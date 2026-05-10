@@ -53,7 +53,13 @@
 				<hr class="dropdown-divider" />
 			</li>
 			<li>
-				<button class="dropdown-item text-danger">
+				<button
+          class="dropdown-item text-danger"
+          type="button"
+          hx-delete="/htmx/tasks/{{ .Id }}"
+          hx-trigger="confirmed"
+          onclick="htmxConfirmMsg(this, 'Delete task', 'Delete task #{{ .Id }}?')"
+        >
 					<i class="bi bi-trash-fill me-2"></i>
 					Delete
 				</button>

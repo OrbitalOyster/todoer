@@ -1,6 +1,10 @@
 {{ define "task" }}
 <td class="text-center align-middle">
-	<input class="form-check-input" type="checkbox" value="" />
+	<input
+		type="checkbox"
+		class="form-check-input select-task"
+		name="{{ .Id }}"
+	/>
 </td>
 <td class="text-center align-middle">{{ .Id }}</td>
 <td class="text-center align-middle">{{ .Description }}</td>

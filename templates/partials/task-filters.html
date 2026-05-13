@@ -33,28 +33,7 @@
 			<i class="input-group-text bi bi-search"></i>
 		</div>
 		<!-- Dates -->
-		<div class="d-flex align-items-center">
-			<input
-				class="form-control"
-				type="date"
-				name="fromDate"
-				hx-patch="/filters/fromDate"
-				hx-target="#task-list"
-				hx-indicator="#task-list"
-				value="{{ .Payload.FromDate }}"
-			/>
-			<i class="bi bi-slash-lg"></i>
-			<input
-				class="form-control"
-				type="date"
-				name="toDate"
-				hx-patch="/filters/toDate"
-				hx-target="#task-list"
-				hx-indicator="#task-list"
-				value="{{ .Payload.ToDate }}"
-			/>
-		</div>
-	</div>
+    {{ template "task-dates" . }}
 	<div
 		class="d-flex justify-content-center align-items-center htmx-indicator"
 		id="spinner"

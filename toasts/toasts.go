@@ -73,9 +73,7 @@ func execute(writer http.ResponseWriter, severity ToastSeverity, title string, m
 	options["Time"] = time.Now().Format(toastTimeFormat)
 	options["Content"] = msg
 	writer.Header().Set("HX-Trigger-After-Settle", "toast")
-	// writer.Header().Set("HX-Retarget", ".toast-container")
-	// writer.Header().Set("HX-Reswap", "beforeend")
-	templates.ExecutePartial(writer, "toast-oob", options)
+	templates.ExecutePartial(writer, "toast", options)
 }
 
 func Success(writer http.ResponseWriter, title string, msg string) {

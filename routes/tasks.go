@@ -61,7 +61,7 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	jwt.Update(payload, "Page", page, writer)
-	templates.ExecutePartial(writer, "task-list-oob", TaskListData{
+	templates.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
@@ -80,7 +80,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 	oldTask := tasks.Check(idStr)
-	newTask, err := tasks.Update(oldTask.Id, description)
+	_, err := tasks.Update(oldTask.Id, description)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		_, err = writer.Write([]byte("Unable to update task:" + err.Error()))
@@ -90,7 +90,22 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	}
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+idStr, "Success")
-	templates.ExecutePartial(writer, "task-oob", newTask)
+
+	payload := jwt.Get(req)
+	/* Send updated task list */
+	selectedTasks, totalPages, page := tasks.Get(
+		payload.FromDate, payload.ToDate,
+		payload.SearchBy,
+		payload.Page, payload.PageSize,
+		payload.SortBy, payload.SortAsc,
+	)
+	jwt.Update(payload, "Page", page, writer)
+	templates.ExecutePartial(writer, "task-list", TaskListData{
+		Tasks:      selectedTasks,
+		TotalPages: totalPages,
+		Pagination: utils.GetPagination(totalPages, page),
+		Payload:    jwt.Payload(*payload),
+	})
 }
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
@@ -107,7 +122,7 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	jwt.Update(payload, "Page", page, writer)
-	templates.ExecutePartial(writer, "task-list-oob", TaskListData{
+	templates.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),

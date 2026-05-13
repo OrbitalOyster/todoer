@@ -3,7 +3,7 @@
 {{ if gt (len .Tasks) 0 }}
 	<form>
 		<table class="table table-striped">
-			<thead class="sticky-top">
+			<thead>
 				<tr>
 					<th class="text-center align-middle checkbox">
 						<input
@@ -54,7 +54,11 @@
 				</tr>
 			</thead>
 			<tbody class="table-group-divider" id="task-table-body">
-				{{ template "task-table-body" .Tasks }}
+				{{ range .Tasks }}
+					<tr id="task-{{ .Id }}">
+						{{ template "task" . }}
+					</tr>
+				{{ end }}
 			</tbody>
 		</table>
 		<script>

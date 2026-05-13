@@ -12,7 +12,7 @@
 <td class="text-center align-middle">{{ .User }}</td>
 <td class="text-center align-middle">
 	{{ if .Done }}
-	<i class="bi bi-check2-circle text-success"></i>
+		<i class="bi bi-check2-circle text-success"></i>
 	{{ end }}
 </td>
 <td class="text-center align-middle">
@@ -58,12 +58,12 @@
 			</li>
 			<li>
 				<button
-          class="dropdown-item text-danger"
-          type="button"
-          hx-delete="/htmx/tasks/{{ .Id }}"
-          hx-trigger="confirmed"
-          onclick="htmxConfirmMsg(this, 'Delete task', 'Delete task #{{ .Id }}?')"
-        >
+					class="dropdown-item text-danger"
+					type="button"
+					hx-delete="/htmx/tasks/{{ .Id }}"
+					hx-trigger="confirmed"
+					onclick="htmxConfirmMsg(this, 'Delete task', 'Delete task #{{ .Id }}?')"
+				>
 					<i class="bi bi-trash-fill me-2"></i>
 					Delete
 				</button>

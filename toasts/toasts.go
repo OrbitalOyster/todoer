@@ -53,7 +53,7 @@ var dangerOpts = map[string]string{
 	"ProgressBarColor": "bg-danger",
 }
 
-const timeFormat = "2.01.2006 15:04:05"
+const toastTimeFormat = "2.01.2006 15:04:05"
 
 func execute(writer http.ResponseWriter, severity ToastSeverity, title string, msg string) {
 	var options map[string]string
@@ -70,12 +70,12 @@ func execute(writer http.ResponseWriter, severity ToastSeverity, title string, m
 		panic("Invalid toast severity: " + strconv.Itoa(int(severity)))
 	}
 	options["Title"] = title
-	options["Time"] = time.Now().Format(timeFormat)
+	options["Time"] = time.Now().Format(toastTimeFormat)
 	options["Content"] = msg
 	writer.Header().Set("HX-Trigger-After-Settle", "toast")
-	writer.Header().Set("HX-Retarget", ".toast-container")
-	writer.Header().Set("HX-Reswap", "beforeend")
-	templates.ExecutePartial(writer, "toast", options)
+	// writer.Header().Set("HX-Retarget", ".toast-container")
+	// writer.Header().Set("HX-Reswap", "beforeend")
+	templates.ExecutePartial(writer, "toast-oob", options)
 }
 
 func Success(writer http.ResponseWriter, title string, msg string) {

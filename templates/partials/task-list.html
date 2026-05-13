@@ -57,6 +57,9 @@
 				{{ template "task-table-body" .Tasks }}
 			</tbody>
 		</table>
+		<script>
+			createSelectAllGroup("#select-all-tasks", ".select-task")
+		</script>
 	</form>
 	<!-- Pagination -->
 	{{ template "pagination" . }}

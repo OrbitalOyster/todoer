@@ -1,56 +1,44 @@
 {{ define "task-dates" }}
 <div class="d-flex align-items-center">
-    <input
-      class="form-control"
-      type="date"
-      name="fromDate"
-      hx-patch="/filters/fromDate"
-      hx-target="#task-list"
-      hx-indicator="#task-list"
-      value="{{ .Payload.FromDate }}"
-    />
-    <i class="bi bi-slash-lg"></i>
-    <input
-      class="form-control"
-      type="date"
-      name="toDate"
-      hx-patch="/filters/toDate"
-      hx-target="#task-list"
-      hx-indicator="#task-list"
-      value="{{ .Payload.ToDate }}"
-    />
+	<input
+		class="form-control"
+		type="date"
+		name="fromDate"
+		hx-patch="/filters/fromDate"
+		hx-target="#task-list"
+		hx-indicator="#task-list"
+		value="{{ .Payload.FromDate }}"
+	/>
+	<i class="bi bi-slash-lg"></i>
+	<input
+		class="form-control"
+		type="date"
+		name="toDate"
+		hx-patch="/filters/toDate"
+		hx-target="#task-list"
+		hx-indicator="#task-list"
+		value="{{ .Payload.ToDate }}"
+	/>
 
-    <button
-      class="btn btn-link"
-      data-bs-toggle="dropdown"
-    >
-      <i class="bi bi-three-dots-vertical fs-5"></i>
-    </button>
-    <ul class="dropdown-menu shadow-sm">
-      <li>
-        <button class="dropdown-item">
-          This month
-        </button>
-      </li>
-      <li>
-        <hr class="dropdown-divider" />
-      </li>
-      <li>
-        <button class="dropdown-item">
-          Today
-        </button>
-      </li>
-      <li>
-        <button class="dropdown-item">
-          Previous month
-        </button>
-      </li>
-      <li>
-        <button class="dropdown-item">
-          This year
-        </button>
-      </li>
-    </ul>
-  </div>
+	<button class="btn btn-link" data-bs-toggle="dropdown">
+		<i class="bi bi-three-dots-vertical fs-5"></i>
+	</button>
+	<ul class="dropdown-menu shadow-sm">
+		<li>
+			<button class="dropdown-item">This month</button>
+		</li>
+		<li>
+			<hr class="dropdown-divider" />
+		</li>
+		<li>
+			<button class="dropdown-item">Today</button>
+		</li>
+		<li>
+			<button class="dropdown-item">Previous month</button>
+		</li>
+		<li>
+			<button class="dropdown-item">This year</button>
+		</li>
+	</ul>
 </div>
 {{ end }}

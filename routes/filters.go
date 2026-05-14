@@ -165,5 +165,14 @@ func SetDate(writer http.ResponseWriter, req *http.Request) {
 	token.Update(payload, "FromDate", fromDateStr, writer)
 	token.Update(payload, "ToDate", toDateStr, writer)
 	/* Done */
+	pages.ExecutePartial(
+		writer,
+		"task-dates-oob",
+		struct {
+			Payload token.Payload
+		}{
+			Payload: token.Payload(*payload),
+		})
+
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }

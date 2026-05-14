@@ -4,9 +4,10 @@
 		class="form-control"
 		type="date"
 		name="fromDate"
+		autocomplete="off"
 		hx-patch="/filters/date"
 		hx-target="#task-list"
-		hx-indicator="#task-list"
+		hx-indicator="#task-list, #filter-date"
 		value="{{ .Payload.FromDate }}"
 	/>
 	<i class="bi bi-slash-lg"></i>
@@ -14,9 +15,10 @@
 		class="form-control"
 		type="date"
 		name="toDate"
+		autocomplete="off"
 		hx-patch="/filters/date"
 		hx-target="#task-list"
-		hx-indicator="#task-list"
+		hx-indicator="#task-list, #filter-date"
 		value="{{ .Payload.ToDate }}"
 	/>
 	<button class="btn btn-link" data-bs-toggle="dropdown">
@@ -28,7 +30,7 @@
 				class="dropdown-item"
 				hx-patch="/filters/date"
 				hx-target="#task-list"
-				hx-indicator="#task-list"
+				hx-indicator="#task-list, #filter-date"
 				hx-vals='{"fromDate": "{{ getFirstDayOfMonth }}", "toDate": "{{ getLastDayOfMonth }}"}'
 			>
 				This month
@@ -39,7 +41,7 @@
 				class="dropdown-item"
 				hx-patch="/filters/date"
 				hx-target="#task-list"
-				hx-indicator="#task-list"
+				hx-indicator="#task-list, #filter-date"
 				hx-vals='{"fromDate": "{{ getFirstDayOfPreviousMonth }}", "toDate": "{{ getLastDayOfPreviousMonth }}"}'
 			>
 				Previous month
@@ -53,7 +55,7 @@
 				class="dropdown-item"
 				hx-patch="/filters/date"
 				hx-target="#task-list"
-				hx-indicator="#task-list"
+				hx-indicator="#task-list, #filter-date"
 				hx-vals='{"fromDate": "{{ getToday }}", "toDate": "{{ getToday }}"}'
 			>
 				Today
@@ -64,7 +66,7 @@
 				class="dropdown-item"
 				hx-patch="/filters/date"
 				hx-target="#task-list"
-				hx-indicator="#task-list"
+				hx-indicator="#task-list, #filter-date"
 				hx-vals='{"fromDate": "{{ getYesterday }}", "toDate": "{{ getYesterday }}"}'
 			>
 				Yesterday

@@ -16,12 +16,13 @@ i:not(.htmx-request) + .spinner-border {
 	display: none;
 }
 
-#task-list {
+/* HTMX-updateable elements */
+#task-list, #filter-date {
 	transition: filter .1s ease-in-out;
 }
 
 /* On task list update */
-#task-list.htmx-request {
+#task-list.htmx-request, #filter-date.htmx-request {
 	filter: blur(.25rem);
 }
 

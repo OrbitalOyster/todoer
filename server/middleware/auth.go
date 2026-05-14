@@ -21,7 +21,7 @@ func isPublicURL(URL string) bool {
 		strings.HasPrefix(URL, "/vendor/")
 }
 
-func Token(next http.Handler) http.Handler {
+func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		/* Public routes */
 		if isPublicURL(req.URL.Path) {

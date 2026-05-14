@@ -129,45 +129,40 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
 
-func SetFromDate(writer http.ResponseWriter, req *http.Request) {
+func SetDate(writer http.ResponseWriter, req *http.Request) {
 	fromDateStr := req.FormValue("fromDate")
-	_, err := time.Parse("2006-01-02", fromDateStr)
-	/* User sent stoopid */
-	if err != nil {
-		fromDate, _ := utils.GetMonthBounds()
-		fromDateStr = fromDate.Format("2006-01-02")
-	}
+	toDateStr := req.FormValue("toDate")
 	payload := token.Get(req)
+	fromDateFallback, toDateFallback := utils.GetMonthBounds()
+	/* Setting from date? */
+	if fromDateStr != "" {
+		_, err := time.Parse(utils.HTMLDateFormat, fromDateStr)
+		/* User sent stoopid */
+		if err != nil {
+			fromDateStr = fromDateFallback.Format(utils.HTMLDateFormat)
+		}
+	} else {
+		fromDateStr = payload.FromDate
+	}
+	/* Setting to date? */
+	if toDateStr != "" {
+		_, err := time.Parse(utils.HTMLDateFormat, toDateStr)
+		/* User sent stoopid */
+		if err != nil {
+			toDateStr = toDateFallback.Format(utils.HTMLDateFormat)
+		}
+	} else {
+		toDateStr = payload.ToDate
+	}
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
-		fromDateStr, payload.ToDate,
+		fromDateStr, toDateStr,
 		payload.SearchBy,
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
 	token.Update(payload, "Page", page, writer)
 	token.Update(payload, "FromDate", fromDateStr, writer)
-	/* Done */
-	executeTemplate(writer, payload, selectedTasks, totalPages, page)
-}
-
-func SetToDate(writer http.ResponseWriter, req *http.Request) {
-	toDateStr := req.FormValue("toDate")
-	_, err := time.Parse("2006-01-02", toDateStr)
-	/* User sent stoopid */
-	if err != nil {
-		toDate, _ := utils.GetMonthBounds()
-		toDateStr = toDate.Format("2006-01-02")
-	}
-	payload := token.Get(req)
-	/* Get tasks */
-	selectedTasks, totalPages, page := tasks.Get(
-		payload.FromDate, toDateStr,
-		payload.SearchBy,
-		payload.Page, payload.PageSize,
-		payload.SortBy, payload.SortAsc)
-	/* Update token */
-	token.Update(payload, "Page", page, writer)
 	token.Update(payload, "ToDate", toDateStr, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)

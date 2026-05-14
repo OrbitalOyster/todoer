@@ -42,8 +42,7 @@ func main() {
 		"PATCH /filters/previous-page":   routes.PreviousPage,
 		"PATCH /filters/sortBy/{column}": routes.SetSortBy,
 		"PATCH /filters/searchBy":        routes.SetSearchBy,
-		"PATCH /filters/fromDate":        routes.SetFromDate,
-		"PATCH /filters/toDate":          routes.SetToDate,
+		"PATCH /filters/date":            routes.SetDate,
 		"GET /panic":                     routes.Panic,
 		"GET /":                          routes.NotFoundHandler, // 404 page
 	}

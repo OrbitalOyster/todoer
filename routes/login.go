@@ -3,7 +3,6 @@ package routes
 import (
 	"log"
 	"net/http"
-	"todoer/cookies"
 	"todoer/jwt"
 	"todoer/templates"
 	"todoer/toasts"
@@ -42,8 +41,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 }
 
 func Logout(writer http.ResponseWriter, req *http.Request) {
-	payload := jwt.Get(req)
-	cookies.Clear(writer)
+	user := jwt.Get(req).UserID
+	jwt.Clear(writer)
 	writer.Header().Set("HX-Redirect", "/login")
-	log.Printf("User %s logged out", payload.UserID)
+	log.Printf("User %s logged out", user)
 }

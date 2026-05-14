@@ -6,7 +6,6 @@ import (
 	"reflect"
 	"time"
 	"todoer/config"
-	"todoer/cookies"
 	"todoer/utils"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -27,6 +26,51 @@ type Payload struct {
 type Claims struct {
 	Payload
 	jwt.RegisteredClaims
+}
+
+func setCookie(writer http.ResponseWriter, value string, rememberMe bool) {
+	expires := time.Now()
+	if rememberMe {
+		expires = expires.Add(
+			time.Duration(config.CookieLifetime) * time.Second,
+		)
+	} else {
+		expires = expires.Add(
+			time.Duration(config.CookieShortLifetime) * time.Second,
+		)
+	}
+	cookie := http.Cookie{
+		Name:     config.CookieName,
+		Value:    value,
+		Expires:  expires,
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	}
+	http.SetCookie(writer, &cookie)
+}
+
+func getCookie(req *http.Request) string {
+	cookie, err := req.Cookie(config.CookieName)
+	if err != nil {
+		/* No cookie, return empty string */
+		if err == http.ErrNoCookie {
+			return ""
+		}
+	}
+	return cookie.Value
+}
+
+func clearCookie(writer http.ResponseWriter) {
+	emptyCookie := http.Cookie{
+		Name:     config.CookieName,
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	}
+	http.SetCookie(writer, &emptyCookie)
 }
 
 func Create(payload Payload, writer http.ResponseWriter) {
@@ -52,7 +96,7 @@ func Create(payload Payload, writer http.ResponseWriter) {
 	if err != nil {
 		panic(err)
 	}
-	cookies.Set(writer, tokenStr, payload.RememberMe)
+	setCookie(writer, tokenStr, payload.RememberMe)
 }
 
 func CreateFresh(username string, rememberMe bool, writer http.ResponseWriter) {
@@ -109,7 +153,7 @@ func Update(payload *Payload, key string, value any, writer http.ResponseWriter)
 }
 
 func Get(req *http.Request) *Payload {
-	cookie := cookies.Get(req)
+	cookie := getCookie(req)
 	if cookie == "" {
 		panic("Empty cookie")
 	}
@@ -127,4 +171,8 @@ func Get(req *http.Request) *Payload {
 		panic("Invalid token")
 	}
 	return &claims.Payload
+}
+
+func Clear(writer http.ResponseWriter) {
+	clearCookie(writer)
 }

@@ -6,14 +6,14 @@ import (
 	"strconv"
 	"time"
 	"todoer/config"
+	"todoer/server/pages"
 	"todoer/server/token"
 	"todoer/tasks"
-	"todoer/templates"
 	"todoer/utils"
 )
 
 func executeTemplate(writer http.ResponseWriter, payload *token.Payload, selectedTasks []tasks.Task, totalPages int, page int) {
-	templates.ExecutePartial(
+	pages.ExecutePartial(
 		writer,
 		"task-list",
 		TaskListData{

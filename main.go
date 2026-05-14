@@ -6,7 +6,7 @@ import (
 	"todoer/routes"
 	"todoer/server"
 	"todoer/tasks"
-	"todoer/templates"
+	"todoer/server/pages"
 )
 
 func main() {
@@ -20,8 +20,8 @@ func main() {
 	config.Load()
 	tasks.Load()
 	/* Pages */
-	templates.AddPage("login", "login")
-	templates.AddPage("main", "base")
+	pages.Add("login", "login")
+	pages.Add("main", "base")
 	/* Routes */
 	routerMap := map[string]routes.RouterEntry{
 		"GET /{$}":                       routes.GetMainPage,

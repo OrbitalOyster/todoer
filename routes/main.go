@@ -3,9 +3,9 @@ package routes
 import (
 	"net/http"
 	"todoer/config"
+	"todoer/server/pages"
 	"todoer/server/token"
 	"todoer/tasks"
-	"todoer/templates"
 	"todoer/utils"
 )
 
@@ -18,7 +18,7 @@ func GetMainPage(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	token.Update(payload, "Page", page, writer)
-	templates.ExecutePage(writer, "main", MainPageData{
+	pages.Execute(writer, "main", MainPageData{
 		Title:      "todoer",
 		PageSizes:  config.PageSizes,
 		TotalPages: totalPages,

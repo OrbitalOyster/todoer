@@ -3,16 +3,16 @@ package routes
 import (
 	"net/http"
 	"strconv"
+	"todoer/server/pages"
 	"todoer/server/toasts"
 	"todoer/server/token"
 	"todoer/tasks"
-	"todoer/templates"
 	"todoer/utils"
 )
 
 func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 	task := tasks.Check(req.PathValue("id"))
-	templates.ExecutePartial(writer, "task", task)
+	pages.ExecutePartial(writer, "task", task)
 }
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
@@ -24,7 +24,7 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	token.Update(payload, "Page", page, writer)
-	templates.ExecutePartial(writer, "task-list", TaskListData{
+	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
@@ -33,17 +33,17 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 }
 
 func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
-	templates.ExecutePartial(writer, "addTaskForm", nil)
+	pages.ExecutePartial(writer, "addTaskForm", nil)
 }
 
 func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
 	task := tasks.Check(req.PathValue("id"))
-	templates.ExecutePartial(writer, "editTaskForm", task)
+	pages.ExecutePartial(writer, "editTaskForm", task)
 }
 
 func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
 	task := tasks.Check(req.PathValue("id"))
-	templates.ExecutePartial(writer, "cloneTaskForm", task)
+	pages.ExecutePartial(writer, "cloneTaskForm", task)
 }
 
 func AddTask(writer http.ResponseWriter, req *http.Request) {
@@ -61,7 +61,7 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	token.Update(payload, "Page", page, writer)
-	templates.ExecutePartial(writer, "task-list", TaskListData{
+	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
@@ -100,7 +100,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	token.Update(payload, "Page", page, writer)
-	templates.ExecutePartial(writer, "task-list", TaskListData{
+	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
@@ -122,7 +122,7 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	token.Update(payload, "Page", page, writer)
-	templates.ExecutePartial(writer, "task-list", TaskListData{
+	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),

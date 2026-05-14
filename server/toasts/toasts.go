@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"todoer/templates"
+	"todoer/server/pages"
 )
 
 type ToastSeverity int
@@ -73,7 +73,7 @@ func execute(writer http.ResponseWriter, severity ToastSeverity, title string, m
 	options["Time"] = time.Now().Format(toastTimeFormat)
 	options["Content"] = msg
 	writer.Header().Set("HX-Trigger-After-Settle", "toast")
-	templates.ExecutePartial(writer, "toast", options)
+	pages.ExecutePartial(writer, "toast", options)
 }
 
 func Success(writer http.ResponseWriter, title string, msg string) {

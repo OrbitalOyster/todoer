@@ -1,4 +1,4 @@
-package templates
+package pages
 
 import (
 	"html/template"
@@ -29,7 +29,7 @@ func init() {
 	template.Must(partials.ParseGlob(modalsGlob))
 }
 
-func AddPage(page string, layout string) {
+func Add(page string, layout string) {
 	layoutFullFilename := filepath.Join(layoutsFolder, layout+".html")
 	pageFullFilename := filepath.Join(pagesFolder, page+".html")
 	/* Create new template, add custom functions */
@@ -43,7 +43,7 @@ func AddPage(page string, layout string) {
 	log.Printf("Added page \"%s/%s\" \n", page, layout)
 }
 
-func ExecutePage(writer http.ResponseWriter, name string, data any) {
+func Execute(writer http.ResponseWriter, name string, data any) {
 	/* Check if page exists */
 	if page, found := pages[name]; found {
 		err := page.Execute(writer, data)

@@ -3,15 +3,15 @@ package routes
 import (
 	"log"
 	"net/http"
+	"todoer/server/pages"
 	"todoer/server/toasts"
 	"todoer/server/token"
-	"todoer/templates"
 )
 
 /* GET */
 func GetLoginPage(writer http.ResponseWriter, req *http.Request) {
 	data := struct{ Title string }{"Login"}
-	templates.ExecutePage(writer, "login", data)
+	pages.Execute(writer, "login", data)
 }
 
 /* POST */

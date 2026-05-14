@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"time"
 	"html/template"
+	"time"
 )
 
 type SortableColumn int

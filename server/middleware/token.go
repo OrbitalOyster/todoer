@@ -3,19 +3,33 @@ package middleware
 import (
 	"log"
 	"net/http"
-	"todoer/jwt"
-	"todoer/utils"
+	"slices"
+	"strings"
+	"todoer/server/token"
 )
+
+var publicURIs = []string{
+	"/login",
+	"/favicon.ico",
+	"/css/reset.css",
+	"/css/style.css",
+}
+
+func isPublicURL(URL string) bool {
+	return slices.Contains(publicURIs, URL) ||
+		strings.HasPrefix(URL, "/js/") ||
+		strings.HasPrefix(URL, "/vendor/")
+}
 
 func Token(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		/* Public routes */
-		if utils.IsPublicURL(req.URL.Path) {
+		if isPublicURL(req.URL.Path) {
 			next.ServeHTTP(writer, req)
 			return
 		}
 		/* Protected routes - check credentials */
-		GetPayloadSafe := func() *jwt.Payload {
+		GetPayloadSafe := func() *token.Payload {
 			/* On fail - redirect to login */
 			defer func() {
 				if r := recover(); r != nil {
@@ -28,11 +42,11 @@ func Token(next http.Handler) http.Handler {
 					}
 				}
 			}()
-			return jwt.Get(req)
+			return token.Get(req)
 		}
 		if payload := GetPayloadSafe(); payload != nil {
 			/* Reissue the token */
-			jwt.Create(*payload, writer)
+			token.Create(*payload, writer)
 			/* Done */
 			next.ServeHTTP(writer, req)
 		}

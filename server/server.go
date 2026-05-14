@@ -4,19 +4,17 @@ import (
 	"log"
 	"net/http"
 	"todoer/config"
-	"todoer/middleware"
+	"todoer/routes"
+	"todoer/server/middleware"
 
 	"github.com/klauspost/compress/gzhttp"
 )
-
-type RouterEntry func(http.ResponseWriter, *http.Request)
-type RouterMap map[string]RouterEntry
 
 func faviconHandler(writer http.ResponseWriter, req *http.Request) {
 	http.ServeFile(writer, req, "static/favicon.ico")
 }
 
-func Start(routerMap RouterMap) {
+func Start(routerMap routes.RouterMap) {
 	mux := http.NewServeMux()
 	/* Static files */
 	cssHandler := http.FileServer(http.Dir("static/css"))

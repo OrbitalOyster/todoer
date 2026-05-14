@@ -3,10 +3,10 @@ package routes
 import (
 	"net/http"
 	"strconv"
-	"todoer/jwt"
+	"todoer/server/toasts"
+	"todoer/server/token"
 	"todoer/tasks"
 	"todoer/templates"
-	"todoer/toasts"
 	"todoer/utils"
 )
 
@@ -16,19 +16,19 @@ func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc,
 	)
-	jwt.Update(payload, "Page", page, writer)
+	token.Update(payload, "Page", page, writer)
 	templates.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    jwt.Payload(*payload),
+		Payload:    token.Payload(*payload),
 	})
 }
 
@@ -47,7 +47,7 @@ func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
 }
 
 func AddTask(writer http.ResponseWriter, req *http.Request) {
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	user := payload.UserID
 	description := req.FormValue("description")
 	tasks.Add(user, description)
@@ -60,12 +60,12 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc,
 	)
-	jwt.Update(payload, "Page", page, writer)
+	token.Update(payload, "Page", page, writer)
 	templates.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    jwt.Payload(*payload),
+		Payload:    token.Payload(*payload),
 	})
 }
 
@@ -91,7 +91,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+idStr, "Success")
 
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	/* Send updated task list */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -99,12 +99,12 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc,
 	)
-	jwt.Update(payload, "Page", page, writer)
+	token.Update(payload, "Page", page, writer)
 	templates.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    jwt.Payload(*payload),
+		Payload:    token.Payload(*payload),
 	})
 }
 
@@ -113,7 +113,7 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 	tasks.Delete(task.Id)
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
 
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	/* Send updated task list */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -121,11 +121,11 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc,
 	)
-	jwt.Update(payload, "Page", page, writer)
+	token.Update(payload, "Page", page, writer)
 	templates.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    jwt.Payload(*payload),
+		Payload:    token.Payload(*payload),
 	})
 }

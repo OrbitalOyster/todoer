@@ -3,9 +3,9 @@ package routes
 import (
 	"log"
 	"net/http"
-	"todoer/jwt"
+	"todoer/server/toasts"
+	"todoer/server/token"
 	"todoer/templates"
-	"todoer/toasts"
 )
 
 /* GET */
@@ -32,7 +32,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	}
 	/* Auth mockup */
 	if username == "admin" && password == "password" {
-		jwt.CreateFresh(username, rememberMe, writer)
+		token.CreateFresh(username, rememberMe, writer)
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {
@@ -41,8 +41,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 }
 
 func Logout(writer http.ResponseWriter, req *http.Request) {
-	user := jwt.Get(req).UserID
-	jwt.Clear(writer)
+	user := token.Get(req).UserID
+	token.Clear(writer)
 	writer.Header().Set("HX-Redirect", "/login")
 	log.Printf("User %s logged out", user)
 }

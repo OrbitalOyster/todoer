@@ -1,9 +1,13 @@
 package routes
 
 import (
+	"net/http"
+	"todoer/server/token"
 	"todoer/tasks"
-	"todoer/jwt"
 )
+
+type RouterEntry func(http.ResponseWriter, *http.Request)
+type RouterMap map[string]RouterEntry
 
 type MainPageData struct {
 	Title      string
@@ -11,12 +15,12 @@ type MainPageData struct {
 	TotalPages int
 	Tasks      []tasks.Task
 	Pagination []int
-	Payload    jwt.Payload
+	Payload    token.Payload
 }
 
 type TaskListData struct {
 	Tasks      []tasks.Task
 	TotalPages int
 	Pagination []int
-	Payload    jwt.Payload
+	Payload    token.Payload
 }

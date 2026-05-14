@@ -23,7 +23,7 @@ func main() {
 	templates.AddPage("login", "login")
 	templates.AddPage("main", "base")
 	/* Routes */
-	routerMap := map[string]server.RouterEntry{
+	routerMap := map[string]routes.RouterEntry{
 		"GET /{$}":                       routes.GetMainPage,
 		"GET /login":                     routes.GetLoginPage,
 		"POST /login":                    routes.LoginAttempt,

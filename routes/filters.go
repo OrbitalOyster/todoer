@@ -6,13 +6,13 @@ import (
 	"strconv"
 	"time"
 	"todoer/config"
-	"todoer/jwt"
+	"todoer/server/token"
 	"todoer/tasks"
 	"todoer/templates"
 	"todoer/utils"
 )
 
-func executeTemplate(writer http.ResponseWriter, payload *jwt.Payload, selectedTasks []tasks.Task, totalPages int, page int) {
+func executeTemplate(writer http.ResponseWriter, payload *token.Payload, selectedTasks []tasks.Task, totalPages int, page int) {
 	templates.ExecutePartial(
 		writer,
 		"task-list",
@@ -20,7 +20,7 @@ func executeTemplate(writer http.ResponseWriter, payload *jwt.Payload, selectedT
 			Tasks:      selectedTasks,
 			TotalPages: totalPages,
 			Pagination: utils.GetPagination(totalPages, page),
-			Payload:    jwt.Payload(*payload),
+			Payload:    token.Payload(*payload),
 		})
 }
 
@@ -35,7 +35,7 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 	if err != nil || !slices.Contains(config.PageSizes, size) {
 		size = config.DefaultPageSize
 	}
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -43,13 +43,13 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, size,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	jwt.Update(payload, "PageSize", size, writer)
-	jwt.Update(payload, "Page", page, writer)
+	token.Update(payload, "PageSize", size, writer)
+	token.Update(payload, "Page", page, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
 
-func setPage(page int, payload *jwt.Payload, writer http.ResponseWriter) {
+func setPage(page int, payload *token.Payload, writer http.ResponseWriter) {
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -57,7 +57,7 @@ func setPage(page int, payload *jwt.Payload, writer http.ResponseWriter) {
 		page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	jwt.Update(payload, "Page", page, writer)
+	token.Update(payload, "Page", page, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -68,19 +68,19 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		page = 1
 	}
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	setPage(page, payload, writer)
 }
 
 func NextPage(writer http.ResponseWriter, req *http.Request) {
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	page := payload.Page + 1
 	/* Return updated task table */
 	setPage(page, payload, writer)
 }
 
 func PreviousPage(writer http.ResponseWriter, req *http.Request) {
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	page := payload.Page - 1
 	/* Return updated task table */
 	setPage(page, payload, writer)
@@ -93,7 +93,7 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 		columnInt = 0
 	}
 	column := utils.SortableColumn(columnInt)
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	sortAsc := payload.SortAsc
 	/* Reverse sort */
 	if payload.SortBy == column {
@@ -106,16 +106,16 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		column, sortAsc)
 	/* Update token */
-	jwt.Update(payload, "Page", page, writer)
-	jwt.Update(payload, "SortBy", column, writer)
-	jwt.Update(payload, "SortAsc", sortAsc, writer)
+	token.Update(payload, "Page", page, writer)
+	token.Update(payload, "SortBy", column, writer)
+	token.Update(payload, "SortAsc", sortAsc, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
 
 func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	searchBy := req.FormValue("searchBy")
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -123,8 +123,8 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	jwt.Update(payload, "Page", page, writer)
-	jwt.Update(payload, "SearchBy", searchBy, writer)
+	token.Update(payload, "Page", page, writer)
+	token.Update(payload, "SearchBy", searchBy, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -137,7 +137,7 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 		fromDate, _ := utils.GetMonthBounds()
 		fromDateStr = fromDate.Format("2006-01-02")
 	}
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		fromDateStr, payload.ToDate,
@@ -145,8 +145,8 @@ func SetFromDate(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	jwt.Update(payload, "Page", page, writer)
-	jwt.Update(payload, "FromDate", fromDateStr, writer)
+	token.Update(payload, "Page", page, writer)
+	token.Update(payload, "FromDate", fromDateStr, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -159,7 +159,7 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 		toDate, _ := utils.GetMonthBounds()
 		toDateStr = toDate.Format("2006-01-02")
 	}
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, toDateStr,
@@ -167,8 +167,8 @@ func SetToDate(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	jwt.Update(payload, "Page", page, writer)
-	jwt.Update(payload, "ToDate", toDateStr, writer)
+	token.Update(payload, "Page", page, writer)
+	token.Update(payload, "ToDate", toDateStr, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }

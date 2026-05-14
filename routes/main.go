@@ -3,27 +3,27 @@ package routes
 import (
 	"net/http"
 	"todoer/config"
-	"todoer/jwt"
+	"todoer/server/token"
 	"todoer/tasks"
 	"todoer/templates"
 	"todoer/utils"
 )
 
 func GetMainPage(writer http.ResponseWriter, req *http.Request) {
-	payload := jwt.Get(req)
+	payload := token.Get(req)
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc,
 	)
-	jwt.Update(payload, "Page", page, writer)
+	token.Update(payload, "Page", page, writer)
 	templates.ExecutePage(writer, "main", MainPageData{
 		Title:      "todoer",
 		PageSizes:  config.PageSizes,
 		TotalPages: totalPages,
 		Tasks:      selectedTasks,
 		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    jwt.Payload(*payload),
+		Payload:    token.Payload(*payload),
 	})
 }

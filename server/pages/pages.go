@@ -8,11 +8,6 @@ import (
 	"todoer/utils"
 )
 
-type TemplateDeclaration struct {
-	Layout  string
-	Partial string
-}
-
 var (
 	layoutsFolder = filepath.Join("templates", "layouts")
 	pagesFolder   = filepath.Join("templates", "pages")

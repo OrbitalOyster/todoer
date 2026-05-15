@@ -158,6 +158,17 @@ func Update(id int, newDescription string) (Task, error) {
 	return list[ind], nil
 }
 
+func ToggleStatus(id int) (Task, error) {
+	ind := slices.IndexFunc(list, func(t Task) bool {
+		return t.Id == id
+	})
+	if ind == -1 {
+		return Task{}, fmt.Errorf("Task not found: %d", id)
+	}
+	list[ind].Done = !list[ind].Done
+	return list[ind], nil
+}
+
 func Delete(id int) error  {
 	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"todoer/server/pages"
@@ -53,7 +54,7 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 	tasks.Add(user, description)
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "New task", "Success")
-	/* Send updated task list */
+	/* Send updated task list TODO: This chunck repeats */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
@@ -70,7 +71,11 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	idStr, description := req.FormValue("id"), req.FormValue("description")
+	idStr, description, doneStr := req.FormValue("id"),
+		req.FormValue("description"),
+		req.FormValue("done")
+
+	/* For testing */
 	if description == "bogus" {
 		writer.WriteHeader(http.StatusBadRequest)
 		_, err := writer.Write([]byte("Bogus description"))
@@ -79,7 +84,18 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		}
 		return
 	}
+
 	oldTask := tasks.Check(idStr)
+
+	/* Toggling status */
+	if doneStr != "" {
+		done, err := strconv.ParseBool(doneStr)
+		if err != nil {
+			panic("Haxxor alert!")
+		}
+		log.Println(done)
+	}
+
 	_, err := tasks.Update(oldTask.Id, description)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)

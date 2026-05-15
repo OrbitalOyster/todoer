@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 	"todoer/config"
-	"todoer/routes"
 	"todoer/server/middleware"
+	"todoer/server/routes"
 
 	"github.com/klauspost/compress/gzhttp"
 )

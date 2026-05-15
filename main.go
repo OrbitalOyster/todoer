@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 	"todoer/config"
-	"todoer/routes"
 	"todoer/server"
-	"todoer/tasks"
 	"todoer/server/pages"
+	"todoer/server/routes"
+	"todoer/tasks"
 )
 
 func main() {

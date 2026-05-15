@@ -2,7 +2,7 @@
   user: orbital
   datetime: 2026-05-01T10:01:00Z
   description: Drink coffee
-  done: false
+  done: true
 - id: 11
   user: orbital
   datetime: 2026-05-02T10:02:00Z
@@ -12,7 +12,7 @@
   user: orbital
   datetime: 2026-05-03T10:03:00Z
   description: Water the plants
-  done: false
+  done: true
 - id: 14
   user: orbital
   datetime: 2026-05-04T10:04:00Z
@@ -22,7 +22,7 @@
   user: orbital
   datetime: 2026-05-05T10:06:01Z
   description: Sweep the floor
-  done: false
+  done: true
 - id: 16
   user: orbital
   datetime: 2026-05-06T10:06:00Z

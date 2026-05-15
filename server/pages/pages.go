@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	layoutsFolder = filepath.Join("templates", "layouts")
-	pagesFolder   = filepath.Join("templates", "pages")
-	partialsGlob  = filepath.Join("templates", "partials", "*.html")
-	modalsGlob    = filepath.Join("templates", "partials", "modals", "*.html")
+	layoutsFolder = filepath.Join("server", "templates", "layouts")
+	pagesFolder   = filepath.Join("server", "templates", "pages")
+	partialsGlob  = filepath.Join("server", "templates", "partials", "*.html")
+	modalsGlob    = filepath.Join("server", "templates", "partials", "modals", "*.html")
 	pages         map[string]*template.Template
 	partials      *template.Template
 )

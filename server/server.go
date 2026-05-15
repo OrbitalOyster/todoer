@@ -18,11 +18,11 @@ func Start(routerMap routes.RouterMap) {
 	mux := http.NewServeMux()
 	/* Static files */
 	cssHandler := http.FileServer(http.Dir("static/css"))
-	mux.Handle("GET /css/", http.StripPrefix("/css/", cssHandler))
+	mux.Handle("GET /css/", http.StripPrefix("/css/", middleware.Cache(cssHandler)))
 	jsHandler := http.FileServer(http.Dir("static/js"))
-	mux.Handle("GET /js/", http.StripPrefix("/js/", jsHandler))
+	mux.Handle("GET /js/", http.StripPrefix("/js/", middleware.Cache(jsHandler)))
 	vendorHandler := http.FileServer(http.Dir("static/vendor"))
-	mux.Handle("GET /vendor/", http.StripPrefix("/vendor/", vendorHandler))
+	mux.Handle("GET /vendor/", http.StripPrefix("/vendor/", middleware.Cache(vendorHandler)))
 	/* Favicon */
 	mux.HandleFunc("GET /favicon.ico", faviconHandler)
 	/* Routes */

@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 	"todoer/server/pages"
@@ -70,10 +69,58 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 	})
 }
 
+func PutTask(writer http.ResponseWriter, req *http.Request) {
+  description, doneStr := req.FormValue("description"), req.FormValue("done")
+  task := tasks.Check(req.PathValue("id"))
+
+	/* Status */
+	done := false
+	if doneStr == "on" {
+		done = true
+	}
+	if task.Done != done {
+  	_, err := tasks.SetStatus(task.Id, done)
+  	if err != nil {
+  		_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
+  		if err != nil {
+  			panic(err)
+  		}
+  	}
+	}
+	/* Description */
+	_, err := tasks.SetDescription(task.Id, description)
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		_, err = writer.Write([]byte("Unable to update task:" + err.Error()))
+		if err != nil {
+			panic(err)
+		}
+	}
+	/* Done */
+	writer.Header().Set("HX-Trigger", "hideModal")
+	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
+
+	payload := token.Get(req)
+	/* Send updated task list */
+	selectedTasks, totalPages, page := tasks.Get(
+		payload.FromDate, payload.ToDate,
+		payload.SearchBy,
+		payload.Page, payload.PageSize,
+		payload.SortBy, payload.SortAsc,
+	)
+	token.Update(payload, "Page", page, writer)
+	pages.ExecutePartial(writer, "task-list", TaskListData{
+		Tasks:      selectedTasks,
+		TotalPages: totalPages,
+		Pagination: utils.GetPagination(totalPages, page),
+		Payload:    token.Payload(*payload),
+	})
+
+}
+
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	idStr, description, doneStr := req.FormValue("id"),
-		req.FormValue("description"),
-		req.FormValue("done")
+	task := tasks.Check(req.PathValue("id"))
+	description, doneStr := req.FormValue("description"), req.FormValue("done")
 
 	/* For testing */
 	if description == "bogus" {
@@ -84,19 +131,22 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		}
 		return
 	}
-
-	oldTask := tasks.Check(idStr)
-
-	/* Toggling status */
+	/* Status */
 	if doneStr != "" {
-		done, err := strconv.ParseBool(doneStr)
-		if err != nil {
-			panic("Haxxor alert!")
+		done := false
+		if doneStr == "on" {
+			done = true
 		}
-		log.Println(done)
+		_, err := tasks.SetStatus(task.Id, done)
+		if err != nil {
+			_, err = writer.Write([]byte("Unable to update task:" + err.Error()))
+			if err != nil {
+				panic(err)
+			}
+		}
 	}
-
-	_, err := tasks.Update(oldTask.Id, description)
+	/* Description */
+	_, err := tasks.SetDescription(task.Id, description)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		_, err = writer.Write([]byte("Unable to update task:" + err.Error()))
@@ -104,8 +154,9 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 			panic(err)
 		}
 	}
+	/* Done */
 	writer.Header().Set("HX-Trigger", "hideModal")
-	toasts.Success(writer, "Task "+idStr, "Success")
+	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
 
 	payload := token.Get(req)
 	/* Send updated task list */

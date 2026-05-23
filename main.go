@@ -34,7 +34,7 @@ func main() {
 		"GET /htmx/add-task":             routes.GetAddTaskForm,
 		"GET /htmx/clone-task/{id}":      routes.GetCloneTaskForm,
 		"POST /htmx/tasks":               routes.AddTask,
-		"PATCH /htmx/tasks":              routes.PatchTask,
+		"PUT /htmx/tasks/{id}":           routes.PutTask,
 		"DELETE /htmx/tasks/{id}":        routes.DeleteTask,
 		"PATCH /filters/page-size":       routes.SetPageSize,
 		"PATCH /filters/page/{page}":     routes.SetPage,

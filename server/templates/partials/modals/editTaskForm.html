@@ -6,7 +6,7 @@
         	find button[type='button'].btn-secondary,
          	find button[type='submit']"
 		hx-indicator="#ok-btn-icon"
-		hx-patch="/htmx/tasks"
+		hx-put="/htmx/tasks/{{ .Id }}"
 		hx-target="#task-list"
 	>
 		<div class="modal-header position-relative">
@@ -17,8 +17,7 @@
 				data-bs-dismiss="modal"
 			></button>
 		</div>
-		<div class="modal-body">
-			<input type="hidden" name="id" value="{{ .Id }}" />
+		<div class="modal-body d-flex flex-column gap-3">
 			<input
 				type="text"
 				class="form-control"
@@ -26,6 +25,23 @@
 				placeholder="Enter task description"
 				value="{{ .Description }}"
 			/>
+			<div class="d-flex justify-content-between">
+  			<div class="form-check">
+       	  <input
+            class="form-check-input"
+            type="checkbox"
+            name="done"
+            id="done-checkbox"
+            {{ if .Done }}
+              checked
+            {{ end }}
+          >
+          <label class="form-check-label" for="done-checkbox">
+            Done
+          </label>
+  			</div>
+        <span>Responsible: {{ .User }}</span>
+			</div>
 		</div>
 		<div class="modal-footer">
 			<button

@@ -147,7 +147,7 @@ func GetOne(id int) (Task, error) {
 	return list[ind], nil
 }
 
-func Update(id int, newDescription string) (Task, error) {
+func SetDescription(id int, newDescription string) (Task, error) {
 	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id
 	})
@@ -158,14 +158,14 @@ func Update(id int, newDescription string) (Task, error) {
 	return list[ind], nil
 }
 
-func ToggleStatus(id int) (Task, error) {
+func SetStatus(id int, newStatus bool) (Task, error) {
 	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id
 	})
 	if ind == -1 {
 		return Task{}, fmt.Errorf("Task not found: %d", id)
 	}
-	list[ind].Done = !list[ind].Done
+	list[ind].Done = newStatus
 	return list[ind], nil
 }
 

@@ -70,28 +70,27 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
-  description, doneStr := req.FormValue("description"), req.FormValue("done")
-  task := tasks.Check(req.PathValue("id"))
-
+	description, doneStr := req.FormValue("description"), req.FormValue("done")
+	task := tasks.Check(req.PathValue("id"))
 	/* Status */
 	done := false
 	if doneStr == "on" {
 		done = true
 	}
 	if task.Done != done {
-  	_, err := tasks.SetStatus(task.Id, done)
-  	if err != nil {
-  		_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
-  		if err != nil {
-  			panic(err)
-  		}
-  	}
+		_, err := tasks.SetStatus(task.Id, done)
+		if err != nil {
+			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
+			if err != nil {
+				panic(err)
+			}
+		}
 	}
 	/* Description */
 	_, err := tasks.SetDescription(task.Id, description)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
-		_, err = writer.Write([]byte("Unable to update task:" + err.Error()))
+		_, err = writer.Write([]byte("Unable to set task description:" + err.Error()))
 		if err != nil {
 			panic(err)
 		}
@@ -119,44 +118,26 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	task := tasks.Check(req.PathValue("id"))
-	description, doneStr := req.FormValue("description"), req.FormValue("done")
-
-	/* For testing */
-	if description == "bogus" {
-		writer.WriteHeader(http.StatusBadRequest)
-		_, err := writer.Write([]byte("Bogus description"))
-		if err != nil {
-			panic(err)
-		}
-		return
-	}
-	/* Status */
-	if doneStr != "" {
-		done := false
-		if doneStr == "on" {
+	task, field := tasks.Check(req.PathValue("id")), req.PathValue("field")
+	switch field {
+	case "done":
+		doneStr, done := req.FormValue("done"), false
+		if doneStr == "on" || doneStr == "true" {
 			done = true
 		}
 		_, err := tasks.SetStatus(task.Id, done)
 		if err != nil {
-			_, err = writer.Write([]byte("Unable to update task:" + err.Error()))
+			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
 			if err != nil {
 				panic(err)
 			}
 		}
-	}
-	/* Description */
-	_, err := tasks.SetDescription(task.Id, description)
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		_, err = writer.Write([]byte("Unable to update task:" + err.Error()))
+	default:
+		_, err := writer.Write([]byte("Invalid task field: " + field))
 		if err != nil {
 			panic(err)
 		}
 	}
-	/* Done */
-	writer.Header().Set("HX-Trigger", "hideModal")
-	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
 
 	payload := token.Get(req)
 	/* Send updated task list */
@@ -173,6 +154,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		Pagination: utils.GetPagination(totalPages, page),
 		Payload:    token.Payload(*payload),
 	})
+
 }
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {

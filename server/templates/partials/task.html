@@ -48,7 +48,18 @@
 				</button>
 			</li>
 			<li>
-				<button class="dropdown-item text-success">
+				<button
+				  class="dropdown-item text-success"
+					type="button"
+					hx-patch="/htmx/tasks/{{ .Id }}/done"
+					hx-target="#task-list"
+					hx-indicator="#task-list"
+					{{ if .Done }}
+						hx-vals='{ "done": false }'
+					{{ else }}
+  					hx-vals='{ "done": true }'
+					{{ end }}
+				>
 					<i class="bi bi-check2-circle me-2"></i>
 					{{ if .Done }}
 						Remove "done" mark

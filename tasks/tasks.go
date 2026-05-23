@@ -27,20 +27,6 @@ type Task struct {
 
 var list []Task
 
-func Check(idStr string) Task {
-	id, err := strconv.Atoi(idStr)
-	/* User sent stoopid */
-	if err != nil {
-		panic(err)
-	}
-	task, err := GetOne(id)
-	/* No such task */
-	if err != nil {
-		panic(err)
-	}
-	return task
-}
-
 func Load() {
 	log.Println("Loading tasks from", tasksFilename)
 	/* Load raw yaml */
@@ -136,46 +122,53 @@ func Get(fromDateStr string, toDateStr string,
 	return result[startInd:endInd], totalPages, page
 }
 
-/* TODO: Lots of repeats */
-func GetOne(id int) (Task, error) {
+func getById(id int) (*Task, error) {
 	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id
 	})
 	if ind == -1 {
-		return Task{}, fmt.Errorf("Task not found: %d", id)
+		return nil, fmt.Errorf("Task not found: %d", id)
 	}
-	return list[ind], nil
+	return &list[ind], nil
 }
 
-func SetDescription(id int, newDescription string) (Task, error) {
-	ind := slices.IndexFunc(list, func(t Task) bool {
-		return t.Id == id
-	})
-	if ind == -1 {
-		return Task{}, fmt.Errorf("Task not found: %d", id)
+/* Generic function, accepts id as int or string */
+func GetById[T interface{ int | string }](id T) (*Task, error) {
+	switch idAny := any(id).(type) {
+	case int:
+		return getById(idAny)
+	case string:
+		idInt, err := strconv.Atoi(idAny)
+		/* Unparseable string */
+		if err != nil {
+			return nil, fmt.Errorf("Invalid task identifier: \"%s\"", idAny)
+		}
+		return getById(idInt)
+	default:
+		/* Major screwup */
+		panic("Invalid task type")
 	}
-	list[ind].Description = newDescription
-	return list[ind], nil
 }
 
-func SetStatus(id int, newStatus bool) (Task, error) {
-	ind := slices.IndexFunc(list, func(t Task) bool {
-		return t.Id == id
-	})
-	if ind == -1 {
-		return Task{}, fmt.Errorf("Task not found: %d", id)
-	}
-	list[ind].Done = newStatus
-	return list[ind], nil
+func (task *Task) SetDescription(description string) error {
+	task.Description = description
+	log.Printf("Set task #%d description to \"%s\"", task.Id, task.Description)
+	return nil
 }
 
-func Delete(id int) error  {
+func (task *Task) SetStatus(status bool) error {
+	task.Done = status
+	log.Printf("Set task #%d status to \"%t\"", task.Id, task.Done)
+	return nil
+}
+
+func Delete(id int) error {
 	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id
 	})
 	if ind == -1 {
 		return fmt.Errorf("Task not found: %d", id)
 	}
-	list = slices.Delete(list, ind, ind + 1)
+	list = slices.Delete(list, ind, ind+1)
 	return nil
 }

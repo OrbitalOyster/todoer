@@ -11,7 +11,10 @@ import (
 )
 
 func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
-	task := tasks.Check(req.PathValue("id"))
+	task, err := tasks.GetById(req.PathValue("id"))
+	if err != nil {
+		panic(err)
+	}
 	pages.ExecutePartial(writer, "task", task)
 }
 
@@ -37,12 +40,18 @@ func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
 }
 
 func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
-	task := tasks.Check(req.PathValue("id"))
+	task, err := tasks.GetById(req.PathValue("id"))
+	if err != nil {
+		panic(err)
+	}
 	pages.ExecutePartial(writer, "editTaskForm", task)
 }
 
 func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
-	task := tasks.Check(req.PathValue("id"))
+	task, err := tasks.GetById(req.PathValue("id"))
+	if err != nil {
+		panic(err)
+	}
 	pages.ExecutePartial(writer, "cloneTaskForm", task)
 }
 
@@ -71,15 +80,18 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
 	description, doneStr := req.FormValue("description"), req.FormValue("done")
-	task := tasks.Check(req.PathValue("id"))
+	task, err := tasks.GetById(req.PathValue("id"))
+	if err != nil {
+		panic(err)
+	}
 	/* Status */
 	done := false
 	if doneStr == "on" {
 		done = true
 	}
 	if task.Done != done {
-		_, err := tasks.SetStatus(task.Id, done)
-		if err != nil {
+		if err := task.SetStatus(done); err != nil {
+  		writer.WriteHeader(http.StatusBadRequest)
 			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
 			if err != nil {
 				panic(err)
@@ -87,8 +99,7 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 		}
 	}
 	/* Description */
-	_, err := tasks.SetDescription(task.Id, description)
-	if err != nil {
+	if err := task.SetDescription(description); err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		_, err = writer.Write([]byte("Unable to set task description:" + err.Error()))
 		if err != nil {
@@ -114,19 +125,21 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 		Pagination: utils.GetPagination(totalPages, page),
 		Payload:    token.Payload(*payload),
 	})
-
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	task, field := tasks.Check(req.PathValue("id")), req.PathValue("field")
+	task, err := tasks.GetById(req.PathValue("id"))
+	if err != nil {
+		panic(err)
+	}
+	field := req.PathValue("field")
 	switch field {
 	case "done":
 		doneStr, done := req.FormValue("done"), false
 		if doneStr == "on" || doneStr == "true" {
 			done = true
 		}
-		_, err := tasks.SetStatus(task.Id, done)
-		if err != nil {
+		if err := task.SetStatus(done); err != nil {
 			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
 			if err != nil {
 				panic(err)
@@ -138,6 +151,8 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 			panic(err)
 		}
 	}
+
+	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
 
 	payload := token.Get(req)
 	/* Send updated task list */
@@ -158,7 +173,10 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
-	task := tasks.Check(req.PathValue("id"))
+	task, err := tasks.GetById(req.PathValue("id"))
+	if err != nil {
+		panic(err)
+	}
 	tasks.Delete(task.Id)
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
 

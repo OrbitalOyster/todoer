@@ -10,12 +10,24 @@ import (
 	"todoer/utils"
 )
 
-func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
-	task, err := tasks.GetById(req.PathValue("id"))
-	if err != nil {
-		panic(err)
+func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task {
+	if task, err := tasks.GetById(req.PathValue("id")); err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		_, err = writer.Write([]byte("Task not found: " + err.Error()))
+		/* Major screwup */
+		if err != nil {
+			panic(err)
+		}
+		return nil
+	} else {
+		return task
 	}
-	pages.ExecutePartial(writer, "task", task)
+}
+
+func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
+	if task := idCheck(writer, req); task != nil {
+		pages.ExecutePartial(writer, "task", task)
+	}
 }
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
@@ -40,19 +52,15 @@ func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
 }
 
 func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
-	task, err := tasks.GetById(req.PathValue("id"))
-	if err != nil {
-		panic(err)
+	if task := idCheck(writer, req); task != nil {
+		pages.ExecutePartial(writer, "editTaskForm", task)
 	}
-	pages.ExecutePartial(writer, "editTaskForm", task)
 }
 
 func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
-	task, err := tasks.GetById(req.PathValue("id"))
-	if err != nil {
-		panic(err)
+	if task := idCheck(writer, req); task != nil {
+		pages.ExecutePartial(writer, "cloneTaskForm", task)
 	}
-	pages.ExecutePartial(writer, "cloneTaskForm", task)
 }
 
 func AddTask(writer http.ResponseWriter, req *http.Request) {
@@ -62,28 +70,15 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 	tasks.Add(user, description)
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "New task", "Success")
-	/* Send updated task list TODO: This chunck repeats */
-	selectedTasks, totalPages, page := tasks.Get(
-		payload.FromDate, payload.ToDate,
-		payload.SearchBy,
-		payload.Page, payload.PageSize,
-		payload.SortBy, payload.SortAsc,
-	)
-	token.Update(payload, "Page", page, writer)
-	pages.ExecutePartial(writer, "task-list", TaskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    token.Payload(*payload),
-	})
+	GetAllTasks(writer, req)
 }
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
-	description, doneStr := req.FormValue("description"), req.FormValue("done")
-	task, err := tasks.GetById(req.PathValue("id"))
-	if err != nil {
-		panic(err)
+	var task *tasks.Task
+	if task = idCheck(writer, req); task == nil {
+		return
 	}
+	description, doneStr := req.FormValue("description"), req.FormValue("done")
 	/* Status */
 	done := false
 	if doneStr == "on" {
@@ -91,7 +86,7 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	}
 	if task.Done != done {
 		if err := task.SetStatus(done); err != nil {
-  		writer.WriteHeader(http.StatusBadRequest)
+			writer.WriteHeader(http.StatusBadRequest)
 			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
 			if err != nil {
 				panic(err)
@@ -109,28 +104,13 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	/* Done */
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
-
-	payload := token.Get(req)
-	/* Send updated task list */
-	selectedTasks, totalPages, page := tasks.Get(
-		payload.FromDate, payload.ToDate,
-		payload.SearchBy,
-		payload.Page, payload.PageSize,
-		payload.SortBy, payload.SortAsc,
-	)
-	token.Update(payload, "Page", page, writer)
-	pages.ExecutePartial(writer, "task-list", TaskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    token.Payload(*payload),
-	})
+	GetAllTasks(writer, req)
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	task, err := tasks.GetById(req.PathValue("id"))
-	if err != nil {
-		panic(err)
+	var task *tasks.Task
+	if task = idCheck(writer, req); task == nil {
+		return
 	}
 	field := req.PathValue("field")
 	switch field {
@@ -151,48 +131,16 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 			panic(err)
 		}
 	}
-
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
-
-	payload := token.Get(req)
-	/* Send updated task list */
-	selectedTasks, totalPages, page := tasks.Get(
-		payload.FromDate, payload.ToDate,
-		payload.SearchBy,
-		payload.Page, payload.PageSize,
-		payload.SortBy, payload.SortAsc,
-	)
-	token.Update(payload, "Page", page, writer)
-	pages.ExecutePartial(writer, "task-list", TaskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    token.Payload(*payload),
-	})
-
+	GetAllTasks(writer, req)
 }
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
-	task, err := tasks.GetById(req.PathValue("id"))
-	if err != nil {
-		panic(err)
+	var task *tasks.Task
+	if task = idCheck(writer, req); task == nil {
+		return
 	}
 	tasks.Delete(task.Id)
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
-
-	payload := token.Get(req)
-	/* Send updated task list */
-	selectedTasks, totalPages, page := tasks.Get(
-		payload.FromDate, payload.ToDate,
-		payload.SearchBy,
-		payload.Page, payload.PageSize,
-		payload.SortBy, payload.SortAsc,
-	)
-	token.Update(payload, "Page", page, writer)
-	pages.ExecutePartial(writer, "task-list", TaskListData{
-		Tasks:      selectedTasks,
-		TotalPages: totalPages,
-		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    token.Payload(*payload),
-	})
+	GetAllTasks(writer, req)
 }

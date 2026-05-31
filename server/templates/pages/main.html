@@ -16,6 +16,9 @@
 			<div id="task-list">
 				{{ template "task-list" . }}
 			</div>
+			<script>
+				createSelectAllGroup("#select-all-tasks", ".select-task")
+			</script>
 		</div>
 	</div>
 </main>

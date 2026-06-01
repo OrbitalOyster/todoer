@@ -52,9 +52,23 @@
 					</th>
 					<th class="text-center align-middle">Who</th>
 					<th class="text-center align-middle status">
-						<button type="button" class="btn btn-link">
+						<button type="button" class="btn btn-link" data-bs-toggle="dropdown" data-bs-auto-close="outside">
 							Status
 						</button>
+						<ul class="dropdown-menu p-3">
+							<li class="form-check">
+								<input class="form-check-input" type="checkbox" id="filter-finished" checked>
+								<label class="form-check-label" for="filter-finished">
+									Finished
+								</label>
+							</li>
+							<li class="form-check">
+								<input class="form-check-input" type="checkbox" id="filter-unfinished" checked>
+								<label class="form-check-label" for="filter-unfinished">
+									Unfinished
+								</label>
+							</li>
+						</ul>
 					</th>
 					<th class="text-center align-middle actions">Actions</th>
 				</tr>

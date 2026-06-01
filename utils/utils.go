@@ -5,7 +5,10 @@ import (
 	"time"
 )
 
-const HTMLDateFormat = "2006-01-02"
+const (
+	HTMLDateFormat        = "2006-01-02"
+	NiceLookingDateTimeFormat = "2.01.2006 15:04:05"
+)
 
 type SortableColumn int
 
@@ -14,10 +17,9 @@ const (
 	Date
 )
 
-/* Returns first and last day of current month */
-func GetMonthBounds() (time.Time, time.Time) {
-	now := time.Now()
-	fromDate := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
+/* Returns first and last day of month */
+func GetMonthBounds(year int, month time.Month) (time.Time, time.Time) {
+	fromDate := time.Date(year, month, 1, 0, 0, 0, 0, time.Local)
 	toDate := fromDate.AddDate(0, 1, -1)
 	return fromDate, toDate
 }
@@ -25,27 +27,24 @@ func GetMonthBounds() (time.Time, time.Time) {
 /* FuncMap for HTML templates */
 var TemplateFuncMap = template.FuncMap{
 	/* Human-readable date formatting */
-	"formatTime": func(t time.Time) string {
-		return t.Format("2.01.2006 15:04:05")
+	"formatDateTime": func(t time.Time) string {
+		return t.Format(NiceLookingDateTimeFormat)
 	},
 	/* Preset dates */
 	"getFirstDayOfMonth": func() string {
-		result, _ := GetMonthBounds()
-		return result.Format(HTMLDateFormat)
+		fromDate, _ := GetMonthBounds(time.Now().Year(), time.Now().Month())
+		return fromDate.Format(HTMLDateFormat)
 	},
 	"getLastDayOfMonth": func() string {
-		_, result := GetMonthBounds()
-		return result.Format(HTMLDateFormat)
+		_, toDate := GetMonthBounds(time.Now().Year(), time.Now().Month())
+		return toDate.Format(HTMLDateFormat)
 	},
 	"getFirstDayOfPreviousMonth": func() string {
-		previousMonth := time.Now().AddDate(0, -1, 0)
-		fromDate := time.Date(previousMonth.Year(), previousMonth.Month(), 1, 0, 0, 0, 0, previousMonth.Location())
+		fromDate, _ := GetMonthBounds(time.Now().Year(), time.Now().AddDate(0, -1, 0).Month())
 		return fromDate.Format(HTMLDateFormat)
 	},
 	"getLastDayOfPreviousMonth": func() string {
-		lastMonth := time.Now().AddDate(0, -1, 0)
-		previousMonth := time.Date(lastMonth.Year(), lastMonth.Month(), 1, 0, 0, 0, 0, lastMonth.Location())
-		toDate := previousMonth.AddDate(0, 1, -1)
+		_, toDate := GetMonthBounds(time.Now().Year(), time.Now().AddDate(0, -1, 0).Month())
 		return toDate.Format(HTMLDateFormat)
 	},
 	"getToday": func() string {
@@ -56,9 +55,6 @@ var TemplateFuncMap = template.FuncMap{
 		now := time.Now()
 		yesterday := now.AddDate(0, 0, -1)
 		return yesterday.Format(HTMLDateFormat)
-	},
-	"greet": func(name string) string {
-		return "Hello, " + name + "!"
 	},
 }
 

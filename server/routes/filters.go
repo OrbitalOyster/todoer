@@ -133,7 +133,7 @@ func SetDate(writer http.ResponseWriter, req *http.Request) {
 	fromDateStr := req.FormValue("fromDate")
 	toDateStr := req.FormValue("toDate")
 	payload := token.Get(req)
-	fromDateFallback, toDateFallback := utils.GetMonthBounds()
+	fromDateFallback, toDateFallback := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	/* Setting from date? */
 	if fromDateStr != "" {
 		_, err := time.Parse(utils.HTMLDateFormat, fromDateStr)

@@ -100,7 +100,7 @@ func Create(payload Payload, writer http.ResponseWriter) {
 }
 
 func CreateFresh(username string, rememberMe bool, writer http.ResponseWriter) {
-	fromDate, toDate := utils.GetMonthBounds()
+	fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	payload := Payload{
 		UserID:     username,
 		RememberMe: rememberMe,

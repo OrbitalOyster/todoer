@@ -173,6 +173,5 @@ func SetDate(writer http.ResponseWriter, req *http.Request) {
 		}{
 			Payload: token.Payload(*payload),
 		})
-
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }

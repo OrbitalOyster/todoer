@@ -15,41 +15,47 @@
 					</th>
 					<th class="text-center align-middle task-id">#</th>
 					<th class="text-center align-middle">
-						<a
+						<button
+							type="button"
+							class="btn btn-link"
 							hx-patch="/filters/sortBy/0"
 							hx-target="#task-list"
 							hx-indicator="#task-list"
-							href="#"
 						>
 							What
-						</a>
-						{{ if eq .Payload.SortBy 0 }}
-							{{ if eq .Payload.SortAsc true }}
-								<i class="bi bi-sort-down-alt"></i>
-							{{ else }}
-								<i class="bi bi-sort-down"></i>
+							{{ if eq .Payload.SortBy 0 }}
+								{{ if eq .Payload.SortAsc true }}
+									<i class="bi bi-sort-down-alt"></i>
+								{{ else }}
+									<i class="bi bi-sort-down"></i>
+								{{ end }}
 							{{ end }}
-						{{ end }}
+						</button>
 					</th>
 					<th class="text-center align-middle datetime">
-						<a
+						<button
+							type="button"
+							class="btn btn-link"
 							hx-patch="/filters/sortBy/1"
 							hx-target="#task-list"
 							hx-indicator="#task-list"
-							href="#"
 						>
 							When
-						</a>
-						{{ if eq .Payload.SortBy 1 }}
-							{{ if eq .Payload.SortAsc true }}
-								<i class="bi bi-sort-down-alt"></i>
-							{{ else }}
-								<i class="bi bi-sort-down"></i>
+							{{ if eq .Payload.SortBy 1 }}
+								{{ if eq .Payload.SortAsc true }}
+									<i class="bi bi-sort-down-alt"></i>
+								{{ else }}
+									<i class="bi bi-sort-down"></i>
+								{{ end }}
 							{{ end }}
-						{{ end }}
+						</button>
 					</th>
 					<th class="text-center align-middle">Who</th>
-					<th class="text-center align-middle done">Done</th>
+					<th class="text-center align-middle status">
+						<button type="button" class="btn btn-link">
+							Status
+						</button>
+					</th>
 					<th class="text-center align-middle actions">Actions</th>
 				</tr>
 			</thead>

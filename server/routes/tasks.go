@@ -78,14 +78,14 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	if task = idCheck(writer, req); task == nil {
 		return
 	}
-	description, doneStr := req.FormValue("description"), req.FormValue("done")
+	description, statusStr := req.FormValue("description"), req.FormValue("status")
 	/* Status */
-	done := false
-	if doneStr == "on" {
-		done = true
+	status := false
+	if statusStr == "on" {
+		status = true
 	}
-	if task.Done != done {
-		if err := task.SetStatus(done); err != nil {
+	if task.Status != status {
+		if err := task.SetStatus(status); err != nil {
 			writer.WriteHeader(http.StatusBadRequest)
 			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
 			if err != nil {
@@ -94,11 +94,13 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 		}
 	}
 	/* Description */
-	if err := task.SetDescription(description); err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		_, err = writer.Write([]byte("Unable to set task description:" + err.Error()))
-		if err != nil {
-			panic(err)
+	if task.Description != description {
+		if err := task.SetDescription(description); err != nil {
+			writer.WriteHeader(http.StatusBadRequest)
+			_, err = writer.Write([]byte("Unable to set task description:" + err.Error()))
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 	/* Done */
@@ -110,16 +112,16 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	var task *tasks.Task
 	if task = idCheck(writer, req); task == nil {
-		return
+		panic("Task not found")
 	}
 	field := req.PathValue("field")
 	switch field {
-	case "done":
-		doneStr, done := req.FormValue("done"), false
-		if doneStr == "on" || doneStr == "true" {
-			done = true
+	case "status":
+	statusStr, status := req.FormValue("status"), false
+	if statusStr == "on" || statusStr == "true" {
+		status = true
 		}
-		if err := task.SetStatus(done); err != nil {
+		if err := task.SetStatus(status); err != nil {
 			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
 			if err != nil {
 				panic(err)

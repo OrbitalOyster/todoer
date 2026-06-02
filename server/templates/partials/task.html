@@ -11,7 +11,7 @@
 <td class="text-center align-middle">{{ formatDateTime .Datetime }}</td>
 <td class="text-center align-middle">{{ .User }}</td>
 <td class="text-center align-middle">
-	{{ if .Done }}
+	{{ if .Status }}
 		<i class="bi bi-check2-circle text-success"></i>
 	{{ end }}
 </td>
@@ -51,17 +51,17 @@
 				<button
 				  class="dropdown-item text-success"
 					type="button"
-					hx-patch="/htmx/tasks/{{ .Id }}/done"
+					hx-patch="/htmx/tasks/{{ .Id }}/status"
 					hx-target="#task-list"
 					hx-indicator="#task-list"
-					{{ if .Done }}
-						hx-vals='{ "done": false }'
+					{{ if .Status }}
+						hx-vals='{ "status": false }'
 					{{ else }}
-  						hx-vals='{ "done": true }'
+  						hx-vals='{ "status": true }'
 					{{ end }}
 				>
 					<i class="bi bi-check2-circle me-2"></i>
-					{{ if .Done }}
+					{{ if .Status }}
 						Remove "done" mark
 					{{ else }}
 						Mark as "done"

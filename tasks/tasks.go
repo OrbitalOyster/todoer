@@ -22,7 +22,7 @@ type Task struct {
 	User        string    `yaml:"user"`
 	Datetime    time.Time `yaml:"datetime"`
 	Description string    `yaml:"description"`
-	Done        bool      `yaml:"done"`
+	Status      bool      `yaml:"done"`
 }
 
 var list []Task
@@ -55,7 +55,7 @@ func Add(user string, description string) {
 		User:        user,
 		Description: description,
 		Datetime:    now,
-		Done:        false,
+		Status:      false,
 	}
 	list = append(list, result)
 }
@@ -157,8 +157,8 @@ func (task *Task) SetDescription(description string) error {
 }
 
 func (task *Task) SetStatus(status bool) error {
-	task.Done = status
-	log.Printf("Set task #%d status to \"%t\"", task.Id, task.Done)
+	task.Status = status
+	log.Printf("Set task #%d status to \"%t\"", task.Id, task.Status)
 	return nil
 }
 

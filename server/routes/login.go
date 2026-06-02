@@ -25,7 +25,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	username, password, rememberMeStr, rememberMe :=
 		req.FormValue("username"),
 		req.FormValue("password"),
-		req.FormValue("rememberMe"),
+		req.FormValue("remember-me"),
 		false
 	if rememberMeStr == "on" {
 		rememberMe = true

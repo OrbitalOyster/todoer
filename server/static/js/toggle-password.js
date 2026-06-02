@@ -8,7 +8,7 @@ const initTogglePasswordButtons = () => {
 		/* Need actual function here, to preserve 'this' */
 		togglePasswordBtns[i].addEventListener("click", function () {
 			/* Toggle password must come after input */
-			const input = this.previousElementSibling;
+			const input = document.getElementById("password")
 			if (!input) return;
 			if (input.type === "password") input.type = "text";
 			else input.type = "password";

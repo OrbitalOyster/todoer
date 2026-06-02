@@ -17,22 +17,33 @@
 				<div class="d-flex flex-column gap-2">
 					<div class="input-group">
 						<i class="input-group-text bi bi-person-fill"></i>
-						<input
-							class="form-control"
-							name="username"
-							autocomplete="username"
-							type="text"
-							size="32"
-							autofocus
-						/>
+						<div class="form-floating">
+							<input
+								type="text"
+								class="form-control"
+								id="username"
+								name="username"
+								autocomplete="username"
+								placeholder="username"
+								size="48"
+								autofocus
+							/>
+							<label for="username">Username</label>
+						</div>
 					</div>
 					<div class="input-group">
 						<i class="input-group-text bi bi-lock-fill"></i>
-						<input
-							class="form-control"
-							name="password"
-							type="password"
-						/>
+						<div class="form-floating">
+							<input
+								type="password"
+								class="form-control"
+								id="password"
+								name="password"
+								autocomplete="password"
+								placeholder="password"
+							/>
+							<label for="password">Password</label>
+						</div>
 						<button
 							class="btn btn-primary toggle-password-btn"
 							type="button"
@@ -44,23 +55,20 @@
 							<i class="bi bi-eye-fill"></i>
 						</button>
 					</div>
-					<div class="d-flex flex-row align-items-center gap-2">
+					<div class="d-flex flex-row align-items-center gap-2 justify-content-between">
 						<div class="form-check">
 							<input
 								class="form-check-input"
-								id="rememberMe"
-								name="rememberMe"
+								id="remember-me"
+								name="remember-me"
 								type="checkbox"
 							/>
-							<label class="form-check-label" for="rememberMe">
+							<label class="form-check-label" for="remember-me">
 								Remember me
 							</label>
 						</div>
-						<button class="btn btn-primary flex-fill" type="submit">
-							<i
-								class="bi bi-box-arrow-in-right"
-								id="login-btn-icon"
-							></i>
+						<button class="btn btn-primary" type="submit">
+							<i class="bi bi-box-arrow-in-right"	id="login-btn-icon"></i>
 							<div class="spinner-border spinner-border-sm"></div>
 							Log in
 						</button>

@@ -1,90 +1,90 @@
 {{ define "task" }}
-<td class="text-center align-middle">
-	<input
-		type="checkbox"
-		class="form-check-input select-task"
-		name="{{ .Id }}"
-	/>
-</td>
-<td class="text-center align-middle">{{ .Id }}</td>
-<td class="text-center align-middle">{{ .Description }}</td>
-<td class="text-center align-middle">{{ formatDateTime .Datetime }}</td>
-<td class="text-center align-middle">{{ .User }}</td>
-<td class="text-center align-middle">
-	{{ if .Status }}
-		<i class="bi bi-check2-circle text-success"></i>
-	{{ end }}
-</td>
-<td class="text-center align-middle">
-	<div class="dropdown-center">
-		<button class="btn btn-link" data-bs-toggle="dropdown">
-			<i class="bi bi-three-dots-vertical fs-5"></i>
-		</button>
-		<ul class="dropdown-menu shadow-sm">
-			<li>
-				<button
-					class="dropdown-item"
-					hx-get="/htmx/edit-task/{{ .Id }}"
-					hx-indicator="#edit-task-placeholder"
-					hx-swap="beforeend"
-					hx-target="#modal > div:first-child"
-					onclick="showHTMXModal()"
-				>
-					<i class="bi bi-pencil-fill me-2"></i>
-					Edit
-				</button>
-			</li>
-			<li>
-				<button
-					class="dropdown-item"
-					hx-get="/htmx/clone-task/{{ .Id }}"
-					hx-indicator="#clone-task-placeholder"
-					hx-swap="beforeend"
-					hx-target="#modal > div:first-child"
-					onclick="showHTMXModal()"
-				>
-					<i class="bi bi-copy me-2"></i>
-					Clone
-				</button>
-			</li>
-			<li>
-				<button
-				  class="dropdown-item text-success"
-					type="button"
-					hx-patch="/htmx/tasks/{{ .Id }}/status"
-					hx-target="#task-list"
-					hx-indicator="#task-list"
-					{{ if .Status }}
-						hx-vals='{ "status": false }'
-					{{ else }}
-  						hx-vals='{ "status": true }'
-					{{ end }}
-				>
-					<i class="bi bi-check2-circle me-2"></i>
-					{{ if .Status }}
-						Remove "done" mark
-					{{ else }}
-						Mark as "done"
-					{{ end }}
-				</button>
-			</li>
-			<li>
-				<hr class="dropdown-divider" />
-			</li>
-			<li>
-				<button
-					class="dropdown-item text-danger"
-					type="button"
-					hx-delete="/htmx/tasks/{{ .Id }}"
-					hx-target="#task-list"
-					hx-trigger="confirmed"
-					onclick="htmxConfirmMsg(this, 'Delete task', 'Delete task #{{ .Id }}?')"
-				>
-					<i class="bi bi-trash-fill me-2"></i>
-					Delete
-				</button>
-			</li>
-		</ul>
-	</div>
-</td>
+	<td class="text-center align-middle">
+		<input
+			class="form-check-input select-task"
+			type="checkbox"
+			name="{{ .Id }}"
+		/>
+	</td>
+	<td class="text-center align-middle">{{ .Id }}</td>
+	<td class="text-center align-middle">{{ .Description }}</td>
+	<td class="text-center align-middle">{{ formatDateTime .Datetime }}</td>
+	<td class="text-center align-middle">{{ .User }}</td>
+	<td class="text-center align-middle">
+		{{ if .Status }}
+			<i class="bi bi-check2-circle text-success"></i>
+		{{ end }}
+	</td>
+	<td class="text-center align-middle">
+		<div class="dropdown-center">
+			<button class="btn btn-link" data-bs-toggle="dropdown">
+				<i class="bi bi-three-dots-vertical fs-5"></i>
+			</button>
+			<ul class="dropdown-menu shadow-sm">
+				<li>
+					<button
+						class="dropdown-item"
+						hx-get="/htmx/edit-task/{{ .Id }}"
+						hx-indicator="#edit-task-placeholder"
+						hx-swap="beforeend"
+						hx-target="#modal > div:first-child"
+						onclick="showHTMXModal()"
+					>
+						<i class="bi bi-pencil-fill me-2"></i>
+						Edit
+					</button>
+				</li>
+				<li>
+					<button
+						class="dropdown-item"
+						hx-get="/htmx/clone-task/{{ .Id }}"
+						hx-indicator="#clone-task-placeholder"
+						hx-swap="beforeend"
+						hx-target="#modal > div:first-child"
+						onclick="showHTMXModal()"
+					>
+						<i class="bi bi-copy me-2"></i>
+						Clone
+					</button>
+				</li>
+				<li>
+					<button
+					  	class="dropdown-item text-success"
+						type="button"
+						hx-patch="/htmx/tasks/{{ .Id }}/status"
+						hx-target="#task-list"
+						hx-indicator="#task-list"
+						{{ if .Status }}
+							hx-vals='{ "status": false }'
+						{{ else }}
+	  						hx-vals='{ "status": true }'
+						{{ end }}
+					>
+						<i class="bi bi-check2-circle me-2"></i>
+						{{ if .Status }}
+							Remove "done" mark
+						{{ else }}
+							Mark as "done"
+						{{ end }}
+					</button>
+				</li>
+				<li>
+					<hr class="dropdown-divider" />
+				</li>
+				<li>
+					<button
+						class="dropdown-item text-danger"
+						type="button"
+						hx-delete="/htmx/tasks/{{ .Id }}"
+						hx-target="#task-list"
+						hx-trigger="confirmed"
+						onclick="htmxConfirmMsg(this, 'Delete task', 'Delete task #{{ .Id }}?')"
+					>
+						<i class="bi bi-trash-fill me-2"></i>
+						Delete
+					</button>
+				</li>
+			</ul>
+		</div>
+	</td>
 {{ end }}

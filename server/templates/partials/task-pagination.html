@@ -1,56 +1,56 @@
 {{ define "pagination" }}
-<div class="d-flex justify-content-between align-items-center">
-	<!-- Previous page -->
-	{{ if gt .TotalPages 1 }}
-		<button
-			type="button"
-			class="btn btn-primary"
-			data-bs-toggle="tooltip"
-			data-bs-placement="left"
-			data-bs-trigger="hover"
-			title="Previous page"
-			hx-patch="/filters/previous-page"
-			hx-target="#task-list"
-			hx-indicator="#task-list"
-		>
-			<i class="bi bi-chevron-left"></i>
-		</button>
-	{{ end }}
-	<!-- Pages -->
-	<ul class="pagination m-auto">
-		{{ range .Pagination }}
-			{{ if eq . 0 }}
-				<i class="bi bi-three-dots fs-4 text-secondary"></i>
-			{{ else }}
-				<li class="page-item">
-					<button
-						type="button"
-						class="page-link {{ if eq $.Payload.Page . }} active {{ end }}"
-						hx-patch="/filters/page/{{ . }}"
-						hx-target="#task-list"
-						hx-indicator="#task-list"
-					>
-						{{ . }}
-					</button>
-				</li>
-			{{ end }}
+	<div class="d-flex justify-content-between align-items-center">
+		<!-- Previous page -->
+		{{ if gt .TotalPages 1 }}
+			<button
+				class="btn btn-primary"
+				type="button"
+				data-bs-toggle="tooltip"
+				data-bs-placement="left"
+				data-bs-trigger="hover"
+				title="Previous page"
+				hx-patch="/filters/previous-page"
+				hx-target="#task-list"
+				hx-indicator="#task-list"
+			>
+				<i class="bi bi-chevron-left"></i>
+			</button>
 		{{ end }}
-	</ul>
-	<!-- Next page -->
-	{{ if gt .TotalPages 1 }}
-		<button
-			type="button"
-			class="btn btn-primary"
-			data-bs-toggle="tooltip"
-			data-bs-placement="right"
-			data-bs-trigger="hover"
-			title="Next page"
-			hx-patch="/filters/next-page"
-			hx-target="#task-list"
-			hx-indicator="#task-list"
-		>
-			<i class="bi bi-chevron-right"></i>
-		</button>
-	{{ end }}
-</div>
+		<!-- Pages -->
+		<ul class="pagination m-auto">
+			{{ range .Pagination }}
+				{{ if eq . 0 }}
+					<i class="bi bi-three-dots fs-4 text-secondary"></i>
+				{{ else }}
+					<li class="page-item">
+						<button
+							class="page-link {{ if eq $.Payload.Page . }} active {{ end }}"
+							type="button"
+							hx-patch="/filters/page/{{ . }}"
+							hx-target="#task-list"
+							hx-indicator="#task-list"
+						>
+							{{ . }}
+						</button>
+					</li>
+				{{ end }}
+			{{ end }}
+		</ul>
+		<!-- Next page -->
+		{{ if gt .TotalPages 1 }}
+			<button
+				class="btn btn-primary"
+				type="button"
+				data-bs-toggle="tooltip"
+				data-bs-placement="right"
+				data-bs-trigger="hover"
+				title="Next page"
+				hx-patch="/filters/next-page"
+				hx-target="#task-list"
+				hx-indicator="#task-list"
+			>
+				<i class="bi bi-chevron-right"></i>
+			</button>
+		{{ end }}
+	</div>
 {{ end }}

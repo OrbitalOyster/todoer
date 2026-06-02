@@ -1,61 +1,61 @@
 {{ define "editTaskForm" }}
-<div class="modal-content" id="edit-task-form">
-	<form
-		hx-disabled-elt="
-      		find input[name='description'],
-        	find button[type='button'].btn-secondary,
-         	find button[type='submit']"
-		hx-indicator="#ok-btn-icon"
-		hx-put="/htmx/tasks/{{ .Id }}"
-		hx-target="#task-list"
-	>
-		<div class="modal-header position-relative">
-			<h1 class="modal-title fs-5">Edit task</h1>
-			<button
-				class="btn-close"
-				type="button"
-				data-bs-dismiss="modal"
-			></button>
-		</div>
-		<div class="modal-body d-flex flex-column gap-3">
-			<input
-				type="text"
-				class="form-control"
-				name="description"
-				placeholder="Enter task description"
-				value="{{ .Description }}"
-			/>
-			<div class="d-flex justify-content-between">
-				<div class="form-check">
-					<input
-						class="form-check-input"
-						type="checkbox"
-						name="status"
-						id="status-checkbox"
-						{{ if .Status }} checked {{ end }}
-					/>
-					<label class="form-check-label" for="status-checkbox">
-						Done
-					</label>
-				</div>
-				<span>Responsible: {{ .User }}</span>
+	<div class="modal-content" id="edit-task-form">
+		<form
+			hx-disabled-elt="
+	      		find input[name='description'],
+	        	find button[type='button'].btn-secondary,
+	         	find button[type='submit']"
+			hx-indicator="#ok-btn-icon"
+			hx-put="/htmx/tasks/{{ .Id }}"
+			hx-target="#task-list"
+		>
+			<div class="modal-header position-relative">
+				<h1 class="modal-title fs-5">Edit task</h1>
+				<button
+					class="btn-close"
+					type="button"
+					data-bs-dismiss="modal"
+				></button>
 			</div>
-		</div>
-		<div class="modal-footer">
-			<button
-				type="button"
-				class="btn btn-secondary"
-				data-bs-dismiss="modal"
-			>
-				<i class="bi bi-x-lg"></i>
-				Cancel
-			</button>
-			<button type="submit" class="btn btn-primary">
-				<i class="bi bi-check-lg" id="ok-btn-icon"></i>
-				<div class="spinner-border spinner-border-sm"></div>
-				Ok
-			</button>
-		</div>
-	</form>
-</div>
+			<div class="modal-body d-flex flex-column gap-3">
+				<input
+					class="form-control"
+					type="text"
+					name="description"
+					placeholder="Enter task description"
+					value="{{ .Description }}"
+				/>
+				<div class="d-flex justify-content-between">
+					<div class="form-check">
+						<input
+							class="form-check-input"
+							type="checkbox"
+							name="status"
+							id="status-checkbox"
+							{{ if .Status }} checked {{ end }}
+						/>
+						<label class="form-check-label" for="status-checkbox">
+							Done
+						</label>
+					</div>
+					<span>Responsible: {{ .User }}</span>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button
+					class="btn btn-secondary"
+					type="button"
+					data-bs-dismiss="modal"
+				>
+					<i class="bi bi-x-lg"></i>
+					Cancel
+				</button>
+				<button class="btn btn-primary" type="submit">
+					<i class="bi bi-check-lg" id="ok-btn-icon"></i>
+					<div class="spinner-border spinner-border-sm"></div>
+					Ok
+				</button>
+			</div>
+		</form>
+	</div>
 {{ end }}

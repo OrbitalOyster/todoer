@@ -1,28 +1,28 @@
 {{ define "editTaskPlaceholderModal" }}
-<div class="modal-content modal-placeholder" id="edit-task-placeholder">
-	<div class="modal-header position-relative">
-		<h1 class="modal-title fs-5">Edit task</h1>
-		<button class="btn-close" disabled></button>
-	</div>
-	<div class="modal-body d-flex flex-column gap-3">
-		<input class="form-control" type="text" disabled />
-		<div class="d-flex justify-content-between">
-			<div class="form-check">
-				<input class="form-check-input" type="checkbox" disabled />
-				<label class="form-check-label"> Done </label>
+	<div class="modal-content modal-placeholder" id="edit-task-placeholder">
+		<div class="modal-header position-relative">
+			<h1 class="modal-title fs-5">Edit task</h1>
+			<button class="btn-close" disabled></button>
+		</div>
+		<div class="modal-body d-flex flex-column gap-3">
+			<input class="form-control" type="text" disabled />
+			<div class="d-flex justify-content-between">
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" disabled />
+					<label class="form-check-label">Done</label>
+				</div>
+				<span>Responsible: ...</span>
 			</div>
-			<span>Responsible: ...</span>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-secondary" disabled>
+				<i class="bi bi-x-lg"></i>
+				Cancel
+			</button>
+			<button class="btn btn-primary" disabled>
+				<i class="bi bi-check-lg"></i>
+				Ok
+			</button>
 		</div>
 	</div>
-	<div class="modal-footer">
-		<button class="btn btn-secondary" disabled>
-			<i class="bi bi-x-lg"></i>
-			Cancel
-		</button>
-		<button class="btn btn-primary" disabled>
-			<i class="bi bi-check-lg"></i>
-			Ok
-		</button>
-	</div>
-</div>
 {{ end }}

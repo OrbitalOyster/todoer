@@ -1,102 +1,102 @@
 {{ define "task-list" }}
-<!-- More than zero tasks found -->
-{{ if gt (len .Tasks) 0 }}
-	<form>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th class="text-center align-middle checkbox">
-						<input
-							id="select-all-tasks"
-							class="form-check-input"
-							type="checkbox"
-							value=""
-						/>
-					</th>
-					<th class="text-center align-middle task-id">#</th>
-					<th class="text-center align-middle">
-						<button
-							type="button"
-							class="btn btn-link"
-							hx-patch="/filters/sortBy/0"
-							hx-target="#task-list"
-							hx-indicator="#task-list"
-						>
-							What
-							{{ if eq .Payload.SortBy 0 }}
-								{{ if eq .Payload.SortAsc true }}
-									<i class="bi bi-sort-down-alt"></i>
-								{{ else }}
-									<i class="bi bi-sort-down"></i>
+	<!-- More than zero tasks found -->
+	{{ if gt (len .Tasks) 0 }}
+		<form>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th class="text-center align-middle checkbox">
+							<input
+								class="form-check-input"
+								type="checkbox"
+								id="select-all-tasks"
+								value=""
+							/>
+						</th>
+						<th class="text-center align-middle task-id">#</th>
+						<th class="text-center align-middle">
+							<button
+								class="btn btn-link"
+								type="button"
+								hx-patch="/filters/sortBy/0"
+								hx-target="#task-list"
+								hx-indicator="#task-list"
+							>
+								What
+								{{ if eq .Payload.SortBy 0 }}
+									{{ if eq .Payload.SortAsc true }}
+										<i class="bi bi-sort-down-alt"></i>
+									{{ else }}
+										<i class="bi bi-sort-down"></i>
+									{{ end }}
 								{{ end }}
-							{{ end }}
-						</button>
-					</th>
-					<th class="text-center align-middle datetime">
-						<button
-							type="button"
-							class="btn btn-link"
-							hx-patch="/filters/sortBy/1"
-							hx-target="#task-list"
-							hx-indicator="#task-list"
-						>
-							When
-							{{ if eq .Payload.SortBy 1 }}
-								{{ if eq .Payload.SortAsc true }}
-									<i class="bi bi-sort-down-alt"></i>
-								{{ else }}
-									<i class="bi bi-sort-down"></i>
+							</button>
+						</th>
+						<th class="text-center align-middle datetime">
+							<button
+								class="btn btn-link"
+								type="button"
+								hx-patch="/filters/sortBy/1"
+								hx-target="#task-list"
+								hx-indicator="#task-list"
+							>
+								When
+								{{ if eq .Payload.SortBy 1 }}
+									{{ if eq .Payload.SortAsc true }}
+										<i class="bi bi-sort-down-alt"></i>
+									{{ else }}
+										<i class="bi bi-sort-down"></i>
+									{{ end }}
 								{{ end }}
-							{{ end }}
-						</button>
-					</th>
-					<th class="text-center align-middle">Who</th>
-					<th class="text-center align-middle status">
-						<button type="button" class="btn btn-link" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-							Status
-						</button>
-						<ul class="dropdown-menu p-3">
-							<li class="form-check">
-								<input
-									class="form-check-input"
-									type="checkbox"
-									id="filter-finished"
-									checked
-									hx-get="/htmx/tasks"
-									hx-target="#task-list"
-									hx-indicator="#task-list"
-								>
-								<label class="form-check-label" for="filter-finished">
-									Finished
-								</label>
-							</li>
-							<li class="form-check">
-								<input class="form-check-input" type="checkbox" id="filter-unfinished" checked>
-								<label class="form-check-label" for="filter-unfinished">
-									Unfinished
-								</label>
-							</li>
-						</ul>
-					</th>
-					<th class="text-center align-middle actions">Actions</th>
-				</tr>
-			</thead>
-			<tbody class="table-group-divider" id="task-table-body">
-				{{ range .Tasks }}
-					<tr id="task-{{ .Id }}">
-						{{ template "task" . }}
+							</button>
+						</th>
+						<th class="text-center align-middle">Who</th>
+						<th class="text-center align-middle status">
+							<button class="btn btn-link" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+								Status
+							</button>
+							<ul class="dropdown-menu p-3">
+								<li class="form-check">
+									<input
+										class="form-check-input"
+										type="checkbox"
+										id="filter-finished"
+										checked
+										hx-get="/htmx/tasks"
+										hx-target="#task-list"
+										hx-indicator="#task-list"
+									>
+									<label class="form-check-label" for="filter-finished">
+										Finished
+									</label>
+								</li>
+								<li class="form-check">
+									<input class="form-check-input" type="checkbox" id="filter-unfinished" checked>
+									<label class="form-check-label" for="filter-unfinished">
+										Unfinished
+									</label>
+								</li>
+							</ul>
+						</th>
+						<th class="text-center align-middle actions">Actions</th>
 					</tr>
-				{{ end }}
-			</tbody>
-		</table>
-		<script>
-			createSelectAllGroup("form.htmx-added #select-all-tasks", "form.htmx-added .select-task")
-		</script>
-	</form>
-	<!-- Pagination -->
-	{{ template "pagination" . }}
-	<!-- Nothing found -->
+				</thead>
+				<tbody class="table-group-divider" id="task-table-body">
+					{{ range .Tasks }}
+						<tr id="task-{{ .Id }}">
+							{{ template "task" . }}
+						</tr>
+					{{ end }}
+				</tbody>
+			</table>
+			<script>
+				createSelectAllGroup("form.htmx-added #select-all-tasks", "form.htmx-added .select-task")
+			</script>
+		</form>
+		<!-- Pagination -->
+		{{ template "pagination" . }}
 	{{ else }}
+	 	<!-- Nothing found -->
 		{{ template "task-empty" . }}
 	{{ end }}
 {{ end }}

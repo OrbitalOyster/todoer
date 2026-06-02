@@ -117,9 +117,9 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	field := req.PathValue("field")
 	switch field {
 	case "status":
-	statusStr, status := req.FormValue("status"), false
-	if statusStr == "on" || statusStr == "true" {
-		status = true
+		statusStr, status := req.FormValue("status"), false
+		if statusStr == "on" || statusStr == "true" {
+			status = true
 		}
 		if err := task.SetStatus(status); err != nil {
 			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))

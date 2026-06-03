@@ -11,13 +11,14 @@
 		<!-- Bootstrap icons -->
 		<link rel="stylesheet" href="/vendor/bootstrap-icons.min.css" />
 		<!-- htmx -->
-		<script defer src="/vendor/htmx.min.js"></script>
+		<script src="/vendor/htmx.min.js"></script>
 		<!-- Bootstrap js -->
-		<script defer src="/vendor/bootstrap.bundle.min.js"></script>
+		<script src="/vendor/bootstrap.bundle.min.js"></script>
 		<!-- js -->
-		<script defer src="/js/toasts.js"></script>
-		<script defer src="/js/tooltips.js"></script>
-		<script defer src="/js/modals.js"></script>
+		<script src="/js/modals.js"></script>
+		<script src="/js/toasts.js"></script>
+		<script src="/js/tooltips.js"></script>
+		<script src="/js/popovers.js"></script>
 		<script src="/js/select-all.js"></script>
 		<title>{{ .Title }}</title>
 	</head>
@@ -40,4 +41,8 @@
 		<!-- Page -->
 		{{ template "page" . }}
 	</body>
+	<script>
+		initModals();
+		initToasts();
+	</script>
 </html>

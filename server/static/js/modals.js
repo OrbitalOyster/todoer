@@ -1,8 +1,14 @@
 "use strict";
 
+var modalEl, modal;
+
 /* Set up bootstrap modals */
-const modalEl = document.getElementById("modal"),
+const initModals = () => {
+	modalEl = document.getElementById("modal");
 	modal = new bootstrap.Modal("#modal");
+	document.body.addEventListener("hideModal", () => modal.hide());
+};
+
 /* Confirm modal */
 const confirmMsg = async (title, content) => {
 	const confirmModal = new bootstrap.Modal("#confirm-modal"),
@@ -40,5 +46,3 @@ const showHTMXModal = () => {
 	toRemoveEls.forEach((el) => el.remove());
 	modal.show();
 };
-
-document.body.addEventListener("hideModal", () => modal.hide());

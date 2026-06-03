@@ -11,13 +11,13 @@
 		<!-- Bootstrap icons -->
 		<link rel="stylesheet" href="/vendor/bootstrap-icons.min.css" />
 		<!-- htmx -->
-		<script defer src="/vendor/htmx.min.js"></script>
+		<script src="/vendor/htmx.min.js"></script>
 		<!-- Bootstrap js -->
-		<script defer src="/vendor/bootstrap.bundle.min.js"></script>
+		<script src="/vendor/bootstrap.bundle.min.js"></script>
 		<!-- js -->
-		<script defer src="/js/toasts.js"></script>
-		<script defer src="/js/toggle-password.js"></script>
-		<script defer src="/js/tooltips.js"></script>
+		<script src="/js/toasts.js"></script>
+		<script src="/js/toggle-password.js"></script>
+		<script src="/js/tooltips.js"></script>
 		<title>Login - todoer</title>
 	</head>
 	<body class="bg-primary bg-opacity-10">
@@ -30,4 +30,8 @@
 		<!-- Page -->
 		{{ template "page" . }}
 	</body>
+	<script>
+		initToasts();
+		initTogglePasswordButton("#toggle-password-btn", "#password-input");
+	</script>
 </html>

@@ -26,5 +26,3 @@ const initToasts = () => {
 		toastEl.addEventListener("hidden.bs.toast", toastEl.remove);
 	});
 };
-
-initToasts();

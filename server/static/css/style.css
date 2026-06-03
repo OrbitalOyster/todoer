@@ -16,6 +16,11 @@ i:not(.htmx-request) + .spinner-border {
 	display: none;
 }
 
+/* Dotted links */
+.btn.btn-link.dotted {
+	text-decoration: var(--bs-link-color) dotted underline;
+}
+
 /* HTMX-updateable elements */
 #task-list, #filter-date {
 	transition: filter .1s ease-in-out;

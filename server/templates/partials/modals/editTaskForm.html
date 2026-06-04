@@ -8,6 +8,7 @@
 			hx-indicator="#ok-btn-icon"
 			hx-put="/htmx/tasks/{{ .Id }}"
 			hx-target="#task-list"
+			hx-disabled-elt=".htmx-disable"
 		>
 			<div class="modal-header position-relative">
 				<h1 class="modal-title fs-5">Edit task</h1>

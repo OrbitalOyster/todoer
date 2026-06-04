@@ -6,14 +6,15 @@
 				<thead>
 					<tr>
 						<th class="text-center align-middle select-all position-relative">
+							<!-- Select all tasks -->
 							<input
-								class="form-check-input"
+								class="form-check-input htmx-disable"
 								type="checkbox"
 								id="select-all-tasks"
 								autocomplete="off"
 							/>
 							<button
-								class="btn btn-link position-absolute"
+								class="btn btn-link position-absolute htmx-disable"
 								data-bs-toggle="dropdown"
 								style="top: .5rem"
 							>
@@ -52,12 +53,14 @@
 						</th>
 						<th class="text-center align-middle task-id">#</th>
 						<th class="text-center align-middle">
+							<!-- Sort by description -->
 							<button
-								class="btn btn-link dotted"
+								class="btn btn-link dotted htmx-disable"
 								type="button"
 								hx-patch="/filters/sortBy/0"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
+								hx-disabled-elt=".htmx-disable"
 							>
 								What
 								{{ if eq .Payload.SortBy 0 }}
@@ -70,12 +73,14 @@
 							</button>
 						</th>
 						<th class="text-center align-middle datetime">
+							<!-- Sort by date -->
 							<button
-								class="btn btn-link dotted"
+								class="btn btn-link dotted htmx-disable"
 								type="button"
 								hx-patch="/filters/sortBy/1"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
+								hx-disabled-elt=".htmx-disable"
 							>
 								When
 								{{ if eq .Payload.SortBy 1 }}

@@ -10,8 +10,9 @@ img.logo {
 	display: none;
 }
 
-#modal, #confirm-modal {
-  backdrop-filter: blur(.25rem);
+#modal,
+#confirm-modal {
+	backdrop-filter: blur(0.25rem);
 }
 
 /* Button icons */
@@ -29,13 +30,21 @@ i:not(.htmx-request) + .spinner-border {
 }
 
 /* HTMX-updateable elements */
-#task-list, #filter-date {
-	transition: filter .1s ease-in-out;
+#task-list,
+#filter-date {
+	transition: filter 0.1s ease-in-out;
 }
 
 /* On task list update */
-#task-list.htmx-request, #filter-date.htmx-request {
-	filter: blur(.25rem);
+#task-list.htmx-request,
+#filter-date.htmx-request {
+	filter: blur(0.25rem);
+	user-select: none;
+}
+
+/* Hide dropdown menus near htmx-disabled buttons */
+.htmx-disable:disabled + .dropdown-menu {
+	display: none;
 }
 
 /* Columns */

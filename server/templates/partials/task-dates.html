@@ -1,28 +1,37 @@
 {{ define "task-dates" }}
 	<div class="d-flex align-items-center">
+		<!-- From -->
 		<input
 			class="form-control"
 			type="date"
-			name="fromDate"
+			name="from-date"
 			autocomplete="off"
 			hx-patch="/filters/date"
 			hx-target="#task-list"
 			hx-indicator="#task-list, #filter-date"
+			hx-disabled-elt=".htmx-disable"
 			value="{{ .Payload.FromDate }}"
 		/>
 		<i class="bi bi-slash-lg"></i>
+		<!-- To -->
 		<input
 			class="form-control"
 			type="date"
-			name="toDate"
+			name="to-date"
 			autocomplete="off"
 			hx-patch="/filters/date"
 			hx-target="#task-list"
 			hx-indicator="#task-list, #filter-date"
+			hx-disabled-elt=".htmx-disable"
 			value="{{ .Payload.ToDate }}"
 		/>
+		<!-- Presets -->
 		<div class="dropdown-center">
-			<button class="btn btn-link" data-bs-toggle="dropdown" data-bs-target="img.logo">
+			<button
+				class="btn btn-link"
+				data-bs-toggle="dropdown"
+				data-bs-target="img.logo"
+			>
 				<i class="bi bi-three-dots-vertical fs-5"></i>
 			</button>
 			<ul class="dropdown-menu shadow-sm">
@@ -32,7 +41,8 @@
 						hx-patch="/filters/date"
 						hx-target="#task-list"
 						hx-indicator="#task-list, #filter-date"
-						hx-vals='{"fromDate": "{{ getFirstDayOfMonth }}", "toDate": "{{ getLastDayOfMonth }}"}'
+						hx-disabled-elt=".htmx-disable"
+						hx-vals='{"from-date": "{{ getFirstDayOfMonth }}", "to-date": "{{ getLastDayOfMonth }}"}'
 					>
 						This month
 					</button>
@@ -43,7 +53,8 @@
 						hx-patch="/filters/date"
 						hx-target="#task-list"
 						hx-indicator="#task-list, #filter-date"
-						hx-vals='{"fromDate": "{{ getFirstDayOfPreviousMonth }}", "toDate": "{{ getLastDayOfPreviousMonth }}"}'
+						hx-disabled-elt=".htmx-disable"
+						hx-vals='{"from-date": "{{ getFirstDayOfPreviousMonth }}", "to-date": "{{ getLastDayOfPreviousMonth }}"}'
 					>
 						Previous month
 					</button>
@@ -57,7 +68,8 @@
 						hx-patch="/filters/date"
 						hx-target="#task-list"
 						hx-indicator="#task-list, #filter-date"
-						hx-vals='{"fromDate": "{{ getToday }}", "toDate": "{{ getToday }}"}'
+						hx-disabled-elt=".htmx-disable"
+						hx-vals='{"from-date": "{{ getToday }}", "to-date": "{{ getToday }}"}'
 					>
 						Today
 					</button>
@@ -68,7 +80,8 @@
 						hx-patch="/filters/date"
 						hx-target="#task-list"
 						hx-indicator="#task-list, #filter-date"
-						hx-vals='{"fromDate": "{{ getYesterday }}", "toDate": "{{ getYesterday }}"}'
+						hx-disabled-elt=".htmx-disable"
+						hx-vals='{"from-date": "{{ getYesterday }}", "to-date": "{{ getYesterday }}"}'
 					>
 						Yesterday
 					</button>

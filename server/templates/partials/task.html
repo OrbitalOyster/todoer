@@ -1,7 +1,8 @@
 {{ define "task" }}
+	<!-- Select task checkbox -->
 	<td class="text-center align-middle">
 		<input
-			class="form-check-input select-task"
+			class="form-check-input select-task htmx-disable"
 			type="checkbox"
 			name="{{ .Id }}"
 			autocomplete="off"
@@ -17,8 +18,9 @@
 		{{ end }}
 	</td>
 	<td class="text-center align-middle">
+		<!-- Actions -->
 		<div class="dropdown-center">
-			<button class="btn btn-link" data-bs-toggle="dropdown">
+			<button class="btn btn-link htmx-disable" data-bs-toggle="dropdown">
 				<i class="bi bi-three-dots-vertical fs-5"></i>
 			</button>
 			<ul class="dropdown-menu shadow-sm">
@@ -56,6 +58,7 @@
 							hx-patch="/htmx/tasks/{{ .Id }}/status"
 							hx-target="#task-list"
 							hx-indicator="#task-list"
+							hx-disabled-elt=".htmx-disable"
 							hx-vals='{ "status": false }'
 						>
 							Remove "done" mark
@@ -67,6 +70,7 @@
 							hx-patch="/htmx/tasks/{{ .Id }}/status"
 							hx-target="#task-list"
 							hx-indicator="#task-list"
+							hx-disabled-elt=".htmx-disable"
 	  						hx-vals='{ "status": true }'
 						>
 							<i class="bi bi-check2-circle me-2"></i>
@@ -84,6 +88,7 @@
 						hx-delete="/htmx/tasks/{{ .Id }}"
 						hx-target="#task-list"
 						hx-indicator="#task-list"
+						hx-disabled-elt=".htmx-disable"
 						hx-trigger="confirmed"
 						onclick="htmxConfirmMsg(this, 'Delete task', 'Delete task #{{ .Id }}?')"
 					>

@@ -130,8 +130,8 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 }
 
 func SetDate(writer http.ResponseWriter, req *http.Request) {
-	fromDateStr := req.FormValue("fromDate")
-	toDateStr := req.FormValue("toDate")
+	fromDateStr := req.FormValue("from-date")
+	toDateStr := req.FormValue("to-date")
 	payload := token.Get(req)
 	fromDateFallback, toDateFallback := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	/* Setting from date? */

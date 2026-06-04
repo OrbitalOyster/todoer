@@ -83,6 +83,7 @@
 						type="button"
 						hx-delete="/htmx/tasks/{{ .Id }}"
 						hx-target="#task-list"
+						hx-indicator="#task-list"
 						hx-trigger="confirmed"
 						onclick="htmxConfirmMsg(this, 'Delete task', 'Delete task #{{ .Id }}?')"
 					>

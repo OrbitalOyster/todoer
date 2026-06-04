@@ -1,5 +1,5 @@
 {{ define "task-filters" }}
-	<div class="d-flex gap-2 align-items-center justify-content-between">
+	<div class="d-flex gap-2 align-items-center justify-content-between" id="filters">
 		<!-- Page size -->
 		<div class="d-flex align-items-center gap-2">
 			<label class="text-nowrap" for="task-list-size">Page size:</label>
@@ -61,6 +61,7 @@
 				data-bs-trigger="hover"
 				title="Refresh tasks"
 				hx-get="/htmx/tasks"
+				hx-disabled-elt="#filters"
 				hx-target="#task-list"
 				hx-indicator="#task-list"
 			>

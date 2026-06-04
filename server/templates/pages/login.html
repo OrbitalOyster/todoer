@@ -5,11 +5,11 @@
 		<div class="card-body">
 			<form
 				hx-disabled-elt="
-					find input[name='username'],
-					find input[name='password'],
-					find .toggle-password-btn,
-					find input[name='rememberMe'],
-					find button[type='submit']"
+					input[name='username'],
+					input[name='password'],
+					#toggle-password-btn,
+					input[name='remember-me'],
+					button[type='submit']"
 				hx-indicator="#login-btn-icon"
 				hx-post="/login"
 				hx-swap="none"

@@ -109,6 +109,9 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	GetAllTasks(writer, req)
 }
 
+func PatchTasks(writer http.ResponseWriter, req *http.Request) {
+}
+
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	var task *tasks.Task
 	if task = idCheck(writer, req); task == nil {

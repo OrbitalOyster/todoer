@@ -170,5 +170,6 @@ func Delete(id int) error {
 		return fmt.Errorf("Task not found: %d", id)
 	}
 	list = slices.Delete(list, ind, ind+1)
+	log.Printf("Deleted task #%d", id)
 	return nil
 }

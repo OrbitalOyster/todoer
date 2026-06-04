@@ -36,6 +36,7 @@ func main() {
 		"POST /htmx/tasks":               routes.AddTask,
 		"PUT /htmx/tasks/{id}":           routes.PutTask,
 		"PATCH /htmx/tasks/{id}/{field}": routes.PatchTask,
+		"DELETE /htmx/tasks":             routes.DeleteTasks,
 		"DELETE /htmx/tasks/{id}":        routes.DeleteTask,
 		"PATCH /filters/page-size":       routes.SetPageSize,
 		"PATCH /filters/page/{page}":     routes.SetPage,

@@ -5,13 +5,49 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th class="text-center align-middle checkbox">
+						<th class="text-center align-middle select-all position-relative">
 							<input
 								class="form-check-input"
 								type="checkbox"
 								id="select-all-tasks"
-								value=""
+								autocomplete="off"
 							/>
+							<button
+								class="btn btn-link position-absolute"
+								data-bs-toggle="dropdown"
+								style="top: .5rem"
+							>
+								<i class="bi bi-caret-down-fill"></i>
+							</button>
+							<ul class="dropdown-menu shadow-sm">
+								<li>
+									<button	class="dropdown-item text-success">
+										<i class="bi bi-check2-circle me-2"></i>
+										Mark as "done"
+									</button>
+								</li>
+								<li>
+									<button	class="dropdown-item">
+										Remove "done" mark
+									</button>
+								</li>
+								<li>
+									<hr class="dropdown-divider">
+								</li>
+								<li>
+									<button
+										class="dropdown-item text-danger"
+										type="button"
+										hx-delete="/htmx/tasks"
+										hx-target="#task-list"
+										hx-trigger="confirmed"
+										onclick="htmxConfirmMsg(this, 'Delete multiple tasks', 'Are you sure?')"
+									>
+										<i class="bi bi-trash-fill me-2"></i>
+										Delete
+									</button>
+								</li>
+							</ul>
 						</th>
 						<th class="text-center align-middle task-id">#</th>
 						<th class="text-center align-middle">

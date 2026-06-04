@@ -1,3 +1,10 @@
+/* The Goose */
+img.logo {
+	border-radius: 100%;
+	width: 4rem;
+	filter: drop-shadow(0 0 2px black);
+}
+
 /* Completely hide modal placeholders */
 .modal-placeholder.modal-content:not(.htmx-request) {
 	display: none;
@@ -32,8 +39,8 @@ i:not(.htmx-request) + .spinner-border {
 }
 
 /* Columns */
-th.checkbox {
-	width: 3rem;
+th.select-all {
+	width: 4rem;
 }
 
 th.task-id {

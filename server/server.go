@@ -15,6 +15,7 @@ var (
 	cssFolder    = filepath.Join("server", "static", "css")
 	jsFolder     = filepath.Join("server", "static", "js")
 	vendorFolder = filepath.Join("server", "static", "vendor")
+	imgFolder    = filepath.Join("server", "static", "img")
 	faviconPath  = filepath.Join("server", "static", "favicon.ico")
 )
 
@@ -27,6 +28,8 @@ func Start(routerMap routes.RouterMap) {
 	mux.Handle("GET /js/", http.StripPrefix("/js/", middleware.Cache(jsHandler)))
 	vendorHandler := http.FileServer(http.Dir(vendorFolder))
 	mux.Handle("GET /vendor/", http.StripPrefix("/vendor/", middleware.Cache(vendorHandler)))
+	imgHandler := http.FileServer(http.Dir(imgFolder))
+	mux.Handle("GET /img/", http.StripPrefix("/img/", middleware.Cache(imgHandler)))
 	/* Favicon */
 	mux.HandleFunc("GET /favicon.ico", func(writer http.ResponseWriter, req *http.Request) {
 		http.ServeFile(writer, req, faviconPath)

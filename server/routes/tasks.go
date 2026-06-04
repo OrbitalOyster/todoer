@@ -140,9 +140,26 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 	var task *tasks.Task
 	if task = idCheck(writer, req); task == nil {
-		return
+		panic("Task not found")
 	}
-	tasks.Delete(task.Id)
-	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
+	taskId := task.Id
+	tasks.Delete(taskId)
+	toasts.Warning(writer, "Task "+strconv.Itoa(taskId)+" deleted", "Success")
+	GetAllTasks(writer, req)
+}
+
+func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
+	deletedTasks := 0
+	for id := range req.URL.Query() {
+		task, err := tasks.GetById(id)
+		if err != nil {
+			panic(err)
+		}
+		if err := tasks.Delete(task.Id); err != nil {
+			panic(err)
+		}
+		deletedTasks++
+	}
+	toasts.Warning(writer, "Deleted "+strconv.Itoa(deletedTasks)+" tasks", "Success")
 	GetAllTasks(writer, req)
 }

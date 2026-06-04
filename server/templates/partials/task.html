@@ -4,6 +4,7 @@
 			class="form-check-input select-task"
 			type="checkbox"
 			name="{{ .Id }}"
+			autocomplete="off"
 		/>
 	</td>
 	<td class="text-center align-middle">{{ .Id }}</td>
@@ -48,25 +49,30 @@
 					</button>
 				</li>
 				<li>
-					<button
-					  	class="dropdown-item text-success"
-						type="button"
-						hx-patch="/htmx/tasks/{{ .Id }}/status"
-						hx-target="#task-list"
-						hx-indicator="#task-list"
-						{{ if .Status }}
+					{{ if .Status }}
+						<button
+						  	class="dropdown-item"
+							type="button"
+							hx-patch="/htmx/tasks/{{ .Id }}/status"
+							hx-target="#task-list"
+							hx-indicator="#task-list"
 							hx-vals='{ "status": false }'
-						{{ else }}
-	  						hx-vals='{ "status": true }'
-						{{ end }}
-					>
-						<i class="bi bi-check2-circle me-2"></i>
-						{{ if .Status }}
+						>
 							Remove "done" mark
-						{{ else }}
+						</button>
+					{{ else }}
+						<button
+						  	class="dropdown-item text-success"
+							type="button"
+							hx-patch="/htmx/tasks/{{ .Id }}/status"
+							hx-target="#task-list"
+							hx-indicator="#task-list"
+	  						hx-vals='{ "status": true }'
+						>
+							<i class="bi bi-check2-circle me-2"></i>
 							Mark as "done"
-						{{ end }}
-					</button>
+						</button>
+					{{ end }}
 				</li>
 				<li>
 					<hr class="dropdown-divider" />

@@ -20,5 +20,3 @@ const initTooltips = () => {
 	);
 	updateTooltips(document);
 };
-
-initTooltips();

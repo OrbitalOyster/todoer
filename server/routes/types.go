@@ -24,3 +24,7 @@ type TaskListData struct {
 	Pagination []int
 	Payload    token.Payload
 }
+
+type DatesOOBData struct {
+	Payload    token.Payload
+}

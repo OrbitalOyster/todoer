@@ -8,7 +8,7 @@
 			autocomplete="off"
 			hx-patch="/filters/date"
 			hx-target="#task-list"
-			hx-indicator="#task-list, #filter-date"
+			hx-indicator="#task-list"
 			hx-disabled-elt=".htmx-disable"
 			value="{{ .Payload.FromDate }}"
 		/>
@@ -21,7 +21,7 @@
 			autocomplete="off"
 			hx-patch="/filters/date"
 			hx-target="#task-list"
-			hx-indicator="#task-list, #filter-date"
+			hx-indicator="#task-list"
 			hx-disabled-elt=".htmx-disable"
 			value="{{ .Payload.ToDate }}"
 		/>

@@ -164,14 +164,13 @@ func SetDate(writer http.ResponseWriter, req *http.Request) {
 	token.Update(payload, "Page", page, writer)
 	token.Update(payload, "FromDate", fromDateStr, writer)
 	token.Update(payload, "ToDate", toDateStr, writer)
+	/* Update calendar elements if both dates are set */
+	if req.Form.Has("from-date") && req.Form.Has("to-date") {
+		pages.ExecutePartial(
+			writer,
+			"task-dates-oob",
+			DatesOOBData{Payload: *payload})
+	}
 	/* Done */
-	pages.ExecutePartial(
-		writer,
-		"task-dates-oob",
-		struct {
-			Payload token.Payload
-		}{
-			Payload: token.Payload(*payload),
-		})
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }

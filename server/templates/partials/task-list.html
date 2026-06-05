@@ -22,13 +22,30 @@
 							</button>
 							<ul class="dropdown-menu shadow-sm">
 								<li>
-									<button	class="dropdown-item text-success">
+									<button
+										class="dropdown-item text-success"
+										type="button"
+										hx-patch="/htmx/tasks?status=true"
+										hx-target="#task-list"
+										hx-indicator="#task-list"
+										hx-trigger="confirmed"
+										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
+									>
 										<i class="bi bi-check2-circle me-2"></i>
 										Mark as "done"
 									</button>
 								</li>
 								<li>
-									<button	class="dropdown-item">
+									<button
+										class="dropdown-item"
+										type="button"
+										hx-patch="/htmx/tasks?status=false"
+										hx-target="#task-list"
+										hx-indicator="#task-list"
+										hx-trigger="confirmed"
+										hx-vals='{ "status": false }'
+										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
+									>
 										Remove "done" mark
 									</button>
 								</li>

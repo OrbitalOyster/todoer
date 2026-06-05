@@ -3,7 +3,7 @@
 		<!-- Previous page -->
 		{{ if gt .TotalPages 1 }}
 			<button
-				class="btn btn-primary"
+				class="btn btn-primary htmx-disable"
 				type="button"
 				id="previous-page"
 				data-bs-toggle="tooltip"
@@ -29,7 +29,7 @@
 				{{ else }}
 					<li class="page-item">
 						<button
-							class="page-link {{ if eq $.Payload.Page . }} active {{ end }}"
+							class="page-link {{ if eq $.Payload.Page . }} active {{ end }} htmx-disable"
 							type="button"
 							id="page-{{ . }}"
 							{{ if ne $.Payload.Page . }}
@@ -47,7 +47,7 @@
 		<!-- Next page -->
 		{{ if gt .TotalPages 1 }}
 			<button
-				class="btn btn-primary"
+				class="btn btn-primary htmx-disable"
 				type="button"
 				id="next-page"
 				data-bs-toggle="tooltip"

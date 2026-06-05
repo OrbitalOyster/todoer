@@ -5,13 +5,18 @@
 			<button
 				class="btn btn-primary"
 				type="button"
+				id="previous-page"
 				data-bs-toggle="tooltip"
 				data-bs-placement="left"
 				data-bs-trigger="hover"
 				title="Previous page"
-				hx-patch="/filters/previous-page"
-				hx-target="#task-list"
-				hx-indicator="#task-list"
+				{{ if ne .Payload.Page 1 }}
+					hx-patch="/filters/previous-page"
+					hx-target="#task-list"
+					hx-indicator="#task-list"
+				{{ else }}
+					disabled
+				{{ end }}
 			>
 				<i class="bi bi-chevron-left"></i>
 			</button>
@@ -26,9 +31,12 @@
 						<button
 							class="page-link {{ if eq $.Payload.Page . }} active {{ end }}"
 							type="button"
-							hx-patch="/filters/page/{{ . }}"
-							hx-target="#task-list"
-							hx-indicator="#task-list"
+							id="page-{{ . }}"
+							{{ if ne $.Payload.Page . }}
+								hx-patch="/filters/page/{{ . }}"
+								hx-target="#task-list"
+								hx-indicator="#task-list"
+							{{ end }}
 						>
 							{{ . }}
 						</button>
@@ -41,13 +49,18 @@
 			<button
 				class="btn btn-primary"
 				type="button"
+				id="next-page"
 				data-bs-toggle="tooltip"
 				data-bs-placement="right"
 				data-bs-trigger="hover"
 				title="Next page"
-				hx-patch="/filters/next-page"
-				hx-target="#task-list"
-				hx-indicator="#task-list"
+				{{ if ne .Payload.Page .TotalPages }}
+					hx-patch="/filters/next-page"
+					hx-target="#task-list"
+					hx-indicator="#task-list"
+				{{ else }}
+					disabled
+				{{ end }}
 			>
 				<i class="bi bi-chevron-right"></i>
 			</button>

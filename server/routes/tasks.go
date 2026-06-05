@@ -138,7 +138,6 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTasks(writer http.ResponseWriter, req *http.Request) {
-	patched := 0
 	statusStr := req.URL.Query().Get("status")
 	if err := req.ParseForm(); err != nil {
 		panic(err)
@@ -147,16 +146,18 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	req.Form.Del("status")
-	for id := range req.Form {
-		task, err := tasks.GetById(id)
-		if err != nil {
-			panic(err)
+	patched := 0
+	for field, value := range req.Form {
+		if len(value) == 1 && value[0] == "on" {
+			task, err := tasks.GetById(field)
+			if err != nil {
+				panic(err)
+			}
+			if err := task.SetStatus(status); err != nil {
+				panic(err)
+			}
+			patched++
 		}
-		if err := task.SetStatus(status); err != nil {
-			panic(err)
-		}
-		patched++
 	}
 	toasts.Info(writer, "Updated "+strconv.Itoa(patched)+" tasks", "Success")
 	GetAllTasks(writer, req)

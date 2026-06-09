@@ -21,6 +21,7 @@ func executeTemplate(writer http.ResponseWriter, payload *token.Payload, selecte
 			TotalPages: totalPages,
 			Pagination: utils.GetPagination(totalPages, page),
 			Payload:    token.Payload(*payload),
+			Checkboxes: make([]bool, payload.PageSize),
 		})
 }
 

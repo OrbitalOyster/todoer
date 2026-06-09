@@ -39,8 +39,10 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	token.Update(payload, "Page", page, writer)
+	checkboxes := make([]bool, len(selectedTasks))
 	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
+		Checkboxes: checkboxes,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
 		Payload:    token.Payload(*payload),
@@ -118,7 +120,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	switch field {
 	case "status":
 		statusStr, status := req.FormValue("status"), false
-		if statusStr == "on" || statusStr == "true" {
+		if statusStr == "true" {
 			status = true
 		}
 		if err := task.SetStatus(status); err != nil {
@@ -159,6 +161,7 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 			patched++
 		}
 	}
+	// log.Println(req.Form)
 	toasts.Info(writer, "Updated "+strconv.Itoa(patched)+" tasks", "Success")
 	GetAllTasks(writer, req)
 }

@@ -1,13 +1,4 @@
 {{ define "task" }}
-	<!-- Select task checkbox -->
-	<td class="text-center align-middle">
-		<input
-			class="form-check-input select-task htmx-disable"
-			type="checkbox"
-			name="{{ .Id }}"
-			autocomplete="off"
-		/>
-	</td>
 	<td class="text-center align-middle">{{ .Id }}</td>
 	<td class="text-center align-middle">{{ .Description }}</td>
 	<td class="text-center align-middle">{{ formatDateTime .Datetime }}</td>

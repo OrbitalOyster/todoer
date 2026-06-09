@@ -10,11 +10,6 @@ img.logo {
 	display: none;
 }
 
-#modal,
-#confirm-modal {
-	backdrop-filter: blur(0.25rem);
-}
-
 /* Button icons */
 i.htmx-request {
 	display: none;

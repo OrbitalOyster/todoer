@@ -11,13 +11,13 @@ import (
 var publicURIs = []string{
 	"/login",
 	"/favicon.ico",
-	"/css/reset.css",
-	"/css/style.css",
 }
 
 func isPublicURL(URL string) bool {
 	return slices.Contains(publicURIs, URL) ||
+		strings.HasPrefix(URL, "/css/") ||
 		strings.HasPrefix(URL, "/js/") ||
+		strings.HasPrefix(URL, "/img/") ||
 		strings.HasPrefix(URL, "/vendor/")
 }
 

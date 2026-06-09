@@ -124,9 +124,21 @@
 					</tr>
 				</thead>
 				<tbody class="table-group-divider" id="task-table-body">
-					{{ range .Tasks }}
-						<tr id="task-{{ .Id }}">
-							{{ template "task" . }}
+					{{ range $index, $task := .Tasks }}
+						<tr id="task-{{ $task.Id }}">
+							<!-- Select task checkbox -->
+							<td class="text-center align-middle">
+								<input
+									class="form-check-input select-task htmx-disable"
+									type="checkbox"
+									name="{{ $task.Id }}"
+									autocomplete="off"
+									{{ if index $.Checkboxes $index }}
+										checked
+									{{ end }}
+								/>
+							</td>
+							{{ template "task" $task }}
 						</tr>
 					{{ end }}
 				</tbody>

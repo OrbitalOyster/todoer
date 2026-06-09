@@ -38,7 +38,6 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc,
 	)
-	token.Update(payload, "Page", page, writer)
 	checkboxes := make([]bool, len(selectedTasks))
 	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
@@ -140,28 +139,30 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTasks(writer http.ResponseWriter, req *http.Request) {
-	statusStr := req.URL.Query().Get("status")
+	/* Try to parse form */
 	if err := req.ParseForm(); err != nil {
 		panic(err)
 	}
+	/* Try to parse status */
+	statusStr := req.FormValue("status")
 	status, err := strconv.ParseBool(statusStr)
 	if err != nil {
 		panic(err)
 	}
 	patched := 0
-	for field, value := range req.Form {
-		if len(value) == 1 && value[0] == "on" {
-			task, err := tasks.GetById(field)
-			if err != nil {
-				panic(err)
-			}
-			if err := task.SetStatus(status); err != nil {
-				panic(err)
-			}
-			patched++
+	for _, id := range req.Form["checked"] {
+		task, err := tasks.GetById(id)
+		if err != nil {
+			panic(err)
 		}
+		if task.Status == status {
+			continue
+		}
+		if err := task.SetStatus(status); err != nil {
+			panic(err)
+		}
+		patched++
 	}
-	// log.Println(req.Form)
 	toasts.Info(writer, "Updated "+strconv.Itoa(patched)+" tasks", "Success")
 	GetAllTasks(writer, req)
 }

@@ -47,6 +47,10 @@ func setCookie(writer http.ResponseWriter, value string, rememberMe bool) {
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
 	}
+	/* Avoid double headers */
+	if len(writer.Header()["Set-Cookie"]) != 0 {
+		writer.Header().Del("Set-Cookie")
+	}
 	http.SetCookie(writer, &cookie)
 }
 

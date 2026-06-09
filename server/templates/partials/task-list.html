@@ -25,7 +25,8 @@
 									<button
 										class="dropdown-item text-success"
 										type="button"
-										hx-patch="/htmx/tasks?status=true"
+										hx-patch="/htmx/tasks"
+										hx-vals='{ "status": true }'
 										hx-target="#task-list"
 										hx-indicator="#task-list"
 										hx-trigger="confirmed"
@@ -39,7 +40,8 @@
 									<button
 										class="dropdown-item"
 										type="button"
-										hx-patch="/htmx/tasks?status=false"
+										hx-patch="/htmx/tasks"
+										hx-vals='{ "status": false }'
 										hx-target="#task-list"
 										hx-indicator="#task-list"
 										hx-trigger="confirmed"
@@ -131,7 +133,8 @@
 								<input
 									class="form-check-input select-task htmx-disable"
 									type="checkbox"
-									name="{{ $task.Id }}"
+									name="checked"
+									value="{{ $task.Id }}"
 									autocomplete="off"
 									{{ if index $.Checkboxes $index }}
 										checked

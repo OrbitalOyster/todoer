@@ -3,298 +3,298 @@
   datetime: 2026-06-01T10:01:00Z
   class: food
   description: Drink coffee
-  done: true
+  status: Done
 - id: 11
   user: Bob
   datetime: 2026-06-02T10:02:00Z
   class: house
   description: Make the bed
-  done: false
+  status: InProgress
 - id: 12
   user: Charlie
   datetime: 2026-06-03T10:03:00Z
   class: house
   description: Water the plants
-  done: true
+  status: Done
 - id: 14
   user: Charlie
   datetime: 2026-06-04T10:04:00Z
   class: house
   description: Take out the trash
-  done: false
+  status: InProgress
 - id: 15
   user: Alice
   datetime: 2026-06-05T10:06:01Z
   class: house
   description: Sweep the floor
-  done: true
+  status: Done
 - id: 16
   user: Charlie
   datetime: 2026-06-06T10:06:00Z
   class: house
   description: Wash the dishes
-  done: false
+  status: InProgress
 - id: 17
   user: Alice
   datetime: 2026-06-07T10:07:00Z
   class: social
   description: Send an email
-  done: false
+  status: InProgress
 - id: 18
   user: Bob
   datetime: 2026-06-08T10:08:00Z
   class: social
   description: Call a friend
-  done: false
+  status: InProgress
 - id: 20
   user: Bob
   datetime: 2026-06-09T10:09:00Z
   class: house
   description: Buy groceries
-  done: false
+  status: InProgress
 - id: 21
   user: Bob
   datetime: 2026-06-10T10:10:00Z
   class: other
   description: Feed the pet
-  done: false
+  status: InProgress
 - id: 22
   user: Charlie
   datetime: 2026-06-11T10:11:00Z
   class: house
   description: Fold laundry
-  done: false
+  status: InProgress
 - id: 23
   user: Bob
   datetime: 2026-06-12T10:12:00Z
   class: other
   description: Pay bills
-  done: false
+  status: InProgress
 - id: 24
   user: Bob
   datetime: 2026-06-13T10:13:00Z
   class: house
   description: Clean the bathroom
-  done: false
+  status: InProgress
 - id: 26
   user: Charlie
   datetime: 2026-06-14T10:14:00Z
   class: house
   description: Dust the shelves
-  done: false
+  status: InProgress
 - id: 27
   user: Alice
   datetime: 2026-06-15T10:15:00Z
   class: food
   description: Prepare a snack
-  done: false
+  status: InProgress
 - id: 28
   user: Bob
   datetime: 2026-06-16T10:16:00Z
   class: other
   description: Read a book
-  done: false
+  status: InProgress
 - id: 29
   user: Charlie
   datetime: 2026-06-17T10:17:00Z
   class: other
   description: Write a note
-  done: false
+  status: InProgress
 - id: 30
   user: Bob
   datetime: 2026-06-18T10:18:00Z
   class: house
   description: Organize a drawer
-  done: false
+  status: InProgress
 - id: 31
   user: Bob
   datetime: 2026-06-19T10:19:00Z
   class: other
   description: Exercise for 10 minutes
-  done: false
+  status: InProgress
 - id: 32
   user: Charlie
   datetime: 2026-06-20T10:20:00Z
   class: other
   description: Check the calendar
-  done: false
+  status: InProgress
 - id: 33
   user: Alice
   datetime: 2026-06-21T10:21:00Z
   class: other
   description: Update a to-do list
-  done: false
+  status: InProgress
 - id: 34
   user: Bob
   datetime: 2026-06-22T10:22:00Z
   class: other
   description: Take a short walk
-  done: false
+  status: InProgress
 - id: 35
   user: Charlie
   datetime: 2026-06-23T10:23:00Z
   class: house
   description: Wipe the kitchen counters
-  done: false
+  status: InProgress
 - id: 37
   user: Charlie
   datetime: 2026-06-24T10:24:00Z
   class: food
   description: Refill water bottle
-  done: false
+  status: InProgress
 - id: 38
   user: Bob
   datetime: 2026-06-25T10:25:00Z
   class: other
   description: Charge your phone
-  done: false
+  status: InProgress
 - id: 39
   user: Bob
   datetime: 2026-06-26T10:26:00Z
   class: other
   description: Meditate for 5 minutes
-  done: false
+  status: InProgress
 - id: 40
   user: Alice
   datetime: 2026-06-27T10:27:00Z
   class: food
   description: Plan meals for the day
-  done: false
+  status: InProgress
 - id: 41
   user: Bob
   datetime: 2026-06-28T10:28:00Z
   class: house
   description: Clean out the fridge
-  done: false
+  status: InProgress
 - id: 42
   user: Bob
   datetime: 2026-06-29T10:29:00Z
   class: social
   description: Sort mail
-  done: false
+  status: InProgress
 - id: 43
   user: Alice
   datetime: 2026-06-30T10:30:00Z
   class: other
   description: Backup computer files
-  done: false
+  status: InProgress
 - id: 44
   user: Bob
   datetime: 2026-06-30T10:31:00Z
   class: house
   description: Water the garden
-  done: false
+  status: InProgress
 - id: 45
   user: Bob
   datetime: 2026-06-01T10:32:00Z
   class: house
   description: Pick up clothes from floor
-  done: false
+  status: InProgress
 - id: 46
   user: Charlie
   datetime: 2026-06-01T10:33:00Z
   class: other
   description: Buy a small household item
-  done: false
+  status: InProgress
 - id: 47
   user: Charlie
   datetime: 2026-06-01T10:34:00Z
   class: house
   description: Replace a light bulb
-  done: false
+  status: InProgress
 - id: 50
   user: Alice
   datetime: 2026-06-01T10:35:00Z
   class: house
   description: Vacuum a room
-  done: false
+  status: InProgress
 - id: 51
   user: Alice
   datetime: 2026-06-01T10:36:00Z
   class: other
   description: Shred old papers
-  done: false
+  status: InProgress
 - id: 52
   user: Charlie
   datetime: 2026-06-01T10:37:00Z
   class: house
   description: Clean mirrors
-  done: false
+  status: InProgress
 - id: 53
   user: Bob
   datetime: 2026-06-01T10:38:00Z
   class: house
   description: Sweep porch or entryway
-  done: false
+  status: InProgress
 - id: 54
   user: Bob
   datetime: 2026-06-01T10:39:00Z
   class: other
   description: Set an alarm
-  done: false
+  status: InProgress
 - id: 55
   user: Charlie
   datetime: 2026-06-01T10:40:00Z
   class: social
   description: Check mailbox
-  done: false
+  status: InProgress
 - id: 56
   user: Bob
   datetime: 2026-06-01T10:41:00Z
   class: food
   description: Take vitamins
-  done: false
+  status: InProgress
 - id: 57
   user: Alice
   datetime: 2026-06-01T10:42:00Z
   class: house
   description: Clean computer screen
-  done: false
+  status: InProgress
 - id: 58
   user: Charlie
   datetime: 2026-06-01T10:43:00Z
   class: social
   description: Clear out email inbox
-  done: false
+  status: InProgress
 - id: 59
   user: Charlie
   datetime: 2026-06-01T10:44:00Z
   class: other
   description: Write a journal entry
-  done: false
+  status: InProgress
 - id: 60
   user: Bob
   datetime: 2026-06-01T10:45:00Z
   class: food
   description: Prepare lunch
-  done: false
+  status: InProgress
 - id: 61
   user: Bob
   datetime: 2026-06-01T10:46:00Z
   class: other
   description: Pack a bag
-  done: false
+  status: InProgress
 - id: 62
   user: Bob
   datetime: 2026-06-01T10:47:00Z
   class: other
   description: Stretch for 5 minutes
-  done: false
+  status: InProgress
 - id: 63
   user: Bob
   datetime: 2026-06-01T10:48:00Z
   class: other
   description: Organize workspace
-  done: false
+  status: InProgress
 - id: 64
   user: Alice
   datetime: 2026-06-01T10:49:00Z
   class: social
   description: Check bank account
-  done: false
+  status: InProgress
 - id: 65
   user: Alice
   datetime: 2026-06-01T10:50:00Z
   class: other
   description: Review goals for the week
-  done: false
+  status: InProgress

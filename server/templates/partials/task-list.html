@@ -22,32 +22,50 @@
 							</button>
 							<ul class="dropdown-menu shadow-sm">
 								<li>
-									<button
-										class="dropdown-item text-success"
-										type="button"
-										hx-patch="/htmx/tasks"
-										hx-vals='{ "status": true }'
-										hx-target="#task-list"
-										hx-indicator="#task-list"
-										hx-trigger="confirmed"
-										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
-									>
-										<i class="bi bi-check2-circle me-2"></i>
-										Mark as "done"
-									</button>
+									<h6 class="dropdown-header">Change status to:</h6>
 								</li>
 								<li>
 									<button
 										class="dropdown-item"
 										type="button"
 										hx-patch="/htmx/tasks"
-										hx-vals='{ "status": false }'
+										hx-vals='{ "status": "InProgress" }'
 										hx-target="#task-list"
 										hx-indicator="#task-list"
 										hx-trigger="confirmed"
 										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
 									>
-										Remove "done" mark
+										In progress
+									</button>
+								</li>
+								<li>
+									<button
+										class="dropdown-item text-success"
+										type="button"
+										hx-patch="/htmx/tasks"
+										hx-vals='{ "status": "Done" }'
+										hx-target="#task-list"
+										hx-indicator="#task-list"
+										hx-trigger="confirmed"
+										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
+									>
+										<i class="bi bi-check2-circle me-2"></i>
+										Done
+									</button>
+								</li>
+								<li>
+									<button
+										class="dropdown-item text-danger"
+										type="button"
+										hx-patch="/htmx/tasks"
+										hx-vals='{ "status": "Failed" }'
+										hx-target="#task-list"
+										hx-indicator="#task-list"
+										hx-trigger="confirmed"
+										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
+									>
+										<i class="bi bi-emoji-angry-fill me-2"></i>
+										Failed
 									</button>
 								</li>
 								<li>

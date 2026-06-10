@@ -81,10 +81,7 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	}
 	description, statusStr := req.FormValue("description"), req.FormValue("status")
 	/* Status */
-	status := false
-	if statusStr == "on" {
-		status = true
-	}
+	status := tasks.ParseStatus(statusStr)
 	if task.Status != status {
 		if err := task.SetStatus(status); err != nil {
 			writer.WriteHeader(http.StatusBadRequest)
@@ -118,10 +115,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	field := req.PathValue("field")
 	switch field {
 	case "status":
-		statusStr, status := req.FormValue("status"), false
-		if statusStr == "true" {
-			status = true
-		}
+		status := tasks.ParseStatus(req.FormValue("status"))
 		if err := task.SetStatus(status); err != nil {
 			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
 			if err != nil {
@@ -144,11 +138,7 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	/* Try to parse status */
-	statusStr := req.FormValue("status")
-	status, err := strconv.ParseBool(statusStr)
-	if err != nil {
-		panic(err)
-	}
+	status := tasks.ParseStatus(req.FormValue("status"))
 	patched := 0
 	for _, id := range req.Form["checked"] {
 		task, err := tasks.GetById(id)

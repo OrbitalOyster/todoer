@@ -17,14 +17,6 @@ import (
 
 const tasksFilename = "tasks.yaml"
 
-type Task struct {
-	Id          int       `yaml:"id"`
-	User        string    `yaml:"user"`
-	Datetime    time.Time `yaml:"datetime"`
-	Description string    `yaml:"description"`
-	Status      bool      `yaml:"done"`
-}
-
 var list []Task
 
 func Load() {
@@ -55,7 +47,7 @@ func Add(user string, description string) {
 		User:        user,
 		Description: description,
 		Datetime:    now,
-		Status:      false,
+		Status:      InProgress,
 	}
 	list = append(list, result)
 }
@@ -156,9 +148,9 @@ func (task *Task) SetDescription(description string) error {
 	return nil
 }
 
-func (task *Task) SetStatus(status bool) error {
+func (task *Task) SetStatus(status TaskStatus) error {
 	task.Status = status
-	log.Printf("Set task #%d status to \"%t\"", task.Id, task.Status)
+	log.Printf("Set task #%d status to \"%s\"", task.Id, task.Status)
 	return nil
 }
 

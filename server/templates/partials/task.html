@@ -4,14 +4,20 @@
 	<td class="text-center align-middle">{{ formatDateTime .Datetime }}</td>
 	<td class="text-center align-middle">{{ .User }}</td>
 	<td class="text-center align-middle">
-		{{ if .Status }}
+		{{ if eq .Status 1 }}
 			<i class="bi bi-check2-circle text-success"></i>
+		{{ else if eq .Status 2 }}
+			<i class="bi bi-emoji-angry-fill text-danger"></i>
 		{{ end }}
 	</td>
 	<td class="text-center align-middle">
 		<!-- Actions -->
 		<div class="dropdown-center">
-			<button class="btn btn-link htmx-disable" data-bs-toggle="dropdown">
+			<button
+				class="btn btn-link htmx-disable"
+				type="button"
+				data-bs-toggle="dropdown"
+			>
 				<i class="bi bi-three-dots-vertical fs-5"></i>
 			</button>
 			<ul class="dropdown-menu shadow-sm">
@@ -42,33 +48,58 @@
 					</button>
 				</li>
 				<li>
-					{{ if .Status }}
+					<hr class="dropdown-divider" />
+				</li>
+				<li>
+					<h6 class="dropdown-header">Change status to:</h6>
+				</li>
+				{{ if ne .Status 0 }}
+					<li>
 						<button
-						  	class="dropdown-item"
+							class="dropdown-item"
 							type="button"
 							hx-patch="/htmx/tasks/{{ .Id }}/status"
 							hx-target="#task-list"
 							hx-indicator="#task-list"
 							hx-disabled-elt=".htmx-disable"
-							hx-vals='{ "status": false }'
+							hx-vals='{ "status": "InProgress" }'
 						>
-							Remove "done" mark
+							In progress
 						</button>
-					{{ else }}
+					</li>
+				{{ end }}
+				{{ if ne .Status 1 }}
+					<li>
 						<button
-						  	class="dropdown-item text-success"
+							class="dropdown-item text-success"
 							type="button"
 							hx-patch="/htmx/tasks/{{ .Id }}/status"
 							hx-target="#task-list"
 							hx-indicator="#task-list"
 							hx-disabled-elt=".htmx-disable"
-	  						hx-vals='{ "status": true }'
+							hx-vals='{ "status": "Done" }'
 						>
 							<i class="bi bi-check2-circle me-2"></i>
-							Mark as "done"
+							Done
 						</button>
-					{{ end }}
-				</li>
+					</li>
+				{{ end }}
+				{{ if ne .Status 2 }}
+					<li>
+						<button
+							class="dropdown-item text-danger"
+							type="button"
+							hx-patch="/htmx/tasks/{{ .Id }}/status"
+							hx-target="#task-list"
+							hx-indicator="#task-list"
+							hx-disabled-elt=".htmx-disable"
+							hx-vals='{ "status": "Failed" }'
+						>
+							<i class="bi bi-emoji-angry-fill me-2"></i>
+							Failed
+						</button>
+					</li>
+				{{ end }}
 				<li>
 					<hr class="dropdown-divider" />
 				</li>

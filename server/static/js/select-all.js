@@ -12,12 +12,12 @@ const createSelectAllGroup = (masterSelector, childrenSelector) => {
 	/* On master change */
 	masterEl.onchange = () => (masterEl.checked ? selectAll() : selectNone());
 	/* On children change */
-	childrenEls.forEach((el) => {
-		el.onchange = () => {
-			masterEl.indeterminate = false;
-			if (allSelected()) masterEl.checked = true;
-			else if (noneSelected()) masterEl.checked = false;
-			else masterEl.indeterminate = true;
-		};
-	});
+	const updateMaster = () => {
+		masterEl.indeterminate = false;
+		if (allSelected()) masterEl.checked = true;
+		else if (noneSelected()) masterEl.checked = false;
+		else masterEl.indeterminate = true;
+	};
+	childrenEls.forEach((el) => (el.onchange = updateMaster));
+	updateMaster();
 };

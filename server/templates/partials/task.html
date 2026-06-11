@@ -4,9 +4,9 @@
 	<td class="text-center align-middle">{{ formatDatetime .Datetime }}</td>
 	<td class="text-center align-middle">{{ .User }}</td>
 	<td class="text-center align-middle">
-		{{ if eq .Status 1 }}
+		{{ if eq .Status (parseTaskStatus "Done") }}
 			<i class="bi bi-check2-circle text-success"></i>
-		{{ else if eq .Status 2 }}
+		{{ else if eq .Status (parseTaskStatus "Failed") }}
 			<i class="bi bi-emoji-angry-fill text-danger"></i>
 		{{ end }}
 	</td>
@@ -53,7 +53,7 @@
 				<li>
 					<h6 class="dropdown-header">Change status to:</h6>
 				</li>
-				{{ if ne .Status 0 }}
+				{{ if ne .Status (parseTaskStatus "InProgress") }}
 					<li>
 						<button
 							class="dropdown-item"
@@ -68,7 +68,7 @@
 						</button>
 					</li>
 				{{ end }}
-				{{ if ne .Status 1 }}
+				{{ if ne .Status (parseTaskStatus "Done") }}
 					<li>
 						<button
 							class="dropdown-item text-success"
@@ -84,7 +84,7 @@
 						</button>
 					</li>
 				{{ end }}
-				{{ if ne .Status 2 }}
+				{{ if ne .Status (parseTaskStatus "Failed") }}
 					<li>
 						<button
 							class="dropdown-item text-danger"

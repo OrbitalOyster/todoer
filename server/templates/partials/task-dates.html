@@ -42,7 +42,10 @@
 						hx-target="#task-list"
 						hx-indicator="#task-list, #filter-date"
 						hx-disabled-elt=".htmx-disable"
-						hx-vals='{"from-date": "{{ getFirstDayOfMonth }}", "to-date": "{{ getLastDayOfMonth }}"}'
+						hx-vals='{
+							"from-date": "{{ getFirstDayOfMonth }}",
+							"to-date": "{{ getLastDayOfMonth }}"
+						}'
 					>
 						This month
 					</button>
@@ -54,7 +57,10 @@
 						hx-target="#task-list"
 						hx-indicator="#task-list, #filter-date"
 						hx-disabled-elt=".htmx-disable"
-						hx-vals='{"from-date": "{{ getFirstDayOfPreviousMonth }}", "to-date": "{{ getLastDayOfPreviousMonth }}"}'
+						hx-vals='{
+							"from-date": "{{ getFirstDayOfPreviousMonth }}",
+							"to-date": "{{ getLastDayOfPreviousMonth }}"
+						}'
 					>
 						Previous month
 					</button>
@@ -69,7 +75,10 @@
 						hx-target="#task-list"
 						hx-indicator="#task-list, #filter-date"
 						hx-disabled-elt=".htmx-disable"
-						hx-vals='{"from-date": "{{ getToday }}", "to-date": "{{ getToday }}"}'
+						hx-vals='{
+							"from-date": "{{ getToday }}",
+							"to-date": "{{ getToday }}"
+						}'
 					>
 						Today
 					</button>
@@ -81,7 +90,10 @@
 						hx-target="#task-list"
 						hx-indicator="#task-list, #filter-date"
 						hx-disabled-elt=".htmx-disable"
-						hx-vals='{"from-date": "{{ getYesterday }}", "to-date": "{{ getYesterday }}"}'
+						hx-vals='{
+							"from-date": "{{ getYesterday }}",
+							"to-date": "{{ getYesterday }}"
+						}'
 					>
 						Yesterday
 					</button>

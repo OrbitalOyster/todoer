@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"html/template"
 	"strings"
 	"time"
 )
@@ -45,41 +44,6 @@ func GetMonthBounds(year int, month time.Month) (time.Time, time.Time) {
 	fromDate := time.Date(year, month, 1, 0, 0, 0, 0, time.Local)
 	toDate := fromDate.AddDate(0, 1, -1)
 	return fromDate, toDate
-}
-
-/* FuncMap for HTML templates */
-var TemplateFuncMap = template.FuncMap{
-	/* Human-readable date formatting */
-	"formatDatetime": func(t time.Time) string {
-		return t.Format(NiceLookingDatetimeFormat)
-	},
-	/* Preset dates */
-	"getFirstDayOfMonth": func() string {
-		fromDate, _ := GetMonthBounds(time.Now().Year(), time.Now().Month())
-		return fromDate.Format(HTMLDateFormat)
-	},
-	"getLastDayOfMonth": func() string {
-		_, toDate := GetMonthBounds(time.Now().Year(), time.Now().Month())
-		return toDate.Format(HTMLDateFormat)
-	},
-	"getFirstDayOfPreviousMonth": func() string {
-		fromDate, _ := GetMonthBounds(time.Now().Year(), time.Now().AddDate(0, -1, 0).Month())
-		return fromDate.Format(HTMLDateFormat)
-	},
-	"getLastDayOfPreviousMonth": func() string {
-		_, toDate := GetMonthBounds(time.Now().Year(), time.Now().AddDate(0, -1, 0).Month())
-		return toDate.Format(HTMLDateFormat)
-	},
-	"getToday": func() string {
-		now := time.Now()
-		return now.Format(HTMLDateFormat)
-	},
-	"getYesterday": func() string {
-		now := time.Now()
-		yesterday := now.AddDate(0, 0, -1)
-		return yesterday.Format(HTMLDateFormat)
-	},
-	"parseSortableField": ParseSortableField,
 }
 
 func GetPagination(totalPages int, selectedPage int) []int {

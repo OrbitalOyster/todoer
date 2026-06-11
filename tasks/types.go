@@ -1,6 +1,9 @@
 package tasks
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type TaskStatus int
 
@@ -24,12 +27,12 @@ func (status TaskStatus) String() string {
 }
 
 func ParseStatus(status string) TaskStatus {
-	switch status {
-	case "InProgress":
+	switch strings.ToLower(status) {
+	case "inprogress":
 		return InProgress
-	case "Done":
+	case "done":
 		return Done
-	case "Failed":
+	case "failed":
 		return Failed
 	default:
 		panic("Invalid TaskStatus")

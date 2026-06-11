@@ -2,20 +2,43 @@ package utils
 
 import (
 	"html/template"
+	"strings"
 	"time"
 )
 
 const (
-	HTMLDateFormat        = "2006-01-02"
+	HTMLDateFormat            = "2006-01-02"
 	NiceLookingDateTimeFormat = "2.01.2006 15:04:05"
 )
 
-type SortableColumn int
+type SortableField int
 
 const (
-	Description SortableColumn = iota
-	Date
+	Description SortableField = iota
+	DateTime
 )
+
+func (field SortableField) String() string {
+	switch field {
+	case Description:
+		return "Description"
+	case DateTime:
+		return "DateTime"
+	default:
+		panic("Invalid SortableField")
+	}
+}
+
+func ParseField(field string) SortableField {
+	switch strings.ToLower(field) {
+	case "decription":
+		return Description
+	case "datetime":
+		return DateTime
+	default:
+		panic("Invalid SortableField")
+	}
+}
 
 /* Returns first and last day of month */
 func GetMonthBounds(year int, month time.Month) (time.Time, time.Time) {

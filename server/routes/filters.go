@@ -88,16 +88,16 @@ func PreviousPage(writer http.ResponseWriter, req *http.Request) {
 }
 
 func SetSortBy(writer http.ResponseWriter, req *http.Request) {
-	columnStr := req.PathValue("column")
-	columnInt, err := strconv.Atoi(columnStr)
+	fieldStr := req.PathValue("field")
+	fieldInt, err := strconv.Atoi(fieldStr)
 	if err != nil {
-		columnInt = 0
+		fieldInt = 0
 	}
-	column := utils.SortableColumn(columnInt)
+	field := utils.SortableField(fieldInt)
 	payload := token.Get(req)
 	sortAsc := payload.SortAsc
 	/* Reverse sort */
-	if payload.SortBy == column {
+	if payload.SortBy == field {
 		sortAsc = !sortAsc
 	}
 	/* Get tasks */
@@ -105,10 +105,10 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
 		payload.Page, payload.PageSize,
-		column, sortAsc)
+		field, sortAsc)
 	/* Update token */
 	token.Update(payload, "Page", page, writer)
-	token.Update(payload, "SortBy", column, writer)
+	token.Update(payload, "SortBy", field, writer)
 	token.Update(payload, "SortAsc", sortAsc, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)

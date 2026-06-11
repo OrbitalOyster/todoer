@@ -55,7 +55,7 @@ func Add(user string, description string) {
 func Get(fromDateStr string, toDateStr string,
 	searchBy string,
 	page int, pageSize int,
-	sortBy utils.SortableColumn, sortAsc bool) ([]Task, int, int) {
+	sortBy utils.SortableField, sortAsc bool) ([]Task, int, int) {
 	result := slices.Clone(list)
 	/* Date */
 	fromDate, err := time.Parse("2006-01-02", fromDateStr)
@@ -90,7 +90,7 @@ func Get(fromDateStr string, toDateStr string,
 		slices.SortFunc(result, func(t1, t2 Task) int {
 			return cmp.Compare(t1.Description, t2.Description)
 		})
-	case utils.Date:
+	case utils.DateTime:
 		slices.SortFunc(result, func(t1, t2 Task) int {
 			return t1.Datetime.Compare(t2.Datetime)
 		})

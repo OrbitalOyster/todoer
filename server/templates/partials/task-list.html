@@ -93,13 +93,13 @@
 							<button
 								class="btn btn-link dotted htmx-disable"
 								type="button"
-								hx-patch="/filters/sort-by/0"
+								hx-patch="/filters/sort-by/description"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
 								hx-disabled-elt=".htmx-disable"
 							>
 								What
-								{{ if eq .Payload.SortBy 0 }}
+								{{ if eq .Payload.SortBy (parseSortableField "Description") }}
 									{{ if eq .Payload.SortAsc true }}
 										<i class="bi bi-sort-down-alt"></i>
 									{{ else }}
@@ -113,13 +113,13 @@
 							<button
 								class="btn btn-link dotted htmx-disable"
 								type="button"
-								hx-patch="/filters/sort-by/1"
+								hx-patch="/filters/sort-by/datetime"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
 								hx-disabled-elt=".htmx-disable"
 							>
 								When
-								{{ if eq .Payload.SortBy 1 }}
+								{{ if eq .Payload.SortBy (parseSortableField "Datetime") }}
 									{{ if eq .Payload.SortAsc true }}
 										<i class="bi bi-sort-down-alt"></i>
 									{{ else }}

@@ -58,12 +58,12 @@ func Get(fromDateStr string, toDateStr string,
 	sortBy utils.SortableField, sortAsc bool) ([]Task, int, int) {
 	result := slices.Clone(list)
 	/* Date */
-	fromDate, err := time.Parse("2006-01-02", fromDateStr)
+	fromDate, err := time.Parse(utils.HTMLDateFormat, fromDateStr)
 	/* Should not happen */
 	if err != nil {
 		panic(err)
 	}
-	toDate, err := time.Parse("2006-01-02", toDateStr)
+	toDate, err := time.Parse(utils.HTMLDateFormat, toDateStr)
 	/* Should not happen */
 	if err != nil {
 		panic(err)
@@ -90,7 +90,7 @@ func Get(fromDateStr string, toDateStr string,
 		slices.SortFunc(result, func(t1, t2 Task) int {
 			return cmp.Compare(t1.Description, t2.Description)
 		})
-	case utils.DateTime:
+	case utils.Datetime:
 		slices.SortFunc(result, func(t1, t2 Task) int {
 			return t1.Datetime.Compare(t2.Datetime)
 		})

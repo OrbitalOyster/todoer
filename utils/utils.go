@@ -8,33 +8,33 @@ import (
 
 const (
 	HTMLDateFormat            = "2006-01-02"
-	NiceLookingDateTimeFormat = "2.01.2006 15:04:05"
+	NiceLookingDatetimeFormat = "2.01.2006 15:04:05"
 )
 
 type SortableField int
 
 const (
 	Description SortableField = iota
-	DateTime
+	Datetime
 )
 
 func (field SortableField) String() string {
 	switch field {
 	case Description:
 		return "Description"
-	case DateTime:
-		return "DateTime"
+	case Datetime:
+		return "Datetime"
 	default:
 		panic("Invalid SortableField")
 	}
 }
 
-func ParseField(field string) SortableField {
+func ParseSortableField(field string) SortableField {
 	switch strings.ToLower(field) {
-	case "decription":
+	case "description":
 		return Description
 	case "datetime":
-		return DateTime
+		return Datetime
 	default:
 		panic("Invalid SortableField")
 	}
@@ -50,8 +50,8 @@ func GetMonthBounds(year int, month time.Month) (time.Time, time.Time) {
 /* FuncMap for HTML templates */
 var TemplateFuncMap = template.FuncMap{
 	/* Human-readable date formatting */
-	"formatDateTime": func(t time.Time) string {
-		return t.Format(NiceLookingDateTimeFormat)
+	"formatDatetime": func(t time.Time) string {
+		return t.Format(NiceLookingDatetimeFormat)
 	},
 	/* Preset dates */
 	"getFirstDayOfMonth": func() string {
@@ -79,6 +79,7 @@ var TemplateFuncMap = template.FuncMap{
 		yesterday := now.AddDate(0, 0, -1)
 		return yesterday.Format(HTMLDateFormat)
 	},
+	"parseSortableField": ParseSortableField,
 }
 
 func GetPagination(totalPages int, selectedPage int) []int {

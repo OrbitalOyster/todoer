@@ -1,7 +1,7 @@
 {{ define "task" }}
 	<td class="text-center align-middle">{{ .Id }}</td>
 	<td class="text-center align-middle">{{ .Description }}</td>
-	<td class="text-center align-middle">{{ formatDateTime .Datetime }}</td>
+	<td class="text-center align-middle">{{ formatDatetime .Datetime }}</td>
 	<td class="text-center align-middle">{{ .User }}</td>
 	<td class="text-center align-middle">
 		{{ if eq .Status 1 }}

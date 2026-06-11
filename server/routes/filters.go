@@ -89,11 +89,8 @@ func PreviousPage(writer http.ResponseWriter, req *http.Request) {
 
 func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 	fieldStr := req.PathValue("field")
-	fieldInt, err := strconv.Atoi(fieldStr)
-	if err != nil {
-		fieldInt = 0
-	}
-	field := utils.SortableField(fieldInt)
+	field := utils.ParseSortableField(fieldStr)
+
 	payload := token.Get(req)
 	sortAsc := payload.SortAsc
 	/* Reverse sort */

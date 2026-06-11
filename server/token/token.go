@@ -111,10 +111,10 @@ func CreateFresh(username string, rememberMe bool, writer http.ResponseWriter) {
 		PageSize:   config.DefaultPageSize,
 		Page:       1,
 		SearchBy:   "",
-		SortBy:     1,
+		SortBy:     utils.Datetime,
 		SortAsc:    true,
-		FromDate:   fromDate.Format("2006-01-02"),
-		ToDate:     toDate.Format("2006-01-02"),
+		FromDate:   fromDate.Format(utils.HTMLDateFormat),
+		ToDate:     toDate.Format(utils.HTMLDateFormat),
 	}
 	Create(payload, writer)
 }

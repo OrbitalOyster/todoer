@@ -34,6 +34,11 @@ func Load() {
 }
 
 func getNextId() int {
+	/* No tasks */
+	if len(list) == 0 {
+		return 1
+	}
+	/* Find biggest id, add 1 */
 	result := slices.MaxFunc(list, func(a, b Task) int {
 		return cmp.Compare(a.Id, b.Id)
 	})
@@ -50,6 +55,7 @@ func Add(user string, description string) {
 		Status:      InProgress,
 	}
 	list = append(list, result)
+	log.Printf("New task: \"%s\"", result.Description)
 }
 
 func Get(fromDateStr string, toDateStr string,

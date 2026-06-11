@@ -168,9 +168,7 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	/* Try to parse status */
 	status := tasks.ParseStatus(req.FormValue("status"))
 	patched := 0
-
 	var taskIds []int
-
 	for _, id := range req.Form["checked"] {
 		task, err := tasks.GetById(id)
 		if err != nil {
@@ -201,8 +199,12 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
+	/* Try to parse form */
+	if err := req.ParseForm(); err != nil {
+		panic(err)
+	}
 	deletedTasks := 0
-	for id := range req.URL.Query() {
+	for _, id := range req.Form["checked"] {
 		task, err := tasks.GetById(id)
 		if err != nil {
 			panic(err)

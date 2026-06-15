@@ -161,6 +161,7 @@ func (task *Task) SetStatus(status TaskStatus) error {
 }
 
 func (task *Task) SetReadOnly(ro bool) error {
+	log.Printf("Set task #%d read only to %t", task.Id, ro)
 	task.ReadOnly = ro
 	return nil
 }

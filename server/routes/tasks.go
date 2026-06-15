@@ -107,13 +107,16 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	if task = idCheck(writer, req); task == nil {
 		return
 	}
-	description, statusStr := req.FormValue("description"), req.FormValue("status")
-	/* Status */
-	status := tasks.ParseStatus(statusStr)
-	if task.Status != status {
-		if err := task.SetStatus(status); err != nil {
+	description, readOnlyStr := req.FormValue("description"), req.FormValue("read-only")
+	readOnly := false
+	if readOnlyStr == "true" {
+		readOnly = true
+	}
+	/* Read only */
+	if task.ReadOnly != readOnly {
+		if err := task.SetReadOnly(readOnly); err != nil {
 			writer.WriteHeader(http.StatusBadRequest)
-			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
+			_, err = writer.Write([]byte("Unable to change task:" + err.Error()))
 			if err != nil {
 				panic(err)
 			}
@@ -146,6 +149,17 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		status := tasks.ParseStatus(req.FormValue("status"))
 		if err := task.SetStatus(status); err != nil {
 			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
+			if err != nil {
+				panic(err)
+			}
+		}
+	case "read-only":
+		ro, err := strconv.ParseBool(req.FormValue("read-only"))
+		if err != nil {
+			panic("Haxxor alert!")
+		}
+		if err := task.SetReadOnly(ro); err != nil {
+			_, err = writer.Write([]byte("Unable to change task:" + err.Error()))
 			if err != nil {
 				panic(err)
 			}

@@ -160,6 +160,11 @@ func (task *Task) SetStatus(status TaskStatus) error {
 	return nil
 }
 
+func (task *Task) SetReadOnly(ro bool) error {
+	task.ReadOnly = ro
+	return nil
+}
+
 func Delete(id int) error {
 	ind := slices.IndexFunc(list, func(t Task) bool {
 		return t.Id == id

@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -22,6 +23,7 @@ func (status TaskStatus) String() string {
 	case Failed:
 		return "Failed"
 	default:
+		/* Major screwup */
 		panic("Invalid TaskStatus")
 	}
 }
@@ -35,7 +37,7 @@ func ParseStatus(status string) TaskStatus {
 	case "failed":
 		return Failed
 	default:
-		panic("Invalid TaskStatus")
+		panic(fmt.Sprintf("Invalid TaskStatus: %s", status))
 	}
 }
 
@@ -45,8 +47,10 @@ type Task struct {
 	Datetime    time.Time  `yaml:"datetime"`
 	Description string     `yaml:"description"`
 	Status      TaskStatus `yaml:"status"`
+	ReadOnly    bool       `yaml:"read_only"`
 }
 
+/* Extra handler for converting status string to TaskStatus */
 func (status *TaskStatus) UnmarshalYAML(unmarshal func(any) error) error {
 	var str string
 	if err := unmarshal(&str); err != nil {

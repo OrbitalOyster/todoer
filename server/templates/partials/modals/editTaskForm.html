@@ -24,15 +24,18 @@
 				/>
 				<div class="d-flex justify-content-between">
 					<div class="form-check">
+						<!-- -- Checkbox hack -->
+						<input type="hidden" name="read-only" value="false">
 						<input
 							class="form-check-input htmx-disable"
 							type="checkbox"
-							name="status"
+							name="read-only"
+							value="true"
 							id="status-checkbox"
-							{{ if .Status }} checked {{ end }}
+							{{ if .ReadOnly }} checked {{ end }}
 						/>
 						<label class="form-check-label" for="status-checkbox">
-							Done
+							Read only
 						</label>
 					</div>
 					<span>

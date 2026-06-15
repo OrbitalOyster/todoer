@@ -22,6 +22,36 @@
 							</button>
 							<ul class="dropdown-menu shadow-sm">
 								<li>
+									<button
+										class="dropdown-item text-info"
+										hx-patch="/htmx/tasks"
+										hx-target="#task-list"
+										hx-indicator="#task-list"
+										hx-disabled-elt=".htmx-disable"
+										hx-vals='{ "read-only": true }'
+										hx-trigger="confirmed"
+										onclick="htmxConfirmMsg(this, 'Lock multiple tasks', 'Are you sure?')"
+									>
+										<i class="bi bi-lock-fill me-2"></i>
+										Lock
+									</button>
+								</li>
+								<li>
+									<button
+										class="dropdown-item text-info"
+										hx-patch="/htmx/tasks"
+										hx-target="#task-list"
+										hx-indicator="#task-list"
+										hx-disabled-elt=".htmx-disable"
+										hx-vals='{ "read-only": false }'
+										hx-trigger="confirmed"
+										onclick="htmxConfirmMsg(this, 'Unlock multiple tasks', 'Are you sure?')"
+									>
+										<i class="bi bi-unlock-fill me-2"></i>
+										Unlock
+									</button>
+								</li>
+								<li>
 									<h6 class="dropdown-header">Change status to:</h6>
 								</li>
 								<li>

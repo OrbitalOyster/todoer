@@ -31,6 +31,25 @@ func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func getCheckboxedTasks(req *http.Request) []int {
+	/* Try to parse form */
+	if err := req.ParseForm(); err != nil {
+		panic(err) /* Invalid form */
+	}
+	var result []int
+	if !req.Form.Has("checked") { /* Nothing checked */
+		return result
+	}
+	for _, checkboxStr := range req.Form["checked"] {
+		n, err := strconv.Atoi(checkboxStr)
+		if err != nil {
+			panic(err) /* Unparseable string */
+		}
+		result = append(result, n)
+	}
+	return result
+}
+
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 	payload := token.Get(req)
 	selectedTasks, totalPages, page := tasks.Get(
@@ -39,34 +58,15 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc,
 	)
+	checkboxedTasks := getCheckboxedTasks(req)
 	checkboxes := make([]bool, len(selectedTasks))
-	pages.ExecutePartial(writer, "task-list", TaskListData{
-		Tasks:      selectedTasks,
-		Checkboxes: checkboxes,
-		TotalPages: totalPages,
-		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    token.Payload(*payload),
-	})
-}
-
-func GetAllTasksWithCheckboxes(writer http.ResponseWriter, req *http.Request, taskIds []int) {
-	payload := token.Get(req)
-	selectedTasks, totalPages, page := tasks.Get(
-		payload.FromDate, payload.ToDate,
-		payload.SearchBy,
-		payload.Page, payload.PageSize,
-		payload.SortBy, payload.SortAsc,
-	)
-
-	var checkboxes []bool
-	for _, task := range selectedTasks {
-		if slices.Contains(taskIds, task.Id) {
-			checkboxes = append(checkboxes, true)
+	for i, selectedTask := range selectedTasks {
+		if slices.Contains(checkboxedTasks, selectedTask.Id) {
+			checkboxes[i] = true
 		} else {
-			checkboxes = append(checkboxes, false)
+			checkboxes[i] = false
 		}
 	}
-
 	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      selectedTasks,
 		Checkboxes: checkboxes,
@@ -183,13 +183,11 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	/* Try to parse status */
 	status := tasks.ParseStatus(req.FormValue("status"))
 	patched := 0
-	var taskIds []int
 	for _, id := range req.Form["checked"] {
 		task, err := tasks.GetById(id)
 		if err != nil {
 			panic(err)
 		}
-		taskIds = append(taskIds, task.Id)
 		if task.Status == status {
 			continue
 		}
@@ -199,7 +197,7 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 		patched++
 	}
 	toasts.Info(writer, "Updated "+strconv.Itoa(patched)+" tasks", "Success")
-	GetAllTasksWithCheckboxes(writer, req, taskIds)
+	GetAllTasks(writer, req)
 }
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {

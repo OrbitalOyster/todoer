@@ -32,10 +32,6 @@ func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func getCheckboxedTasks(req *http.Request) []int {
-	/* Try to parse form */
-	if err := req.ParseForm(); err != nil {
-		panic(err) /* Invalid form */
-	}
 	var result []int
 	if !req.Form.Has("checked") { /* Nothing checked */
 		return result
@@ -176,25 +172,41 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTasks(writer http.ResponseWriter, req *http.Request) {
-	/* Try to parse form */
-	if err := req.ParseForm(); err != nil {
-		panic(err)
+	checkboxed := getCheckboxedTasks(req)
+
+	/* TODO: Stoopid */
+	changes := make(map[string]any)
+	if req.Form.Has("status") {
+		changes["status"] = tasks.ParseStatus(req.FormValue("status"))
 	}
-	/* Try to parse status */
-	status := tasks.ParseStatus(req.FormValue("status"))
+	if req.Form.Has("read-only") {
+		var err error
+		changes["read-only"], err = strconv.ParseBool(req.FormValue("read-only"))
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	patched := 0
-	for _, id := range req.Form["checked"] {
+	for _, id := range checkboxed {
 		task, err := tasks.GetById(id)
 		if err != nil {
 			panic(err)
 		}
-		if task.Status == status {
-			continue
+		/* Status */
+		if changes["status"] != nil && task.Status != changes["status"] {
+			if err := task.SetStatus(changes["status"].(tasks.TaskStatus)); err != nil {
+				panic(err)
+			}
+			patched++
 		}
-		if err := task.SetStatus(status); err != nil {
-			panic(err)
+		/* Read only */
+		if changes["read-only"] != nil && task.ReadOnly != changes["read-only"] {
+			if err := task.SetReadOnly(changes["read-only"].(bool)); err != nil {
+				panic(err)
+			}
+			patched++
 		}
-		patched++
 	}
 	toasts.Info(writer, "Updated "+strconv.Itoa(patched)+" tasks", "Success")
 	GetAllTasks(writer, req)
@@ -212,12 +224,9 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
-	/* Try to parse form */
-	if err := req.ParseForm(); err != nil {
-		panic(err)
-	}
+	checkboxed := getCheckboxedTasks(req)
 	deletedTasks := 0
-	for _, id := range req.Form["checked"] {
+	for _, id := range checkboxed {
 		task, err := tasks.GetById(id)
 		if err != nil {
 			panic(err)

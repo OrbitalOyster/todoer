@@ -42,8 +42,10 @@ func Start(routerMap routes.RouterMap) {
 	middlewared := middleware.Logger(
 		middleware.Recovery(
 			middleware.Auth(
-				middleware.Throttle(
-					gzhttp.GzipHandler(mux),
+				middleware.ParseForm(
+					middleware.Throttle(
+						gzhttp.GzipHandler(mux),
+					),
 				),
 			),
 		),

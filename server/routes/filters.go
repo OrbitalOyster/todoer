@@ -26,11 +26,6 @@ func executeTemplate(writer http.ResponseWriter, payload *token.Payload, selecte
 }
 
 func SetPageSize(writer http.ResponseWriter, req *http.Request) {
-	/* Check if form is ok */
-	if err := req.ParseForm(); err != nil {
-		http.Error(writer, "Haxxor alert!", http.StatusBadRequest)
-		return
-	}
 	size, err := strconv.Atoi(req.FormValue("size"))
 	/* Wrong page size, somehow */
 	if err != nil || !slices.Contains(config.PageSizes, size) {

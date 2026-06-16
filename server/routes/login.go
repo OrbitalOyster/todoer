@@ -16,11 +16,6 @@ func GetLoginPage(writer http.ResponseWriter, req *http.Request) {
 
 /* POST */
 func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
-	/* Check if form is ok */
-	if err := req.ParseForm(); err != nil {
-		http.Error(writer, "Haxxor alert!", http.StatusBadRequest)
-		return
-	}
 	/* Credentials mock up */
 	username, password, rememberMeStr, rememberMe :=
 		req.FormValue("username"),

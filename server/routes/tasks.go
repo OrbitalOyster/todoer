@@ -154,11 +154,12 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 			}
 		}
 	case "read-only":
-		ro, err := strconv.ParseBool(req.FormValue("read-only"))
-		if err != nil {
-			panic("Haxxor alert!")
+		readOnly := false
+		readOnlyStr := req.FormValue("read-only")
+		if readOnlyStr == "true" {
+			readOnly = true
 		}
-		if err := task.SetReadOnly(ro); err != nil {
+		if err := task.SetReadOnly(readOnly); err != nil {
 			_, err = writer.Write([]byte("Unable to change task:" + err.Error()))
 			if err != nil {
 				panic(err)

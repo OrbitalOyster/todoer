@@ -5,32 +5,17 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
 	"time"
 	"todoer/utils"
-
-	"github.com/goccy/go-yaml"
 )
-
-const tasksFilename = "tasks.yaml"
 
 var list []Task
 
-func Load() {
-	log.Println("Loading tasks from", tasksFilename)
-	/* Load raw yaml */
-	listRaw, err := os.ReadFile(tasksFilename)
-	if err != nil {
-		panic(err)
-	}
-	/* Parse */
-	if err := yaml.Unmarshal(listRaw, &list); err != nil {
-		panic(err)
-	}
-	log.Println("Tasks found:", len(list))
+func Load(newList []Task) {
+	list = newList
 }
 
 func getNextId() int {

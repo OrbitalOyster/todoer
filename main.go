@@ -7,7 +7,10 @@ import (
 	"todoer/server/pages"
 	"todoer/server/routes"
 	"todoer/tasks"
+	"todoer/wad"
 )
+
+const wadFilename = "wad.yaml"
 
 func main() {
 	/* Error handler */
@@ -18,7 +21,8 @@ func main() {
 		log.Println("Bye")
 	}()
 	config.Load()
-	tasks.Load()
+	_, taskList := wad.Load(wadFilename)
+	tasks.Load(taskList)
 	/* Pages */
 	pages.Add("login", "login")
 	pages.Add("main", "base")

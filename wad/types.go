@@ -2,15 +2,10 @@ package wad
 
 import (
 	"todoer/tasks"
+	"todoer/users"
 )
 
-/* TODO: Not here */
-type User struct {
-	Name string `yaml:"name"`
-	Role string `yaml:"role"`
-}
-
 type WAD struct {
-	Users []User       `yaml:"users"`
+	Users []users.User `yaml:"users"`
 	Tasks []tasks.Task `yaml:"tasks"`
 }

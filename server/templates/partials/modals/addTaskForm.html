@@ -1,14 +1,11 @@
 {{ define "addTaskForm" }}
 	<div class="modal-content" id="add-task-form">
 		<form
-			hx-disabled-elt="
-	      		find input[name='description'],
-	        	find button[type='button'].btn-secondary,
-	         	find button[type='submit']"
-			hx-indicator="#ok-btn-icon"
 			hx-post="/htmx/tasks"
 			hx-target="#task-list"
+			hx-indicator="#ok-btn-icon"
 			hx-disabled-elt=".htmx-disable"
+			hx-include="#task-list-form"
 		>
 			<div class="modal-header position-relative">
 				<h1 class="modal-title fs-5">Add task</h1>
@@ -20,7 +17,7 @@
 			</div>
 			<div class="modal-body">
 				<input
-					class="form-control"
+					class="form-control htmx-disable"
 					type="text"
 					name="description"
 					placeholder="Enter task description"
@@ -29,14 +26,14 @@
 			</div>
 			<div class="modal-footer">
 				<button
-					class="btn btn-secondary"
+					class="btn btn-secondary htmx-disable"
 					type="button"
 					data-bs-dismiss="modal"
 				>
 					<i class="bi bi-x-lg"></i>
 					Cancel
 				</button>
-				<button class="btn btn-primary" type="submit">
+				<button class="btn btn-primary htmx-disable" type="submit">
 					<i class="bi bi-check-lg" id="ok-btn-icon"></i>
 					<div class="spinner-border spinner-border-sm"></div>
 					Ok

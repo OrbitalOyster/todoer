@@ -1,7 +1,7 @@
 {{ define "task-list" }}
 	<!-- More than zero tasks found -->
 	{{ if gt (len .Tasks) 0 }}
-		<form>
+		<form id="task-list-form">
 			<table class="table table-striped">
 				<thead>
 					<tr>

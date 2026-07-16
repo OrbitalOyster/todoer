@@ -12,11 +12,11 @@ import (
 )
 
 var (
-	cssFolder    = filepath.Join("server", "static", "css")
-	jsFolder     = filepath.Join("server", "static", "js")
-	vendorFolder = filepath.Join("server", "static", "vendor")
-	imgFolder    = filepath.Join("server", "static", "img")
-	faviconPath  = filepath.Join("server", "static", "favicon.ico")
+	cssFolder    = filepath.Join("static", "css")
+	jsFolder     = filepath.Join("static", "js")
+	vendorFolder = filepath.Join("static", "vendor")
+	imgFolder    = filepath.Join("static", "img")
+	faviconPath  = filepath.Join("static", "favicon.ico")
 )
 
 func Start(routerMap routes.RouterMap) {

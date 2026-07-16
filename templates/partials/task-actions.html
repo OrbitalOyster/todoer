@@ -8,6 +8,7 @@
 			<i class="bi bi-three-dots-vertical fs-5"></i>
 		</button>
 		<ul class="dropdown-menu shadow-sm">
+			<!-- Edit -->
 			<li>
 				<button
 					class="dropdown-item"
@@ -21,6 +22,7 @@
 					Edit
 				</button>
 			</li>
+			<!-- Clone -->
 			<li>
 				<button
 					class="dropdown-item"
@@ -35,6 +37,7 @@
 				</button>
 			</li>
 			{{ if .ReadOnly }}
+		 		<!-- Unlock -->
 				<li>
 					<button
 						class="dropdown-item text-info"
@@ -48,6 +51,7 @@
 					</button>
 				</li>
 			{{ else }}
+		 		<!-- Lock -->
 				<li>
 					<button
 						class="dropdown-item text-info"
@@ -69,6 +73,7 @@
 				<h6 class="dropdown-header">Change status to:</h6>
 			</li>
 			{{ if ne .Status (parseTaskStatus "InProgress") }}
+				<!-- In progress -->
 				<li>
 					<button
 						class="dropdown-item"
@@ -85,6 +90,7 @@
 				</li>
 			{{ end }}
 		 	{{ if ne .Status (parseTaskStatus "Done") }}
+				<!-- Done -->
 				<li>
 					<button
 						class="dropdown-item text-success"
@@ -101,6 +107,7 @@
 				</li>
 			{{ end }}
 			{{ if ne .Status (parseTaskStatus "Failed") }}
+				<!-- Failed -->
 				<li>
 					<button
 						class="dropdown-item text-danger"
@@ -119,6 +126,7 @@
 			<li>
 				<hr class="dropdown-divider" />
 			</li>
+			<!-- Delete -->
 			<li>
 				<button
 					class="dropdown-item text-danger"

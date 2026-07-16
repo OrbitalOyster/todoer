@@ -15,113 +15,12 @@
 							/>
 							<button
 								class="btn btn-link position-absolute htmx-disable"
+								style="top: .3rem"
 								data-bs-toggle="dropdown"
-								style="top: .5rem"
 							>
 								<i class="bi bi-three-dots-vertical fs-5"></i>
 							</button>
-							<ul class="dropdown-menu shadow-sm">
-								<li>
-									<!-- Lock -->
-									<button
-										class="dropdown-item text-info"
-										type="button"
-										hx-patch="/htmx/tasks"
-										hx-target="#task-list"
-										hx-indicator="#task-list"
-										hx-disabled-elt=".htmx-disable"
-										hx-vals='{ "read-only": true }'
-										hx-trigger="confirmed"
-										onclick="htmxConfirmMsg(this, 'Lock multiple tasks', 'Are you sure?')"
-									>
-										<i class="bi bi-lock-fill me-2"></i>
-										Lock
-									</button>
-								</li>
-								<li>
-									<!-- Unlock -->
-									<button
-										class="dropdown-item text-info"
-										type="button"
-										hx-patch="/htmx/tasks"
-										hx-target="#task-list"
-										hx-indicator="#task-list"
-										hx-disabled-elt=".htmx-disable"
-										hx-vals='{ "read-only": false }'
-										hx-trigger="confirmed"
-										onclick="htmxConfirmMsg(this, 'Unlock multiple tasks', 'Are you sure?')"
-									>
-										<i class="bi bi-unlock-fill me-2"></i>
-										Unlock
-									</button>
-								</li>
-								<!-- Change status -->
-								<li>
-									<h6 class="dropdown-header">Change status to:</h6>
-								</li>
-								<li>
-									<button
-										class="dropdown-item"
-										type="button"
-										hx-patch="/htmx/tasks"
-										hx-vals='{ "status": "InProgress" }'
-										hx-target="#task-list"
-										hx-indicator="#task-list"
-										hx-trigger="confirmed"
-										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
-									>
-										<i class="bi bi-clock me-2"></i>
-										In progress
-									</button>
-								</li>
-								<li>
-									<button
-										class="dropdown-item text-success"
-										type="button"
-										hx-patch="/htmx/tasks"
-										hx-vals='{ "status": "Done" }'
-										hx-target="#task-list"
-										hx-indicator="#task-list"
-										hx-trigger="confirmed"
-										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
-									>
-										<i class="bi bi-check2-circle me-2"></i>
-										Done
-									</button>
-								</li>
-								<li>
-									<button
-										class="dropdown-item text-danger"
-										type="button"
-										hx-patch="/htmx/tasks"
-										hx-vals='{ "status": "Failed" }'
-										hx-target="#task-list"
-										hx-indicator="#task-list"
-										hx-trigger="confirmed"
-										onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
-									>
-										<i class="bi bi-emoji-angry-fill me-2"></i>
-										Failed
-									</button>
-								</li>
-								<li>
-									<hr class="dropdown-divider">
-								</li>
-								<li>
-									<button
-										class="dropdown-item text-danger"
-										type="button"
-										hx-delete="/htmx/tasks"
-										hx-target="#task-list"
-										hx-indicator="#task-list"
-										hx-trigger="confirmed"
-										onclick="htmxConfirmMsg(this, 'Delete multiple tasks', 'Are you sure?')"
-									>
-										<i class="bi bi-trash-fill me-2"></i>
-										Delete
-									</button>
-								</li>
-							</ul>
+							{{ template "task-multiple-actions" }}
 						</th>
 						<th class="text-center align-middle task-id">#</th>
 						<th class="text-center align-middle">

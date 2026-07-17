@@ -6,6 +6,7 @@ import (
 )
 
 type WAD struct {
-	Users []users.User `yaml:"users"`
-	Tasks []tasks.Task `yaml:"tasks"`
+	Users      []users.User `yaml:"users"`
+	Categories []string     `yaml:"categories"`
+	Tasks      []tasks.Task `yaml:"tasks"`
 }

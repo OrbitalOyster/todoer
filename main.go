@@ -7,6 +7,7 @@ import (
 	"todoer/server/pages"
 	"todoer/server/routes"
 	"todoer/tasks"
+	"todoer/users"
 	"todoer/wad"
 )
 
@@ -21,7 +22,8 @@ func main() {
 		log.Println("Bye")
 	}()
 	config.Load()
-	_, taskList := wad.Load(wadFilename)
+	userList, taskList := wad.Load(wadFilename)
+	users.Load(userList)
 	tasks.Load(taskList)
 	/* Pages */
 	pages.Add("login", "login")

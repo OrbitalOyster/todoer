@@ -44,6 +44,7 @@ func ParseStatus(status string) TaskStatus {
 type Task struct {
 	Id          int        `yaml:"id"`
 	User        string     `yaml:"user"`
+	Category    string     `yaml:"category"`
 	Datetime    time.Time  `yaml:"datetime"`
 	Description string     `yaml:"description"`
 	Status      TaskStatus `yaml:"status"`

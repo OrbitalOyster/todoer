@@ -139,6 +139,12 @@ func (task *Task) SetDescription(description string) error {
 	return nil
 }
 
+func (task *Task) SetUser(user string) error {
+	task.User = user
+	log.Printf("Set task #%d user to \"%s\"", task.Id, task.User)
+	return nil
+}
+
 func (task *Task) SetStatus(status TaskStatus) error {
 	task.Status = status
 	log.Printf("Set task #%d status to \"%s\"", task.Id, task.Status)

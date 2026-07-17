@@ -3,6 +3,7 @@ package wad
 import (
 	"log"
 	"os"
+	"strings"
 	"todoer/tasks"
 	"todoer/users"
 
@@ -22,6 +23,7 @@ func Load(filename string) ([]users.User, []tasks.Task) {
 		panic(err)
 	}
 	log.Println("Users found:", len(wad.Users))
+	log.Println("Categories:", strings.Join(wad.Categories, ", "))
 	log.Println("Tasks found:", len(wad.Tasks))
 	return wad.Users, wad.Tasks
 }

@@ -1,7 +1,7 @@
 {{ define "editTaskForm" }}
 	<div class="modal-content" id="edit-task-form">
 		<form
-			hx-put="/htmx/tasks/{{ .Id }}"
+			hx-put="/htmx/tasks/{{ .Task.Id }}"
 			hx-target="#task-list"
 			hx-indicator="#ok-btn-icon"
 			hx-disabled-elt=".htmx-disable"
@@ -21,9 +21,9 @@
 					type="text"
 					name="description"
 					placeholder="Enter task description"
-					value="{{ .Description }}"
+					value="{{ .Task.Description }}"
 				/>
-				<div class="d-flex justify-content-between">
+				<div class="d-flex justify-content-between align-items-center">
 					<div class="form-check">
 						<input
 							class="form-check-input htmx-disable"
@@ -31,15 +31,22 @@
 							name="read-only"
 							value="true"
 							id="status-checkbox"
-							{{ if .ReadOnly }} checked {{ end }}
+							{{ if .Task.ReadOnly }} checked {{ end }}
 						/>
 						<label class="form-check-label" for="status-checkbox">
 							Read only
 						</label>
 					</div>
-					<span>
-						Responsible: {{ .User }}
-					</span>
+					<div class="d-flex gap-2 align-items-center">
+						User:
+						<select class="form-select" name="user">
+							{{ range .Users }}
+								<option {{ if eq $.Task.User .Name }} selected {{ end }} value="{{ .Name }}">
+									{{ .Name }}
+								</option>
+							{{ end }}
+						</select>
+					</div>
 				</div>
 			</div>
 			<div class="modal-footer">

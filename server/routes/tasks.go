@@ -8,6 +8,7 @@ import (
 	"todoer/server/toasts"
 	"todoer/server/token"
 	"todoer/tasks"
+	"todoer/users"
 	"todoer/utils"
 )
 
@@ -78,7 +79,11 @@ func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
 
 func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
 	if task := idCheck(writer, req); task != nil {
-		pages.ExecutePartial(writer, "editTaskForm", task)
+		data := EditTaskFormData{
+			task,
+			users.GetAllUsers(),
+		}
+		pages.ExecutePartial(writer, "editTaskForm", data)
 	}
 }
 
@@ -103,20 +108,10 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	if task = idCheck(writer, req); task == nil {
 		return
 	}
-	description, readOnlyStr := req.FormValue("description"), req.FormValue("read-only")
+	description, user, readOnlyStr := req.FormValue("description"),req.FormValue("user"), req.FormValue("read-only")
 	readOnly := false
 	if readOnlyStr == "true" {
 		readOnly = true
-	}
-	/* Read only */
-	if task.ReadOnly != readOnly {
-		if err := task.SetReadOnly(readOnly); err != nil {
-			writer.WriteHeader(http.StatusBadRequest)
-			_, err = writer.Write([]byte("Unable to change task:" + err.Error()))
-			if err != nil {
-				panic(err)
-			}
-		}
 	}
 	/* Description */
 	if task.Description != description {
@@ -128,6 +123,27 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
+	/* User */
+	if task.User != user {
+		if err := task.SetUser(user); err != nil {
+			writer.WriteHeader(http.StatusBadRequest)
+			_, err = writer.Write([]byte("Unable to change user:" + err.Error()))
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+	/* Read only */
+	if task.ReadOnly != readOnly {
+		if err := task.SetReadOnly(readOnly); err != nil {
+			writer.WriteHeader(http.StatusBadRequest)
+			_, err = writer.Write([]byte("Unable to change task:" + err.Error()))
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+
 	/* Done */
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")

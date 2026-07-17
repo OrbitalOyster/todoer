@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"todoer/server/token"
 	"todoer/tasks"
+	"todoer/users"
 )
 
 type RouterEntry func(http.ResponseWriter, *http.Request)
@@ -18,11 +19,16 @@ type TaskListData struct {
 }
 
 type MainPageData struct {
-	Title      string
-	PageSizes  []int
+	Title     string
+	PageSizes []int
 	TaskListData
 }
 
 type DatesOOBData struct {
 	Payload token.Payload
+}
+
+type EditTaskFormData struct {
+	Task  *tasks.Task
+	Users []users.User
 }

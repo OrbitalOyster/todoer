@@ -39,7 +39,7 @@
 					</div>
 					<div class="d-flex gap-2 align-items-center">
 						User:
-						<select class="form-select" name="user">
+						<select class="form-select htmx-disable" name="user">
 							{{ range .Users }}
 								<option {{ if eq $.Task.User .Name }} selected {{ end }} value="{{ .Name }}">
 									{{ .Name }}

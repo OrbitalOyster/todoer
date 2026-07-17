@@ -14,6 +14,7 @@
 					hx-patch="/filters/previous-page"
 					hx-target="#task-list"
 					hx-indicator="#task-list"
+					hx-disabled-elt=".htmx-disable"
 				{{ else }}
 					disabled
 				{{ end }}
@@ -36,6 +37,7 @@
 								hx-patch="/filters/page/{{ . }}"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
+								hx-disabled-elt=".htmx-disable"
 							{{ end }}
 						>
 							{{ . }}
@@ -58,6 +60,7 @@
 					hx-patch="/filters/next-page"
 					hx-target="#task-list"
 					hx-indicator="#task-list"
+					hx-disabled-elt=".htmx-disable"
 				{{ else }}
 					disabled
 				{{ end }}

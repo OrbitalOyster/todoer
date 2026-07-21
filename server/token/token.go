@@ -28,7 +28,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func setCookie(writer http.ResponseWriter, value string, rememberMe bool) {
+func getExpirationTime(rememberMe bool) time.Time {
 	expires := time.Now()
 	if rememberMe {
 		expires = expires.Add(
@@ -39,68 +39,24 @@ func setCookie(writer http.ResponseWriter, value string, rememberMe bool) {
 			time.Duration(config.CookieShortLifetime) * time.Second,
 		)
 	}
-	cookie := http.Cookie{
-		Name:     config.CookieName,
-		Value:    value,
-		Expires:  expires,
-		Path:     "/",
-		HttpOnly: true,
-		SameSite: http.SameSiteStrictMode,
-	}
-	/* Avoid double headers */
-	if len(writer.Header()["Set-Cookie"]) != 0 {
-		writer.Header().Del("Set-Cookie")
-	}
-	http.SetCookie(writer, &cookie)
-}
-
-func getCookie(req *http.Request) string {
-	cookie, err := req.Cookie(config.CookieName)
-	if err != nil {
-		/* No cookie, return empty string */
-		if err == http.ErrNoCookie {
-			return ""
-		}
-	}
-	return cookie.Value
-}
-
-func clearCookie(writer http.ResponseWriter) {
-	emptyCookie := http.Cookie{
-		Name:     config.CookieName,
-		Value:    "",
-		Expires:  time.Now().Add(-time.Hour),
-		Path:     "/",
-		HttpOnly: true,
-		SameSite: http.SameSiteStrictMode,
-	}
-	http.SetCookie(writer, &emptyCookie)
+	return expires
 }
 
 func Create(payload Payload, writer http.ResponseWriter) {
-	expirationTime := time.Now()
-	if payload.RememberMe {
-		expirationTime = expirationTime.Add(
-			time.Duration(config.CookieLifetime) * time.Second,
-		)
-	} else {
-		expirationTime = expirationTime.Add(
-			time.Duration(config.CookieShortLifetime) * time.Second,
-		)
-	}
+	expires := getExpirationTime(payload.RememberMe)
 	claims := Claims{
 		Payload: payload,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
+			ExpiresAt: jwt.NewNumericDate(expires),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenStr, err := token.SignedString(config.JWTSecret)
-	/* Major screw up */
+	/* Major screwup */
 	if err != nil {
 		panic(err)
 	}
-	setCookie(writer, tokenStr, payload.RememberMe)
+	setCookie(config.CookieName, tokenStr, expires, writer)
 }
 
 func CreateFresh(username string, rememberMe bool, writer http.ResponseWriter) {
@@ -157,7 +113,8 @@ func Update(payload *Payload, key string, value any, writer http.ResponseWriter)
 }
 
 func Get(req *http.Request) *Payload {
-	cookie := getCookie(req)
+	cookie := getCookie(config.CookieName, req)
+	/* Should not happen */
 	if cookie == "" {
 		panic("Empty cookie")
 	}
@@ -178,5 +135,5 @@ func Get(req *http.Request) *Payload {
 }
 
 func Clear(writer http.ResponseWriter) {
-	clearCookie(writer)
+	clearCookie(config.CookieName, writer)
 }

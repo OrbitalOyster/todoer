@@ -30,6 +30,7 @@ func main() {
 	pages.Add("main", "base")
 	/* Routes */
 	routerMap := map[string]routes.RouterEntry{
+		/* "/{$}" exactly matches root path ("/") */
 		"GET /{$}":                       routes.GetMainPage,
 		"GET /login":                     routes.GetLoginPage,
 		"POST /login":                    routes.LoginAttempt,
@@ -53,7 +54,7 @@ func main() {
 		"PATCH /filters/searchBy":        routes.SetSearchBy,
 		"PATCH /filters/date":            routes.SetDate,
 		"GET /panic":                     routes.Panic,
-		"GET /":                          routes.NotFoundHandler, // 404 page
+		"GET /":                          routes.NotFoundHandler, /* 404 goes here */
 	}
 	server.Start(routerMap)
 }

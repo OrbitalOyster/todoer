@@ -108,7 +108,10 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	if task = idCheck(writer, req); task == nil {
 		return
 	}
-	description, user, readOnlyStr := req.FormValue("description"),req.FormValue("user"), req.FormValue("read-only")
+	description, user, readOnlyStr :=
+		req.FormValue("description"),
+		req.FormValue("user"),
+		req.FormValue("read-only")
 	readOnly := false
 	if readOnlyStr == "true" {
 		readOnly = true

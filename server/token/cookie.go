@@ -33,13 +33,10 @@ func getCookie(name string, req *http.Request) string {
 }
 
 func clearCookie(name string, writer http.ResponseWriter) {
+	writer.Header().Del("Set-Cookie")
 	emptyCookie := http.Cookie{
 		Name:     name,
-		Value:    "",
 		Expires:  time.Now().Add(-time.Hour),
-		Path:     "/",
-		HttpOnly: true,
-		SameSite: http.SameSiteStrictMode,
 	}
 	http.SetCookie(writer, &emptyCookie)
 }

@@ -8,7 +8,7 @@ import (
 func Throttle(next http.Handler) http.Handler {
 	handler := func(writer http.ResponseWriter, req *http.Request) {
 		if req.Header.Get("HX-Request") == "true" {
-			time.Sleep(time.Millisecond * 2500)
+			time.Sleep(time.Millisecond * 200)
 		}
 		next.ServeHTTP(writer, req)
 	}

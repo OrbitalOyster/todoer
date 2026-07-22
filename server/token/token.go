@@ -25,6 +25,7 @@ type Payload struct {
 
 type Claims struct {
 	Payload
+	Extra string `json:"extra"`
 	jwt.RegisteredClaims
 }
 
@@ -46,6 +47,7 @@ func Create(payload Payload, writer http.ResponseWriter) {
 	expires := getExpirationTime(payload.RememberMe)
 	claims := Claims{
 		Payload: payload,
+		Extra: "Hello!",
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expires),
 		},
@@ -118,8 +120,8 @@ func Get(req *http.Request) *Payload {
 	if cookie == "" {
 		panic("Empty cookie")
 	}
-	claims := &Claims{}
-	parsed, err := jwt.ParseWithClaims(cookie, claims, func(token *jwt.Token) (any, error) {
+	claims := Claims{}
+	_, err := jwt.ParseWithClaims(cookie, &claims, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			panic(fmt.Errorf("Unexpected signing method: %v", token.Header["alg"]))
 		}
@@ -127,9 +129,6 @@ func Get(req *http.Request) *Payload {
 	})
 	if err != nil {
 		panic(fmt.Errorf("Unable to parse token: %w", err))
-	}
-	if !parsed.Valid {
-		panic("Invalid token")
 	}
 	return &claims.Payload
 }

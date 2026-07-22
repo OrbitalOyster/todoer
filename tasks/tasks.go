@@ -116,7 +116,7 @@ func getById(id int) (*Task, error) {
 }
 
 /* Generic function, accepts id as int or string */
-func GetById[T interface{ int | string }](id T) (*Task, error) {
+func GetById[T int | string](id T) (*Task, error) {
 	switch idAny := any(id).(type) {
 	case int:
 		return getById(idAny)

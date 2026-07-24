@@ -10,7 +10,21 @@ import (
 )
 
 func GetMainPage(writer http.ResponseWriter, req *http.Request) {
-	payload := token.Get(req)
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
@@ -24,7 +38,7 @@ func GetMainPage(writer http.ResponseWriter, req *http.Request) {
 			TotalPages: totalPages,
 			Tasks:      selectedTasks,
 			Pagination: utils.GetPagination(totalPages, page),
-			Payload:    token.Payload(*payload),
+			Payload:    payload,
 			Checkboxes: make([]bool, payload.PageSize),
 		},
 	})

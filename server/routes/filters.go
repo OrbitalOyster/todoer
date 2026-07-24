@@ -12,7 +12,12 @@ import (
 	"todoer/utils"
 )
 
-func executeTemplate(writer http.ResponseWriter, payload *token.Payload, selectedTasks []tasks.Task, totalPages int, page int) {
+func executeTemplate(
+	writer http.ResponseWriter,
+	payload token.Payload,
+	selectedTasks []tasks.Task,
+	totalPages int,
+	page int) {
 	pages.ExecutePartial(
 		writer,
 		"task-list",
@@ -20,7 +25,7 @@ func executeTemplate(writer http.ResponseWriter, payload *token.Payload, selecte
 			Tasks:      selectedTasks,
 			TotalPages: totalPages,
 			Pagination: utils.GetPagination(totalPages, page),
-			Payload:    token.Payload(*payload),
+			Payload:    payload,
 			Checkboxes: make([]bool, payload.PageSize),
 		})
 }
@@ -31,7 +36,21 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 	if err != nil || !slices.Contains(config.PageSizes, size) {
 		size = config.DefaultPageSize
 	}
-	payload := token.Get(req)
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -39,13 +58,33 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, size,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	token.Update(payload, "PageSize", size, writer)
-	token.Update(payload, "Page", page, writer)
+	// token.Update(payload, "PageSize", size, writer)
+	// token.Update(payload, "Page", page, writer)
+
+	payload.PageSize = size
+	payload.Page = page
+	funkyToken.SetPayload(payload)
+	funkyToken.Save()
+
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
 
-func setPage(page int, payload *token.Payload, writer http.ResponseWriter) {
+func setPage(page int, req *http.Request, writer http.ResponseWriter) {
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -53,7 +92,11 @@ func setPage(page int, payload *token.Payload, writer http.ResponseWriter) {
 		page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	token.Update(payload, "Page", page, writer)
+	// token.Update(payload, "Page", page, writer)
+	payload.Page = page
+	funkyToken.SetPayload(payload)
+	funkyToken.Save()
+
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -64,29 +107,71 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		page = 1
 	}
-	payload := token.Get(req)
-	setPage(page, payload, writer)
+	// payload := token.Get(req)
+	setPage(page, req, writer)
 }
 
 func NextPage(writer http.ResponseWriter, req *http.Request) {
-	payload := token.Get(req)
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	page := payload.Page + 1
 	/* Return updated task table */
-	setPage(page, payload, writer)
+	setPage(page, req, writer)
 }
 
 func PreviousPage(writer http.ResponseWriter, req *http.Request) {
-	payload := token.Get(req)
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	page := payload.Page - 1
 	/* Return updated task table */
-	setPage(page, payload, writer)
+	setPage(page, req, writer)
 }
 
 func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 	fieldStr := req.PathValue("field")
 	field := utils.ParseSortableField(fieldStr)
 
-	payload := token.Get(req)
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	sortAsc := payload.SortAsc
 	/* Reverse sort */
 	if payload.SortBy == field {
@@ -99,16 +184,37 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		field, sortAsc)
 	/* Update token */
-	token.Update(payload, "Page", page, writer)
-	token.Update(payload, "SortBy", field, writer)
-	token.Update(payload, "SortAsc", sortAsc, writer)
+	// token.Update(payload, "Page", page, writer)
+	// token.Update(payload, "SortBy", field, writer)
+	// token.Update(payload, "SortAsc", sortAsc, writer)
+
+	payload.Page = page
+	payload.SortBy = field
+	payload.SortAsc = sortAsc
+	funkyToken.SetPayload(payload)
+	funkyToken.Save()
+
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
 
 func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	searchBy := req.FormValue("searchBy")
-	payload := token.Get(req)
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -116,8 +222,13 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	token.Update(payload, "Page", page, writer)
-	token.Update(payload, "SearchBy", searchBy, writer)
+	payload.Page = page
+	payload.SearchBy = searchBy
+	funkyToken.SetPayload(payload)
+	funkyToken.Save()
+
+	// token.Update(payload, "Page", page, writer)
+	// token.Update(payload, "SearchBy", searchBy, writer)
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)
 }
@@ -125,7 +236,21 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 func SetDate(writer http.ResponseWriter, req *http.Request) {
 	fromDateStr := req.FormValue("from-date")
 	toDateStr := req.FormValue("to-date")
-	payload := token.Get(req)
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	fromDateFallback, toDateFallback := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	/* Setting from date? */
 	if fromDateStr != "" {
@@ -154,15 +279,23 @@ func SetDate(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	token.Update(payload, "Page", page, writer)
-	token.Update(payload, "FromDate", fromDateStr, writer)
-	token.Update(payload, "ToDate", toDateStr, writer)
+
+	payload.Page = page
+	payload.FromDate = fromDateStr
+	payload.ToDate = toDateStr
+	funkyToken.SetPayload(payload)
+	funkyToken.Save()
+
+	// token.Update(payload, "Page", page, writer)
+	// token.Update(payload, "FromDate", fromDateStr, writer)
+	// token.Update(payload, "ToDate", toDateStr, writer)
+
 	/* Update calendar elements if both dates are set */
 	if req.Form.Has("from-date") && req.Form.Has("to-date") {
 		pages.ExecutePartial(
 			writer,
 			"task-dates-oob",
-			DatesOOBData{Payload: *payload})
+			DatesOOBData{Payload: payload})
 	}
 	/* Done */
 	executeTemplate(writer, payload, selectedTasks, totalPages, page)

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"slices"
 	"strconv"
+	"todoer/config"
 	"todoer/server/pages"
 	"todoer/server/toasts"
 	"todoer/server/token"
@@ -48,7 +49,22 @@ func getCheckboxedTasks(req *http.Request) []int {
 }
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
-	payload := token.Get(req)
+
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
@@ -69,7 +85,7 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 		Checkboxes: checkboxes,
 		TotalPages: totalPages,
 		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    token.Payload(*payload),
+		Payload:    payload,
 	})
 }
 
@@ -94,7 +110,21 @@ func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
 }
 
 func AddTask(writer http.ResponseWriter, req *http.Request) {
-	payload := token.Get(req)
+	// payload := token.Get(req)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	/* Should not happen */
+	if err := funkyToken.Load(); err != nil {
+		panic(err)
+	}
+	payload := funkyToken.GetPayload()
+
 	user := payload.UserID
 	description := req.FormValue("description")
 	tasks.Add(user, description)

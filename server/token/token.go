@@ -1,14 +1,14 @@
 package token
 
 import (
-	"fmt"
-	"net/http"
-	"reflect"
-	"time"
-	"todoer/config"
+	// "fmt"
+	// "net/http"
+	// "reflect"
+	// "time"
+	// "todoer/config"
 	"todoer/utils"
 
-	"github.com/golang-jwt/jwt/v5"
+	// "github.com/golang-jwt/jwt/v5"
 )
 
 type Payload struct {
@@ -23,9 +23,9 @@ type Payload struct {
 	ToDate     string              `json:"to_date"`
 }
 
+/*
 type Claims struct {
-	Payload
-	Extra string `json:"extra"`
+	Payload     `json:"payload"`
 	jwt.RegisteredClaims
 }
 
@@ -46,15 +46,13 @@ func getExpirationTime(rememberMe bool) time.Time {
 func Create(payload Payload, writer http.ResponseWriter) {
 	expires := getExpirationTime(payload.RememberMe)
 	claims := Claims{
-		Payload: payload,
-		Extra: "Hello!",
+		Payload:     payload,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expires),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenStr, err := token.SignedString(config.JWTSecret)
-	/* Major screwup */
 	if err != nil {
 		panic(err)
 	}
@@ -116,7 +114,6 @@ func Update(payload *Payload, key string, value any, writer http.ResponseWriter)
 
 func Get(req *http.Request) *Payload {
 	cookie := getCookie(config.CookieName, req)
-	/* Should not happen */
 	if cookie == "" {
 		panic("Empty cookie")
 	}
@@ -136,3 +133,4 @@ func Get(req *http.Request) *Payload {
 func Clear(writer http.ResponseWriter) {
 	clearCookie(config.CookieName, writer)
 }
+*/

@@ -3,9 +3,12 @@ package routes
 import (
 	"log"
 	"net/http"
+	"time"
+	"todoer/config"
 	"todoer/server/pages"
 	"todoer/server/toasts"
 	"todoer/server/token"
+	"todoer/utils"
 )
 
 /* GET */
@@ -27,7 +30,30 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	}
 	/* Auth mockup */
 	if username == "admin" && password == "password" {
-		token.CreateFresh(username, rememberMe, writer)
+
+		funkyToken := token.CreateFunkyToken[token.Payload](
+			req,
+			&writer,
+			config.CookieName,
+			config.JWTSecret,
+			config.CookieShortLifetime,
+		)
+		fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
+		freshPayload := token.Payload{
+			UserID:     username,
+			RememberMe: rememberMe,
+			PageSize:   config.DefaultPageSize,
+			Page:       1,
+			SearchBy:   "",
+			SortBy:     utils.Datetime,
+			SortAsc:    true,
+			FromDate:   fromDate.Format(utils.HTMLDateFormat),
+			ToDate:     toDate.Format(utils.HTMLDateFormat),
+		}
+		funkyToken.SetPayload(freshPayload)
+		funkyToken.Save()
+
+		// token.CreateFresh(username, rememberMe, writer)
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {
@@ -36,8 +62,20 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 }
 
 func Logout(writer http.ResponseWriter, req *http.Request) {
-	user := token.Get(req).UserID
-	token.Clear(writer)
+
+	funkyToken := token.CreateFunkyToken[token.Payload](
+		req,
+		&writer,
+		config.CookieName,
+		config.JWTSecret,
+		config.CookieShortLifetime,
+	)
+	// user := token.Get(req).UserID
+	// token.Clear(writer)
+
+	user := funkyToken.GetPayload().UserID
+	funkyToken.Clear()
+
 	writer.Header().Set("HX-Redirect", "/login")
 	log.Printf("User %s logged out", user)
 }

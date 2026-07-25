@@ -19,7 +19,6 @@ type Token[T any] struct {
 	Writer     *http.ResponseWriter
 	CookieName string
 	Secret     []byte
-	Lifetime   int
 	Claims     claims[T]
 }
 
@@ -63,12 +62,16 @@ func (token Token[T]) GetLifetime() int {
 }
 
 func (token Token[T]) Save() {
+	/* Update lifetime */
+	token.SetLifetime(token.GetLifetime())
+	/* Create actual jwt */
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, token.Claims)
 	jwtTokenStr, err := jwtToken.SignedString(token.Secret)
 	/* Major screwup */
 	if err != nil {
 		panic(err)
 	}
+	/* Done */
 	setCookie(
 		token.CookieName,
 		jwtTokenStr,
@@ -97,8 +100,6 @@ func (token *Token[T]) Load() (T, error) {
 	if err != nil {
 		return emptyResult, fmt.Errorf("Unable to parse token: %w", err)
 	}
-	/* Calculate token/cookie lifetime in seconds */
-	// token.Lifetime = int(token.Claims.ExpiresAt.Time.Sub(token.Claims.IssuedAt.Time).Seconds())
 	/* Done */
 	return token.Claims.Payload, nil
 }

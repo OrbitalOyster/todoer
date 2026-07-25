@@ -26,18 +26,22 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		req.FormValue("remember-me")
 	/* Auth mockup */
 	if username == "admin" && password == "password" {
-		lifetime := config.CookieShortLifetime
-		if rememberMeStr == "true" {
-			lifetime = config.CookieLifetime
-		}
+		/* Token */
 		token := token.Init[utils.Payload](
 			req,
 			&writer,
 			config.CookieName,
 			config.JWTSecret,
 		)
+		/* Lifetime */
+		lifetime := config.CookieShortLifetime
+		if rememberMeStr == "true" {
+			lifetime = config.CookieLifetime
+		}
+		token.SetLifetime(lifetime)
 		fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-		freshPayload := utils.Payload{
+		/* Payload */
+		defaultPayload := utils.Payload{
 			UserID:   username,
 			PageSize: config.DefaultPageSize,
 			Page:     1,
@@ -47,8 +51,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			FromDate: fromDate.Format(utils.HTMLDateFormat),
 			ToDate:   toDate.Format(utils.HTMLDateFormat),
 		}
-		token.SetLifetime(lifetime)
-		token.SetPayload(freshPayload)
+		token.SetPayload(defaultPayload)
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {

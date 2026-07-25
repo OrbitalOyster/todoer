@@ -59,7 +59,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 }
 
 func Logout(writer http.ResponseWriter, req *http.Request) {
-  token := req.Context(). /* Get context from request */
+	token := req.Context(). /* Get context from request */
 				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
 	payload := token.GetPayload() /* Load actual payload */
 	token.Clear()

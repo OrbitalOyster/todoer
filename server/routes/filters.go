@@ -20,7 +20,7 @@ func executeTemplate(
 	page int) {
 	payload := req.Context(). /* Get context from request */
 					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
-					GetPayload()                                       /* Load actual payload */
+					GetPayload()                                  /* Load actual payload */
 	pages.ExecutePartial(
 		writer,
 		"task-list",

@@ -7,5 +7,5 @@ func Load(newList []User) {
 }
 
 func GetAllUsers() []User {
-	return list;
+	return list
 }

@@ -35,8 +35,8 @@ func getCookie(name string, req *http.Request) string {
 func clearCookie(name string, writer http.ResponseWriter) {
 	writer.Header().Del("Set-Cookie")
 	emptyCookie := http.Cookie{
-		Name:     name,
-		Expires:  time.Now().Add(-time.Hour),
+		Name:    name,
+		Expires: time.Now().Add(-time.Hour),
 	}
 	http.SetCookie(writer, &emptyCookie)
 }

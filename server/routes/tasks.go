@@ -50,7 +50,7 @@ func getCheckboxedTasks(req *http.Request) []int {
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 	payload := req.Context(). /* Get context from request */
 					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
-					GetPayload()                                       /* Load actual payload */
+					GetPayload()                                  /* Load actual payload */
 
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -99,7 +99,7 @@ func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
 func AddTask(writer http.ResponseWriter, req *http.Request) {
 	payload := req.Context(). /* Get context from request */
 					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
-					GetPayload()                                       /* Load actual payload */
+					GetPayload()                                  /* Load actual payload */
 
 	user := payload.UserID
 	description := req.FormValue("description")

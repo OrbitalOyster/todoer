@@ -52,7 +52,6 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 	payload.PageSize = size
 	payload.Page = page
 	token.SetPayload(payload)
-	token.Save()
 	/* Done */
 	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }
@@ -70,7 +69,6 @@ func setPage(page int, req *http.Request, writer http.ResponseWriter) {
 	/* Update token */
 	payload.Page = page
 	token.SetPayload(payload)
-	token.Save()
 	/* Done */
 	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }
@@ -124,7 +122,6 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 	payload.SortBy = field
 	payload.SortAsc = sortAsc
 	token.SetPayload(payload)
-	token.Save()
 	/* Done */
 	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }
@@ -144,7 +141,6 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	payload.Page = page
 	payload.SearchBy = searchBy
 	token.SetPayload(payload)
-	token.Save()
 	/* Done */
 	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }
@@ -187,7 +183,6 @@ func SetDate(writer http.ResponseWriter, req *http.Request) {
 	payload.FromDate = fromDateStr
 	payload.ToDate = toDateStr
 	token.SetPayload(payload)
-	token.Save()
 	/* Update calendar elements if both dates are set */
 	if req.Form.Has("from-date") && req.Form.Has("to-date") {
 		pages.ExecutePartial(

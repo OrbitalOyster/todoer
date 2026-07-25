@@ -40,7 +40,6 @@ func Auth(next http.Handler) http.Handler {
 			&writer,
 			config.CookieName,
 			config.JWTSecret,
-			config.CookieShortLifetime,
 		)
 		if _, err := token.Load(); err != nil {
 			log.Printf("Redirect to login: %s", err)

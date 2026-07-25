@@ -28,39 +28,53 @@ func Init[T any](
 	writer *http.ResponseWriter,
 	cookieName string,
 	secret []byte,
-	lifetime int) Token[T] {
+) Token[T] {
 	return Token[T]{
 		Request:    req,
 		Writer:     writer,
 		CookieName: cookieName,
 		Secret:     secret,
-		Lifetime:   lifetime,
 	}
 }
 
 func (token *Token[T]) SetPayload(payload T) {
 	token.Claims.Payload = payload
+	token.Save()
 }
 
 func (token Token[T]) GetPayload() T {
 	return token.Claims.Payload
 }
 
-func (token Token[T]) Save() {
-	expires := time.Now().Add(time.Duration(token.Lifetime) * time.Second)
+func (token *Token[T]) SetLifetime(lifetime int) {
+	issuedAt := time.Now()
+	expires := issuedAt.Add(time.Duration(lifetime) * time.Second)
 	token.Claims = claims[T]{
 		Payload: token.Claims.Payload,
 		RegisteredClaims: jwt.RegisteredClaims{
+			IssuedAt:  jwt.NewNumericDate(issuedAt),
 			ExpiresAt: jwt.NewNumericDate(expires),
 		},
 	}
+}
+
+func (token Token[T]) GetLifetime() int {
+	return int(token.Claims.ExpiresAt.Time.Sub(token.Claims.IssuedAt.Time).Seconds())
+}
+
+func (token Token[T]) Save() {
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, token.Claims)
 	jwtTokenStr, err := jwtToken.SignedString(token.Secret)
 	/* Major screwup */
 	if err != nil {
 		panic(err)
 	}
-	setCookie(token.CookieName, jwtTokenStr, expires, *token.Writer)
+	setCookie(
+		token.CookieName,
+		jwtTokenStr,
+		token.Claims.ExpiresAt.Time,
+		*token.Writer,
+	)
 }
 
 func (token *Token[T]) Load() (T, error) {
@@ -83,6 +97,9 @@ func (token *Token[T]) Load() (T, error) {
 	if err != nil {
 		return emptyResult, fmt.Errorf("Unable to parse token: %w", err)
 	}
+	/* Calculate token/cookie lifetime in seconds */
+	// token.Lifetime = int(token.Claims.ExpiresAt.Time.Sub(token.Claims.IssuedAt.Time).Seconds())
+	/* Done */
 	return token.Claims.Payload, nil
 }
 

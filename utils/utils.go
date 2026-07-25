@@ -19,7 +19,6 @@ const (
 
 type Payload struct {
 	UserID     string        `json:"user_id"`
-	RememberMe bool          `json:"remember_me"`
 	SearchBy   string        `json:"search_by"`
 	Page       int           `json:"page"`
 	PageSize   int           `json:"page_size"`

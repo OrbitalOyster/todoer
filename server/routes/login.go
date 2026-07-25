@@ -30,12 +30,16 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	}
 	/* Auth mockup */
 	if username == "admin" && password == "password" {
+		lifetime := config.CookieShortLifetime
+		if rememberMe {
+			lifetime = config.CookieLifetime
+		}
 		token := token.Init[utils.Payload](
 			req,
 			&writer,
 			config.CookieName,
 			config.JWTSecret,
-			config.CookieShortLifetime,
+			lifetime,
 		)
 		fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 		freshPayload := utils.Payload{

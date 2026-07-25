@@ -2,9 +2,9 @@ package routes
 
 import (
 	"net/http"
-	"todoer/server/token"
 	"todoer/tasks"
 	"todoer/users"
+	"todoer/utils"
 )
 
 type RouterEntry func(http.ResponseWriter, *http.Request)
@@ -14,7 +14,7 @@ type TaskListData struct {
 	Tasks      []tasks.Task
 	TotalPages int
 	Pagination []int
-	Payload    token.Payload
+	Payload    utils.Payload
 	Checkboxes []bool
 }
 
@@ -25,7 +25,7 @@ type MainPageData struct {
 }
 
 type DatesOOBData struct {
-	Payload token.Payload
+	Payload utils.Payload
 }
 
 type EditTaskFormData struct {

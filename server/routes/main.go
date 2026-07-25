@@ -10,21 +10,9 @@ import (
 )
 
 func GetMainPage(writer http.ResponseWriter, req *http.Request) {
-	// payload := token.Get(req)
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	/* Should not happen */
-	if err := funkyToken.Load(); err != nil {
-		panic(err)
-	}
-	payload := funkyToken.GetPayload()
-
+	payload := req.Context(). /* Get context from request */
+					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
+					GetPayload()                                       /* Load actual payload */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,

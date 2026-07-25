@@ -1,136 +1,91 @@
 package token
 
 import (
-	// "fmt"
-	// "net/http"
-	// "reflect"
-	// "time"
-	// "todoer/config"
-	"todoer/utils"
+	"fmt"
+	"net/http"
+	"time"
 
-	// "github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-type Payload struct {
-	UserID     string              `json:"user_id"`
-	RememberMe bool                `json:"remember_me"`
-	SearchBy   string              `json:"search_by"`
-	Page       int                 `json:"page"`
-	PageSize   int                 `json:"page_size"`
-	SortBy     utils.SortableField `json:"sort_by"`
-	SortAsc    bool                `json:"sort_asc"`
-	FromDate   string              `json:"from_date"`
-	ToDate     string              `json:"to_date"`
-}
-
-/*
-type Claims struct {
-	Payload     `json:"payload"`
+/* Actual claims that go into jwt */
+type claims[T any] struct {
+	Payload T `json:"payload"`
 	jwt.RegisteredClaims
 }
 
-func getExpirationTime(rememberMe bool) time.Time {
-	expires := time.Now()
-	if rememberMe {
-		expires = expires.Add(
-			time.Duration(config.CookieLifetime) * time.Second,
-		)
-	} else {
-		expires = expires.Add(
-			time.Duration(config.CookieShortLifetime) * time.Second,
-		)
-	}
-	return expires
+type Token[T any] struct {
+	Request    *http.Request
+	Writer     *http.ResponseWriter
+	CookieName string
+	Secret     []byte
+	Lifetime   int
+	Claims     claims[T]
 }
 
-func Create(payload Payload, writer http.ResponseWriter) {
-	expires := getExpirationTime(payload.RememberMe)
-	claims := Claims{
-		Payload:     payload,
+func Init[T any](
+	req *http.Request,
+	writer *http.ResponseWriter,
+	cookieName string,
+	secret []byte,
+	lifetime int) Token[T] {
+	return Token[T]{
+		Request:    req,
+		Writer:     writer,
+		CookieName: cookieName,
+		Secret:     secret,
+		Lifetime:   lifetime,
+	}
+}
+
+func (token *Token[T]) SetPayload(payload T) {
+	token.Claims.Payload = payload
+}
+
+func (token Token[T]) GetPayload() T {
+	return token.Claims.Payload
+}
+
+func (token Token[T]) Save() {
+	expires := time.Now().Add(time.Duration(token.Lifetime) * time.Second)
+	token.Claims = claims[T]{
+		Payload: token.Claims.Payload,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expires),
 		},
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenStr, err := token.SignedString(config.JWTSecret)
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, token.Claims)
+	jwtTokenStr, err := jwtToken.SignedString(token.Secret)
+	/* Major screwup */
 	if err != nil {
 		panic(err)
 	}
-	setCookie(config.CookieName, tokenStr, expires, writer)
+	setCookie(token.CookieName, jwtTokenStr, expires, *token.Writer)
 }
 
-func CreateFresh(username string, rememberMe bool, writer http.ResponseWriter) {
-	fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-	payload := Payload{
-		UserID:     username,
-		RememberMe: rememberMe,
-		PageSize:   config.DefaultPageSize,
-		Page:       1,
-		SearchBy:   "",
-		SortBy:     utils.Datetime,
-		SortAsc:    true,
-		FromDate:   fromDate.Format(utils.HTMLDateFormat),
-		ToDate:     toDate.Format(utils.HTMLDateFormat),
-	}
-	Create(payload, writer)
-}
-
-func Update(payload *Payload, key string, value any, writer http.ResponseWriter) {
-	reflectValue := reflect.ValueOf(payload).Elem()
-	field := reflectValue.FieldByName(key)
-	if !field.IsValid() || !field.CanSet() {
-		panic(fmt.Errorf("Invalid payload key: %s", key))
-	}
-	switch key {
-	case "UserID", "SearchBy", "FromDate", "ToDate":
-		valueStr, ok := value.(string)
-		if !ok {
-			panic("Invalid payload type (must be string)")
-		}
-		field.SetString(valueStr)
-	case "Page", "PageSize":
-		valueInt, ok := value.(int)
-		if !ok {
-			panic("Invalid payload type (must be int)")
-		}
-		field.SetInt(int64(valueInt))
-	case "SortBy":
-		valueInt, ok := value.(utils.SortableField)
-		if !ok {
-			panic("Invalid payload type (must be SortableField)")
-		}
-		field.SetInt(int64(utils.SortableField(valueInt)))
-	case "RememberMe", "SortAsc":
-		valueBool, ok := value.(bool)
-		if !ok {
-			panic("Invalid payload type (must be bool)")
-		}
-		field.SetBool(valueBool)
-	default:
-		panic(fmt.Errorf("Invalid payload key: %s", key))
-	}
-	Create(*payload, writer)
-}
-
-func Get(req *http.Request) *Payload {
-	cookie := getCookie(config.CookieName, req)
+func (token *Token[T]) Load() (T, error) {
+	var emptyResult T
+	cookie := getCookie(token.CookieName, token.Request)
+	/* Should not happen */
 	if cookie == "" {
-		panic("Empty cookie")
+		return emptyResult, fmt.Errorf("Empty cookie")
 	}
-	claims := Claims{}
-	_, err := jwt.ParseWithClaims(cookie, &claims, func(token *jwt.Token) (any, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			panic(fmt.Errorf("Unexpected signing method: %v", token.Header["alg"]))
-		}
-		return config.JWTSecret, nil
-	})
+	_, err := jwt.ParseWithClaims(
+		cookie,
+		&token.Claims,
+		func(jwtToken *jwt.Token) (any, error) {
+			if _, ok := jwtToken.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("Unexpected signing method: %v", jwtToken.Header["alg"])
+			}
+			return token.Secret, nil
+		},
+	)
 	if err != nil {
-		panic(fmt.Errorf("Unable to parse token: %w", err))
+		return emptyResult, fmt.Errorf("Unable to parse token: %w", err)
 	}
-	return &claims.Payload
+	return token.Claims.Payload, nil
 }
 
-func Clear(writer http.ResponseWriter) {
-	clearCookie(config.CookieName, writer)
+func (token *Token[T]) Clear() {
+	clearCookie(token.CookieName, *token.Writer)
 }
-*/

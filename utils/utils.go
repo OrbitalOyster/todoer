@@ -17,6 +17,18 @@ const (
 	Datetime
 )
 
+type Payload struct {
+	UserID     string        `json:"user_id"`
+	RememberMe bool          `json:"remember_me"`
+	SearchBy   string        `json:"search_by"`
+	Page       int           `json:"page"`
+	PageSize   int           `json:"page_size"`
+	SortBy     SortableField `json:"sort_by"`
+	SortAsc    bool          `json:"sort_asc"`
+	FromDate   string        `json:"from_date"`
+	ToDate     string        `json:"to_date"`
+}
+
 func (field SortableField) String() string {
 	switch field {
 	case Description:

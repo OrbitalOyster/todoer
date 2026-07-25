@@ -30,8 +30,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 	}
 	/* Auth mockup */
 	if username == "admin" && password == "password" {
-
-		funkyToken := token.CreateFunkyToken[token.Payload](
+		token := token.Init[utils.Payload](
 			req,
 			&writer,
 			config.CookieName,
@@ -39,7 +38,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			config.CookieShortLifetime,
 		)
 		fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-		freshPayload := token.Payload{
+		freshPayload := utils.Payload{
 			UserID:     username,
 			RememberMe: rememberMe,
 			PageSize:   config.DefaultPageSize,
@@ -50,10 +49,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			FromDate:   fromDate.Format(utils.HTMLDateFormat),
 			ToDate:     toDate.Format(utils.HTMLDateFormat),
 		}
-		funkyToken.SetPayload(freshPayload)
-		funkyToken.Save()
-
-		// token.CreateFresh(username, rememberMe, writer)
+		token.SetPayload(freshPayload)
+		token.Save()
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {
@@ -62,20 +59,10 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 }
 
 func Logout(writer http.ResponseWriter, req *http.Request) {
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	// user := token.Get(req).UserID
-	// token.Clear(writer)
-
-	user := funkyToken.GetPayload().UserID
-	funkyToken.Clear()
-
+  token := req.Context(). /* Get context from request */
+				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
+	payload := token.GetPayload() /* Load actual payload */
+	token.Clear()
 	writer.Header().Set("HX-Redirect", "/login")
-	log.Printf("User %s logged out", user)
+	log.Printf("User %s logged out", payload.UserID)
 }

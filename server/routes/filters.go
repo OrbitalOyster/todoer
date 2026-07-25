@@ -14,10 +14,13 @@ import (
 
 func executeTemplate(
 	writer http.ResponseWriter,
-	payload token.Payload,
+	req *http.Request,
 	selectedTasks []tasks.Task,
 	totalPages int,
 	page int) {
+	payload := req.Context(). /* Get context from request */
+					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
+					GetPayload()                                       /* Load actual payload */
 	pages.ExecutePartial(
 		writer,
 		"task-list",
@@ -36,21 +39,9 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 	if err != nil || !slices.Contains(config.PageSizes, size) {
 		size = config.DefaultPageSize
 	}
-	// payload := token.Get(req)
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	/* Should not happen */
-	if err := funkyToken.Load(); err != nil {
-		panic(err)
-	}
-	payload := funkyToken.GetPayload()
-
+	token := req.Context(). /* Get context from request */
+				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
+	payload := token.GetPayload() /* Load actual payload */
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -58,33 +49,18 @@ func SetPageSize(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, size,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	// token.Update(payload, "PageSize", size, writer)
-	// token.Update(payload, "Page", page, writer)
-
 	payload.PageSize = size
 	payload.Page = page
-	funkyToken.SetPayload(payload)
-	funkyToken.Save()
-
+	token.SetPayload(payload)
+	token.Save()
 	/* Done */
-	executeTemplate(writer, payload, selectedTasks, totalPages, page)
+	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }
 
 func setPage(page int, req *http.Request, writer http.ResponseWriter) {
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	/* Should not happen */
-	if err := funkyToken.Load(); err != nil {
-		panic(err)
-	}
-	payload := funkyToken.GetPayload()
-
+	token := req.Context(). /* Get context from request */
+				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
+	payload := token.GetPayload() /* Load actual payload */
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -92,13 +68,11 @@ func setPage(page int, req *http.Request, writer http.ResponseWriter) {
 		page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-	// token.Update(payload, "Page", page, writer)
 	payload.Page = page
-	funkyToken.SetPayload(payload)
-	funkyToken.Save()
-
+	token.SetPayload(payload)
+	token.Save()
 	/* Done */
-	executeTemplate(writer, payload, selectedTasks, totalPages, page)
+	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }
 
 func SetPage(writer http.ResponseWriter, req *http.Request) {
@@ -107,47 +81,22 @@ func SetPage(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		page = 1
 	}
-	// payload := token.Get(req)
 	setPage(page, req, writer)
 }
 
 func NextPage(writer http.ResponseWriter, req *http.Request) {
-	// payload := token.Get(req)
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	/* Should not happen */
-	if err := funkyToken.Load(); err != nil {
-		panic(err)
-	}
-	payload := funkyToken.GetPayload()
-
+	token := req.Context(). /* Get context from request */
+				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
+	payload := token.GetPayload() /* Load actual payload */
 	page := payload.Page + 1
 	/* Return updated task table */
 	setPage(page, req, writer)
 }
 
 func PreviousPage(writer http.ResponseWriter, req *http.Request) {
-	// payload := token.Get(req)
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	/* Should not happen */
-	if err := funkyToken.Load(); err != nil {
-		panic(err)
-	}
-	payload := funkyToken.GetPayload()
-
+	token := req.Context(). /* Get context from request */
+				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
+	payload := token.GetPayload() /* Load actual payload */
 	page := payload.Page - 1
 	/* Return updated task table */
 	setPage(page, req, writer)
@@ -156,22 +105,9 @@ func PreviousPage(writer http.ResponseWriter, req *http.Request) {
 func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 	fieldStr := req.PathValue("field")
 	field := utils.ParseSortableField(fieldStr)
-
-	// payload := token.Get(req)
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	/* Should not happen */
-	if err := funkyToken.Load(); err != nil {
-		panic(err)
-	}
-	payload := funkyToken.GetPayload()
-
+	token := req.Context(). /* Get context from request */
+				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
+	payload := token.GetPayload() /* Load actual payload */
 	sortAsc := payload.SortAsc
 	/* Reverse sort */
 	if payload.SortBy == field {
@@ -184,37 +120,20 @@ func SetSortBy(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		field, sortAsc)
 	/* Update token */
-	// token.Update(payload, "Page", page, writer)
-	// token.Update(payload, "SortBy", field, writer)
-	// token.Update(payload, "SortAsc", sortAsc, writer)
-
 	payload.Page = page
 	payload.SortBy = field
 	payload.SortAsc = sortAsc
-	funkyToken.SetPayload(payload)
-	funkyToken.Save()
-
+	token.SetPayload(payload)
+	token.Save()
 	/* Done */
-	executeTemplate(writer, payload, selectedTasks, totalPages, page)
+	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }
 
 func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	searchBy := req.FormValue("searchBy")
-	// payload := token.Get(req)
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	/* Should not happen */
-	if err := funkyToken.Load(); err != nil {
-		panic(err)
-	}
-	payload := funkyToken.GetPayload()
-
+	token := req.Context(). /* Get context from request */
+				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
+	payload := token.GetPayload() /* Load actual payload */
 	/* Get tasks */
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
@@ -224,33 +143,18 @@ func SetSearchBy(writer http.ResponseWriter, req *http.Request) {
 	/* Update token */
 	payload.Page = page
 	payload.SearchBy = searchBy
-	funkyToken.SetPayload(payload)
-	funkyToken.Save()
-
-	// token.Update(payload, "Page", page, writer)
-	// token.Update(payload, "SearchBy", searchBy, writer)
+	token.SetPayload(payload)
+	token.Save()
 	/* Done */
-	executeTemplate(writer, payload, selectedTasks, totalPages, page)
+	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }
 
 func SetDate(writer http.ResponseWriter, req *http.Request) {
 	fromDateStr := req.FormValue("from-date")
 	toDateStr := req.FormValue("to-date")
-	// payload := token.Get(req)
-
-	funkyToken := token.CreateFunkyToken[token.Payload](
-		req,
-		&writer,
-		config.CookieName,
-		config.JWTSecret,
-		config.CookieShortLifetime,
-	)
-	/* Should not happen */
-	if err := funkyToken.Load(); err != nil {
-		panic(err)
-	}
-	payload := funkyToken.GetPayload()
-
+	token := req.Context(). /* Get context from request */
+				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
+	payload := token.GetPayload() /* Load actual payload */
 	fromDateFallback, toDateFallback := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	/* Setting from date? */
 	if fromDateStr != "" {
@@ -279,17 +183,11 @@ func SetDate(writer http.ResponseWriter, req *http.Request) {
 		payload.Page, payload.PageSize,
 		payload.SortBy, payload.SortAsc)
 	/* Update token */
-
 	payload.Page = page
 	payload.FromDate = fromDateStr
 	payload.ToDate = toDateStr
-	funkyToken.SetPayload(payload)
-	funkyToken.Save()
-
-	// token.Update(payload, "Page", page, writer)
-	// token.Update(payload, "FromDate", fromDateStr, writer)
-	// token.Update(payload, "ToDate", toDateStr, writer)
-
+	token.SetPayload(payload)
+	token.Save()
 	/* Update calendar elements if both dates are set */
 	if req.Form.Has("from-date") && req.Form.Has("to-date") {
 		pages.ExecutePartial(
@@ -298,5 +196,5 @@ func SetDate(writer http.ResponseWriter, req *http.Request) {
 			DatesOOBData{Payload: payload})
 	}
 	/* Done */
-	executeTemplate(writer, payload, selectedTasks, totalPages, page)
+	executeTemplate(writer, req, selectedTasks, totalPages, page)
 }

@@ -1,18 +1,22 @@
 package middleware
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"slices"
 	"strings"
 	"todoer/config"
 	"todoer/server/token"
+	"todoer/utils"
 )
 
 var publicURIs = []string{
 	"/login",
 	"/favicon.ico",
 }
+
+const redirectToURL = "/login"
 
 func isPublicURL(URL string) bool {
 	return slices.Contains(publicURIs, URL) ||
@@ -29,58 +33,30 @@ func Auth(next http.Handler) http.Handler {
 			next.ServeHTTP(writer, req)
 			return
 		}
-
-		funkyToken := token.CreateFunkyToken[token.Payload](
+		/* Protected routes - check credentials */
+		/* Init token */
+		token := token.Init[utils.Payload](
 			req,
 			&writer,
 			config.CookieName,
 			config.JWTSecret,
 			config.CookieShortLifetime,
 		)
-
-		// if err := funky.Load(); err != nil {
-		// 	log.Printf("ERROR: %v", err)
-		// } else {
-		// 	log.Printf("RESULT: %v\n", funky.GetPayload())
-		// }
-
-		/* Protected routes - check credentials */
-		// GetPayloadSafe := func() *token.Payload {
-		// 	/* On fail - redirect to login */
-		// 	defer func() {
-		// 		if r := recover(); r != nil {
-		// 			log.Printf("Redirect to login: %s", r)
-		// 			/* Add HTMX redirect header on HTMX requests, otherwise redirect */
-		// 			if req.Header.Get("HX-Request") == "true" {
-		// 				writer.Header().Set("HX-Redirect", "/login")
-		// 			} else {
-		// 				http.Redirect(writer, req, "/login", http.StatusSeeOther)
-		// 			}
-		// 		}
-		// 	}()
-		// 	return token.Get(req)
-		// }
-
-		if err := funkyToken.Load(); err != nil {
+		if _, err := token.Load(); err != nil {
 			log.Printf("Redirect to login: %s", err)
 			/* Add HTMX redirect header on HTMX requests, otherwise redirect */
 			if req.Header.Get("HX-Request") == "true" {
-				writer.Header().Set("HX-Redirect", "/login")
+				writer.Header().Set("HX-Redirect", redirectToURL)
 			} else {
-				http.Redirect(writer, req, "/login", http.StatusSeeOther)
+				http.Redirect(writer, req, redirectToURL, http.StatusSeeOther)
 			}
 		} else {
 			/* Reissue the token */
-			funkyToken.Save()
+			token.Save()
+			/* Save token to context, pass it down the line */
+			ctx := context.WithValue(req.Context(), "token", &token)
 			/* Done */
-			next.ServeHTTP(writer, req)
+			next.ServeHTTP(writer, req.WithContext(ctx))
 		}
-
-		// if payload := GetPayloadSafe(); payload != nil {
-		// 	/* Reissue the token */
-		// 	token.Create(*payload, writer)
-		// 	/* Done */
-		// 	next.ServeHTTP(writer, req)
-		// }
 	})
 }

@@ -65,15 +65,7 @@
 						</th>
 						<th class="text-center align-middle">Who</th>
 						<th class="text-center align-middle status">
-							<button
-								class="btn btn-link dotted"
-								type="button"
-								id="filter-task-by-status-btn"
-								data-bs-toggle="popover"
-								data-bs-placement="bottom"
-							>
-								Status
-							</button>
+    						Status
 						</th>
 						<th class="text-center align-middle actions">Actions</th>
 					</tr>
@@ -101,7 +93,6 @@
 			</table>
 			<script>
 				createSelectAllGroup("form.htmx-added #select-all-tasks", "form.htmx-added .select-task")
-				initPopover("#filter-task-by-status-btn", "#foo")
 			</script>
 		</form>
 		<!-- Pagination -->

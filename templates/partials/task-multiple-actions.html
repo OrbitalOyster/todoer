@@ -6,12 +6,11 @@
 				class="dropdown-item text-info"
 				type="button"
 				hx-patch="/htmx/tasks"
+				hx-vals='{ "read-only": true }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
 				hx-disabled-elt=".htmx-disable"
-				hx-vals='{ "read-only": true }'
-				hx-trigger="confirmed"
-				onclick="htmxConfirmMsg(this, 'Lock multiple tasks', 'Are you sure?')"
+				hx-confirm="Lock multiple tasks?"
 			>
 				<i class="bi bi-lock-fill me-2"></i>
 				Lock
@@ -23,12 +22,11 @@
 				class="dropdown-item text-info"
 				type="button"
 				hx-patch="/htmx/tasks"
+				hx-vals='{ "read-only": false }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
 				hx-disabled-elt=".htmx-disable"
-				hx-vals='{ "read-only": false }'
-				hx-trigger="confirmed"
-				onclick="htmxConfirmMsg(this, 'Unlock multiple tasks', 'Are you sure?')"
+				hx-confirm="Unlock multiple tasks?"
 			>
 				<i class="bi bi-unlock-fill me-2"></i>
 				Unlock
@@ -49,8 +47,7 @@
 				hx-vals='{ "status": "InProgress" }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
-				hx-trigger="confirmed"
-				onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
+				hx-confirm="Update multiple tasks?"
 			>
 				<i class="bi bi-clock me-2"></i>
 				In progress
@@ -65,8 +62,7 @@
 				hx-vals='{ "status": "Done" }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
-				hx-trigger="confirmed"
-				onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
+				hx-confirm="Update multiple tasks?"
 			>
 				<i class="bi bi-check2-circle me-2"></i>
 				Done
@@ -81,8 +77,7 @@
 				hx-vals='{ "status": "Failed" }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
-				hx-trigger="confirmed"
-				onclick="htmxConfirmMsg(this, 'Update multiple tasks', 'Are you sure?')"
+				hx-confirm="Fail multiple tasks?"
 			>
 				<i class="bi bi-emoji-angry-fill me-2"></i>
 				Failed
@@ -99,8 +94,7 @@
 				hx-delete="/htmx/tasks"
 				hx-target="#task-list"
 				hx-indicator="#task-list"
-				hx-trigger="confirmed"
-				onclick="htmxConfirmMsg(this, 'Delete multiple tasks', 'Are you sure?')"
+				hx-confirm="Delete multiple tasks?"
 			>
 				<i class="bi bi-trash-fill me-2"></i>
 				Delete

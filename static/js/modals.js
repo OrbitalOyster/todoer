@@ -2,11 +2,13 @@
 
 var modalEl, modal;
 
-/* Set up bootstrap modals */
-const initModals = () => {
-	modalEl = document.getElementById("modal");
-	modal = new bootstrap.Modal("#modal");
-	document.body.addEventListener("hideModal", () => modal.hide());
+/* HTMX modal */
+const showHTMXModal = () => {
+	/* Remove previous HTMX content */
+	const toRemoveQuery = "#modal > div:first-child > :not(.modal-placeholder)",
+		toRemoveEls = document.querySelectorAll(toRemoveQuery);
+	toRemoveEls.forEach((el) => el.remove());
+	modal.show();
 };
 
 /* Confirm modal */
@@ -33,16 +35,23 @@ const confirmMsg = async (title, content) => {
 		modalEl.addEventListener("hidden.bs.modal", cleanUp);
 	});
 };
-/* Confirm modal for htmx events */
-const htmxConfirmMsg = (el, title, content) =>
-	confirmMsg(title, content).then(
-		(res) => res && htmx.trigger(el, "confirmed"),
-	);
-/* HTMX modal */
-const showHTMXModal = () => {
-	/* Remove previous HTMX content */
-	const toRemoveQuery = "#modal > div:first-child > :not(.modal-placeholder)",
-		toRemoveEls = document.querySelectorAll(toRemoveQuery);
-	toRemoveEls.forEach((el) => el.remove());
-	modal.show();
+
+/* For elements with "hx-confirm" tag */
+const onHTMXConfirm = (event) => {
+  /* No confirmation needed */
+  if (!event.detail.question)
+    return
+  /* Skip default action, show confirm modal */
+  event.preventDefault()
+  confirmMsg("Confirm action", event.detail.question).
+    /* true to skip the built-in window.confirm() */
+    then(res => res && event.detail.issueRequest(true))
+}
+
+/* Set up bootstrap modals */
+const initModals = () => {
+	modalEl = document.getElementById("modal");
+	modal = new bootstrap.Modal("#modal");
+	document.body.addEventListener("hideModal", () => modal.hide());
+	document.addEventListener("htmx:confirm", onHTMXConfirm )
 };

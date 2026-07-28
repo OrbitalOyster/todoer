@@ -5,8 +5,7 @@
 			class="btn btn-warning"
 			type="button"
 			hx-post="/logout"
-			hx-trigger="confirmed"
-			onclick="htmxConfirmMsg(this, 'Logging out', 'Are you sure?')"
+			hx-confirm="Log out?"
 		>
 			<i class="bi bi-box-arrow-right" id="login-btn-icon"></i>
 			Log out

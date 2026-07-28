@@ -1,3 +1,11 @@
 {{ define "navbar" }}
-
+    <nav class="navbar align-items-center d-flex justify-content-between p-2">
+        <div class="d-flex gap-3 align-items-center">
+    		<img class="logo" src="/img/goose.webp" />
+    		<h2>
+    			<a href="/">todoer</a>
+    		</h2>
+    	</div>
+    	{{ template "usercard" . }}
+    </nav>
 {{ end }}

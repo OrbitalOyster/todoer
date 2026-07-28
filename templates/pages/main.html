@@ -1,14 +1,6 @@
 {{ define "page" }}
 	<main class="col-xl-7 col-md-100 m-auto">
-		<header class="align-items-center d-flex justify-content-between p-2">
-			<div class="d-flex gap-3 align-items-center">
-				<img class="logo" src="/img/goose.webp" />
-				<h2>
-					<a href="/">todoer</a>
-				</h2>
-			</div>
-			{{ template "usercard" . }}
-		</header>
+	    {{ template "navbar" . }}
 		<div class="card shadow-sm">
 			<div class="card-header text-center">
 				<strong>Tasks</strong>

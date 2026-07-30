@@ -32,8 +32,7 @@ func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func getCheckboxedTasks(req *http.Request) []int {
-	var result []int
+func getCheckboxedTasks(req *http.Request) (result []int) {
 	if !req.Form.Has("checked") { /* Nothing checked */
 		return result
 	}
@@ -51,7 +50,6 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 	payload := req.Context(). /* Get context from request */
 					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
 					GetPayload()                                  /* Load actual payload */
-
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
@@ -100,7 +98,6 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 	payload := req.Context(). /* Get context from request */
 					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
 					GetPayload()                                  /* Load actual payload */
-
 	user := payload.UserID
 	description := req.FormValue("description")
 	tasks.Add(user, description)

@@ -5,6 +5,7 @@
 			data-bs-autohide="{{ .Autohide }}"
 			data-bs-delay="10000"
 		>
+		    <!-- Time of event -->
 			<div class="toast-header {{ .HeaderColor }}">
 				<i class="bi me-2 {{ .IconClass }} {{ .IconColor }}"></i>
 				<strong class="me-auto">{{ .Title }}</strong>
@@ -15,6 +16,7 @@
 					data-bs-dismiss="toast"
 				></button>
 			</div>
+			<!-- Progress bar -->
 			{{ if eq .Autohide "true" }}
 				<div style="height: 2px">
 					<div

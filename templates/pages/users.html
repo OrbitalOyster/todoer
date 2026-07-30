@@ -1,0 +1,7 @@
+{{ define "page" }}
+    <ul>
+        {{ range .Users }}
+            <li>{{ .Name }}</li>
+        {{ end }}
+    </ul>
+{{ end }}

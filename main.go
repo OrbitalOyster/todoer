@@ -28,10 +28,12 @@ func main() {
 	/* Pages */
 	pages.Add("login", "login")
 	pages.Add("main", "base")
+	pages.Add("users", "base")
 	/* Routes */
 	routerMap := map[string]routes.RouterEntry{
 		/* "/{$}" exactly matches root path ("/") */
 		"GET /{$}":                       routes.GetMainPage,
+		"GET /users":                     routes.GetUsersPage,
 		"GET /login":                     routes.GetLoginPage,
 		"POST /login":                    routes.LoginAttempt,
 		"POST /logout":                   routes.Logout,

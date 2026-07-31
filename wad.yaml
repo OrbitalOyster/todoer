@@ -1,9 +1,12 @@
 users:
-  - name: Alice
+  - id: 100
+    name: Alice
     role: user
-  - name: Bob
+  - id: 200
+    name: Bob
     role: user
-  - name: Charlie
+  - id: 300
+    name: Charlie
     role: user
 categories: ["food", "house", "social", "other"]
 tasks:

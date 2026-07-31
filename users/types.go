@@ -9,6 +9,7 @@ const (
 )
 
 type User struct {
+	Id   int    `yaml:"id"`
 	Name string `yaml:"name"`
 	Role string `yaml:"role"`
 }

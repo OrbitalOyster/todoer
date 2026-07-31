@@ -7,9 +7,9 @@
 			</div>
 			<div class="card-body">
 				<ul>
-			        {{ range .Users }}
-			            <li>{{ .Name }}</li>
-			        {{ end }}
+					{{ range .Users }}
+						<li><a href="/users/{{ .Id }}">{{ .Name }}</a> - {{ .Role }}</li>
+					{{ end }}
 			    </ul>
 			</div>
 		</div>

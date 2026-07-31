@@ -4,26 +4,22 @@ import (
 	"net/http"
 	"todoer/server/pages"
 	"todoer/server/token"
-	"todoer/users"
 	"todoer/utils"
 )
 
-func GetUsersPage(writer http.ResponseWriter, req *http.Request) {
+func GetCategoriesPage(writer http.ResponseWriter, req *http.Request) {
 	payload := req.Context(). /* Get context from request */
 					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
 					GetPayload()
-	allUsers := users.GetAllUsers()
 	pages.Execute(
 		writer,
-		"users",
+		"categories",
 		struct {
 			Title   string
-			Users   []users.User
 			Payload utils.Payload
 		}{
-			Title:   "todoer - Users",
+			Title:   "todoer - Categories",
 			Payload: payload,
-			Users:   allUsers,
 		},
 	)
 }

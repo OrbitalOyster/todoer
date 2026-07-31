@@ -9,350 +9,350 @@ categories: ["food", "house", "social", "other"]
 tasks:
   - id: 10
     user: Alice
-    datetime: 2026-06-01T10:01:00Z
+    datetime: 2026-08-01T10:01:00Z
     category: food
     description: Drink coffee
     status: Done
     read_only: true
   - id: 11
     user: Bob
-    datetime: 2026-06-02T10:02:00Z
+    datetime: 2026-08-02T10:02:00Z
     category: house
     description: Make the bed
     status: InProgress
     read_only: false
   - id: 12
     user: Charlie
-    datetime: 2026-06-03T10:03:00Z
+    datetime: 2026-08-03T10:03:00Z
     category: house
     description: Water the plants
     status: Done
     read_only: true
   - id: 14
     user: Charlie
-    datetime: 2026-06-04T10:04:00Z
+    datetime: 2026-08-04T10:04:00Z
     category: house
     description: Take out the trash
     status: InProgress
     read_only: false
   - id: 15
     user: Alice
-    datetime: 2026-06-05T10:06:01Z
+    datetime: 2026-08-05T10:06:01Z
     category: house
     description: Sweep the floor
     status: Done
     read_only: false
   - id: 16
     user: Charlie
-    datetime: 2026-06-06T10:06:00Z
+    datetime: 2026-08-06T10:06:00Z
     category: house
     description: Wash the dishes
     status: InProgress
     read_only: false
   - id: 17
     user: Alice
-    datetime: 2026-06-07T10:07:00Z
+    datetime: 2026-08-07T10:07:00Z
     category: social
     description: Send an email
     status: InProgress
     read_only: false
   - id: 18
     user: Bob
-    datetime: 2026-06-08T10:08:00Z
+    datetime: 2026-08-08T10:08:00Z
     category: social
     description: Call a friend
     status: InProgress
     read_only: false
   - id: 20
     user: Bob
-    datetime: 2026-06-09T10:09:00Z
+    datetime: 2026-08-09T10:09:00Z
     category: house
     description: Buy groceries
     status: InProgress
     read_only: false
   - id: 21
     user: Bob
-    datetime: 2026-06-10T10:10:00Z
+    datetime: 2026-08-10T10:10:00Z
     category: other
     description: Feed the pet
     status: InProgress
     read_only: false
   - id: 22
     user: Charlie
-    datetime: 2026-06-11T10:11:00Z
+    datetime: 2026-08-11T10:11:00Z
     category: house
     description: Fold laundry
     status: InProgress
     read_only: false
   - id: 23
     user: Bob
-    datetime: 2026-06-12T10:12:00Z
+    datetime: 2026-08-12T10:12:00Z
     category: other
     description: Pay bills
     status: InProgress
     read_only: false
   - id: 24
     user: Bob
-    datetime: 2026-06-13T10:13:00Z
+    datetime: 2026-08-13T10:13:00Z
     category: house
     description: Clean the bathroom
     status: InProgress
     read_only: false
   - id: 26
     user: Charlie
-    datetime: 2026-06-14T10:14:00Z
+    datetime: 2026-08-14T10:14:00Z
     category: house
     description: Dust the shelves
     status: InProgress
     read_only: false
   - id: 27
     user: Alice
-    datetime: 2026-06-15T10:15:00Z
+    datetime: 2026-08-15T10:15:00Z
     category: food
     description: Prepare a snack
     status: InProgress
     read_only: false
   - id: 28
     user: Bob
-    datetime: 2026-06-16T10:16:00Z
+    datetime: 2026-08-16T10:16:00Z
     category: other
     description: Read a book
     status: InProgress
     read_only: false
   - id: 29
     user: Charlie
-    datetime: 2026-06-17T10:17:00Z
+    datetime: 2026-08-17T10:17:00Z
     category: other
     description: Write a note
     status: InProgress
     read_only: false
   - id: 30
     user: Bob
-    datetime: 2026-06-18T10:18:00Z
+    datetime: 2026-08-18T10:18:00Z
     category: house
     description: Organize a drawer
     status: InProgress
     read_only: false
   - id: 31
     user: Bob
-    datetime: 2026-06-19T10:19:00Z
+    datetime: 2026-08-19T10:19:00Z
     category: other
     description: Exercise for 10 minutes
     status: InProgress
     read_only: false
   - id: 32
     user: Charlie
-    datetime: 2026-06-20T10:20:00Z
+    datetime: 2026-08-20T10:20:00Z
     category: other
     description: Check the calendar
     status: InProgress
     read_only: false
   - id: 33
     user: Alice
-    datetime: 2026-06-21T10:21:00Z
+    datetime: 2026-08-21T10:21:00Z
     category: other
     description: Update a to-do list
     status: InProgress
     read_only: false
   - id: 34
     user: Bob
-    datetime: 2026-06-22T10:22:00Z
+    datetime: 2026-08-22T10:22:00Z
     category: other
     description: Take a short walk
     status: InProgress
     read_only: false
   - id: 35
     user: Charlie
-    datetime: 2026-06-23T10:23:00Z
+    datetime: 2026-08-23T10:23:00Z
     category: house
     description: Wipe the kitchen counters
     status: InProgress
     read_only: false
   - id: 37
     user: Charlie
-    datetime: 2026-06-24T10:24:00Z
+    datetime: 2026-08-24T10:24:00Z
     category: food
     description: Refill water bottle
     status: InProgress
     read_only: false
   - id: 38
     user: Bob
-    datetime: 2026-06-25T10:25:00Z
+    datetime: 2026-08-25T10:25:00Z
     category: other
     description: Charge your phone
     status: InProgress
     read_only: false
   - id: 39
     user: Bob
-    datetime: 2026-06-26T10:26:00Z
+    datetime: 2026-08-26T10:26:00Z
     category: other
     description: Meditate for 5 minutes
     status: InProgress
     read_only: false
   - id: 40
     user: Alice
-    datetime: 2026-06-27T10:27:00Z
+    datetime: 2026-08-27T10:27:00Z
     category: food
     description: Plan meals for the day
     status: InProgress
     read_only: false
   - id: 41
     user: Bob
-    datetime: 2026-06-28T10:28:00Z
+    datetime: 2026-08-28T10:28:00Z
     category: house
     description: Clean out the fridge
     status: InProgress
     read_only: false
   - id: 42
     user: Bob
-    datetime: 2026-06-29T10:29:00Z
+    datetime: 2026-08-29T10:29:00Z
     category: social
     description: Sort mail
     status: InProgress
     read_only: false
   - id: 43
     user: Alice
-    datetime: 2026-06-30T10:30:00Z
+    datetime: 2026-08-30T10:30:00Z
     category: other
     description: Backup computer files
     status: InProgress
     read_only: false
   - id: 44
     user: Bob
-    datetime: 2026-06-30T10:31:00Z
+    datetime: 2026-08-30T10:31:00Z
     category: house
     description: Water the garden
     status: InProgress
     read_only: false
   - id: 45
     user: Bob
-    datetime: 2026-06-01T10:32:00Z
+    datetime: 2026-08-01T10:32:00Z
     category: house
     description: Pick up clothes from floor
     status: InProgress
     read_only: false
   - id: 46
     user: Charlie
-    datetime: 2026-06-01T10:33:00Z
+    datetime: 2026-08-01T10:33:00Z
     category: other
     description: Buy a small household item
     status: Failed
     read_only: true
   - id: 47
     user: Charlie
-    datetime: 2026-06-01T10:34:00Z
+    datetime: 2026-08-01T10:34:00Z
     category: house
     description: Replace a light bulb
     status: Failed
     read_only: false
   - id: 50
     user: Alice
-    datetime: 2026-06-01T10:35:00Z
+    datetime: 2026-08-01T10:35:00Z
     category: house
     description: Vacuum a room
     status: InProgress
     read_only: false
   - id: 51
     user: Alice
-    datetime: 2026-06-01T10:36:00Z
+    datetime: 2026-08-01T10:36:00Z
     category: other
     description: Shred old papers
     status: InProgress
     read_only: false
   - id: 52
     user: Charlie
-    datetime: 2026-06-01T10:37:00Z
+    datetime: 2026-08-01T10:37:00Z
     category: house
     description: Clean mirrors
     status: InProgress
     read_only: false
   - id: 53
     user: Bob
-    datetime: 2026-06-01T10:38:00Z
+    datetime: 2026-08-01T10:38:00Z
     category: house
     description: Sweep porch or entryway
     status: InProgress
     read_only: false
   - id: 54
     user: Bob
-    datetime: 2026-06-01T10:39:00Z
+    datetime: 2026-08-01T10:39:00Z
     category: other
     description: Set an alarm
     status: InProgress
     read_only: false
   - id: 55
     user: Charlie
-    datetime: 2026-06-01T10:40:00Z
+    datetime: 2026-08-01T10:40:00Z
     category: social
     description: Check mailbox
     status: InProgress
     read_only: false
   - id: 56
     user: Bob
-    datetime: 2026-06-01T10:41:00Z
+    datetime: 2026-08-01T10:41:00Z
     category: food
     description: Take vitamins
     status: InProgress
     read_only: false
   - id: 57
     user: Alice
-    datetime: 2026-06-01T10:42:00Z
+    datetime: 2026-08-01T10:42:00Z
     category: house
     description: Clean computer screen
     status: InProgress
     read_only: false
   - id: 58
     user: Charlie
-    datetime: 2026-06-01T10:43:00Z
+    datetime: 2026-08-01T10:43:00Z
     category: social
     description: Clear out email inbox
     status: InProgress
     read_only: false
   - id: 59
     user: Charlie
-    datetime: 2026-06-01T10:44:00Z
+    datetime: 2026-08-01T10:44:00Z
     category: other
     description: Write a journal entry
     status: InProgress
     read_only: false
   - id: 60
     user: Bob
-    datetime: 2026-06-01T10:45:00Z
+    datetime: 2026-08-01T10:45:00Z
     category: food
     description: Prepare lunch
     status: InProgress
     read_only: false
   - id: 61
     user: Bob
-    datetime: 2026-06-01T10:46:00Z
+    datetime: 2026-08-01T10:46:00Z
     category: other
     description: Pack a bag
     status: InProgress
     read_only: false
   - id: 62
     user: Bob
-    datetime: 2026-06-01T10:47:00Z
+    datetime: 2026-08-01T10:47:00Z
     category: other
     description: Stretch for 5 minutes
     status: InProgress
     read_only: false
   - id: 63
     user: Bob
-    datetime: 2026-06-01T10:48:00Z
+    datetime: 2026-08-01T10:48:00Z
     category: other
     description: Organize workspace
     status: InProgress
     read_only: false
   - id: 64
     user: Alice
-    datetime: 2026-06-01T10:49:00Z
+    datetime: 2026-08-01T10:49:00Z
     category: social
     description: Check bank account
     status: InProgress
     read_only: false
   - id: 65
     user: Alice
-    datetime: 2026-06-01T10:50:00Z
+    datetime: 2026-08-01T10:50:00Z
     category: other
     description: Review goals for the week
     status: InProgress

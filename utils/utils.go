@@ -18,14 +18,14 @@ const (
 )
 
 type Payload struct {
-	UserID     string        `json:"user_id"`
-	SearchBy   string        `json:"search_by"`
-	Page       int           `json:"page"`
-	PageSize   int           `json:"page_size"`
-	SortBy     SortableField `json:"sort_by"`
-	SortAsc    bool          `json:"sort_asc"`
-	FromDate   string        `json:"from_date"`
-	ToDate     string        `json:"to_date"`
+	UserID   string        `json:"user_id"`
+	SearchBy string        `json:"search_by"`
+	Page     int           `json:"page"`
+	PageSize int           `json:"page_size"`
+	SortBy   SortableField `json:"sort_by"`
+	SortAsc  bool          `json:"sort_asc"`
+	FromDate string        `json:"from_date"`
+	ToDate   string        `json:"to_date"`
 }
 
 func (field SortableField) String() string {

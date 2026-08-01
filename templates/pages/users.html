@@ -1,6 +1,6 @@
 {{ define "page" }}
-   	<main class="col-xl-7 col-md-100 m-auto">
-	    {{ template "navbar" . }}
+	<main class="col-xl-7 col-md-100 m-auto">
+		{{ template "navbar" . }}
 		<div class="card shadow-sm">
 			<div class="card-header text-center">
 				<strong>Users</strong>
@@ -10,7 +10,7 @@
 					{{ range .Users }}
 						<li><a href="/users/{{ .Id }}">{{ .Name }}</a> - {{ .Role }}</li>
 					{{ end }}
-			    </ul>
+				</ul>
 			</div>
 		</div>
 	</main>

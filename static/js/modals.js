@@ -38,20 +38,19 @@ const confirmMsg = async (title, content) => {
 
 /* For elements with "hx-confirm" tag */
 const onHTMXConfirm = (event) => {
-  /* No confirmation needed */
-  if (!event.detail.question)
-    return
-  /* Skip default action, show confirm modal */
-  event.preventDefault()
-  confirmMsg("Confirm action", event.detail.question).
-    /* true to skip the built-in window.confirm() */
-    then(res => res && event.detail.issueRequest(true))
-}
+	/* No confirmation needed */
+	if (!event.detail.question) return;
+	/* Skip default action, show confirm modal */
+	event.preventDefault();
+	confirmMsg("Confirm action", event.detail.question)
+		/* true to skip the built-in window.confirm() */
+		.then((res) => res && event.detail.issueRequest(true));
+};
 
 /* Set up bootstrap modals */
 const initModals = () => {
 	modalEl = document.getElementById("modal");
 	modal = new bootstrap.Modal("#modal");
 	document.body.addEventListener("hideModal", () => modal.hide());
-	document.addEventListener("htmx:confirm", onHTMXConfirm )
+	document.addEventListener("htmx:confirm", onHTMXConfirm);
 };

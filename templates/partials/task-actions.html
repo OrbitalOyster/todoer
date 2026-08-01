@@ -37,7 +37,7 @@
 				</button>
 			</li>
 			{{ if .ReadOnly }}
-		 		<!-- Unlock -->
+				<!-- Unlock -->
 				<li>
 					<button
 						class="dropdown-item text-info"
@@ -51,7 +51,7 @@
 					</button>
 				</li>
 			{{ else }}
-		 		<!-- Lock -->
+				<!-- Lock -->
 				<li>
 					<button
 						class="dropdown-item text-info"
@@ -89,7 +89,7 @@
 					</button>
 				</li>
 			{{ end }}
-		 	{{ if ne .Status (parseTaskStatus "Done") }}
+			{{ if ne .Status (parseTaskStatus "Done") }}
 				<!-- Done -->
 				<li>
 					<button

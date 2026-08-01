@@ -5,7 +5,7 @@
 			<button
 				class="dropdown-item text-info"
 				type="button"
-				hx-patch="/htmx/tasks"
+				hx-patch="/hx/tasks"
 				hx-vals='{ "read-only": true }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
@@ -21,7 +21,7 @@
 			<button
 				class="dropdown-item text-info"
 				type="button"
-				hx-patch="/htmx/tasks"
+				hx-patch="/hx/tasks"
 				hx-vals='{ "read-only": false }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
@@ -43,7 +43,7 @@
 			<button
 				class="dropdown-item"
 				type="button"
-				hx-patch="/htmx/tasks"
+				hx-patch="/hx/tasks"
 				hx-vals='{ "status": "InProgress" }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
@@ -58,7 +58,7 @@
 			<button
 				class="dropdown-item text-success"
 				type="button"
-				hx-patch="/htmx/tasks"
+				hx-patch="/hx/tasks"
 				hx-vals='{ "status": "Done" }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
@@ -73,7 +73,7 @@
 			<button
 				class="dropdown-item text-danger"
 				type="button"
-				hx-patch="/htmx/tasks"
+				hx-patch="/hx/tasks"
 				hx-vals='{ "status": "Failed" }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
@@ -91,7 +91,7 @@
 			<button
 				class="dropdown-item text-danger"
 				type="button"
-				hx-delete="/htmx/tasks"
+				hx-delete="/hx/tasks"
 				hx-target="#task-list"
 				hx-indicator="#task-list"
 				hx-confirm="Delete multiple tasks?"

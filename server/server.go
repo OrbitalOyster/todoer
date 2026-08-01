@@ -12,11 +12,14 @@ import (
 )
 
 var (
-	cssFolder    = filepath.Join("static", "css")
-	jsFolder     = filepath.Join("static", "js")
-	vendorFolder = filepath.Join("static", "vendor")
-	imgFolder    = filepath.Join("static", "img")
-	faviconPath  = filepath.Join("static", "favicon.ico")
+	cssFolder   = filepath.Join("static", "css")
+	jsFolder    = filepath.Join("static", "js")
+	imgFolder   = filepath.Join("static", "img")
+	faviconPath = filepath.Join("static", "favicon.ico")
+
+	bootstrapFolder      = filepath.Join("external", "bootstrap", "dist")
+	bootstrapIconsFolder = filepath.Join("external", "bootstrap-icons", "font")
+	htmxFolder           = filepath.Join("external", "htmx", "dist")
 )
 
 func Start(routerMap routes.RouterMap) {
@@ -26,8 +29,14 @@ func Start(routerMap routes.RouterMap) {
 	mux.Handle("GET /css/", http.StripPrefix("/css/", middleware.Cache(cssHandler)))
 	jsHandler := http.FileServer(http.Dir(jsFolder))
 	mux.Handle("GET /js/", http.StripPrefix("/js/", middleware.Cache(jsHandler)))
-	vendorHandler := http.FileServer(http.Dir(vendorFolder))
-	mux.Handle("GET /vendor/", http.StripPrefix("/vendor/", middleware.Cache(vendorHandler)))
+	/* External handlers */
+	bootstrapHandler := http.FileServer(http.Dir(bootstrapFolder))
+	mux.Handle("GET /bootstrap/", http.StripPrefix("/bootstrap/", middleware.Cache(bootstrapHandler)))
+	bootstrapIconsHandler := http.FileServer(http.Dir(bootstrapIconsFolder))
+	mux.Handle("GET /bootstrap-icons/", http.StripPrefix("/bootstrap-icons/", middleware.Cache(bootstrapIconsHandler)))
+	htmxHandler := http.FileServer(http.Dir(htmxFolder))
+	mux.Handle("GET /htmx/", http.StripPrefix("/htmx/", middleware.Cache(htmxHandler)))
+	/* Images */
 	imgHandler := http.FileServer(http.Dir(imgFolder))
 	mux.Handle("GET /img/", http.StripPrefix("/img/", middleware.Cache(imgHandler)))
 	/* Favicon */

@@ -1,7 +1,7 @@
 {{ define "addTaskForm" }}
 	<div class="modal-content" id="add-task-form">
 		<form
-			hx-post="/htmx/tasks"
+			hx-post="/hx/tasks"
 			hx-target="#task-list"
 			hx-indicator="#ok-btn-icon"
 			hx-disabled-elt=".htmx-disable"

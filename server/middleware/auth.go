@@ -23,7 +23,9 @@ func isPublicURL(URL string) bool {
 		strings.HasPrefix(URL, "/css/") ||
 		strings.HasPrefix(URL, "/js/") ||
 		strings.HasPrefix(URL, "/img/") ||
-		strings.HasPrefix(URL, "/vendor/")
+		strings.HasPrefix(URL, "/bootstrap/") ||
+		strings.HasPrefix(URL, "/bootstrap-icons/") ||
+		strings.HasPrefix(URL, "/htmx/")
 }
 
 func Auth(next http.Handler) http.Handler {

@@ -1,0 +1,9 @@
+[submodule "external/bootstrap"]
+	path = external/bootstrap
+	url = https://github.com/twbs/bootstrap
+[submodule "external/htmx"]
+	path = external/htmx
+	url = https://github.com/bigskysoftware/htmx
+[submodule "external/bootstrap-icons"]
+	path = external/bootstrap-icons
+	url = https://github.com/twbs/icons

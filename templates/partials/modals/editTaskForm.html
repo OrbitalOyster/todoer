@@ -1,7 +1,7 @@
 {{ define "editTaskForm" }}
 	<div class="modal-content" id="edit-task-form">
 		<form
-			hx-put="/htmx/tasks/{{ .Task.Id }}"
+			hx-put="/hx/tasks/{{ .Task.Id }}"
 			hx-target="#task-list"
 			hx-indicator="#ok-btn-icon"
 			hx-disabled-elt=".htmx-disable"

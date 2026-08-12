@@ -7,3 +7,6 @@
 [submodule "external/bootstrap-icons"]
 	path = external/bootstrap-icons
 	url = https://github.com/twbs/icons
+[submodule "external/bootswatch"]
+	path = external/bootswatch
+	url = https://github.com/thomaspark/bootswatch

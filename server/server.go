@@ -19,6 +19,7 @@ var (
 
 	bootstrapFolder      = filepath.Join("external", "bootstrap", "dist")
 	bootstrapIconsFolder = filepath.Join("external", "bootstrap-icons", "font")
+	bootswatchFolder  = filepath.Join("external", "bootswatch", "dist")
 	htmxFolder           = filepath.Join("external", "htmx", "dist")
 )
 
@@ -34,6 +35,8 @@ func Start(routerMap routes.RouterMap) {
 	mux.Handle("GET /bootstrap/", http.StripPrefix("/bootstrap/", middleware.Cache(bootstrapHandler)))
 	bootstrapIconsHandler := http.FileServer(http.Dir(bootstrapIconsFolder))
 	mux.Handle("GET /bootstrap-icons/", http.StripPrefix("/bootstrap-icons/", middleware.Cache(bootstrapIconsHandler)))
+	bootswatchHandler := http.FileServer(http.Dir(bootswatchFolder))
+	mux.Handle("GET /bootswatch/", http.StripPrefix("/bootswatch/", middleware.Cache(bootswatchHandler)))
 	htmxHandler := http.FileServer(http.Dir(htmxFolder))
 	mux.Handle("GET /htmx/", http.StripPrefix("/htmx/", middleware.Cache(htmxHandler)))
 	/* Images */

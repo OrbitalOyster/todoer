@@ -25,6 +25,7 @@ func isPublicURL(URL string) bool {
 		strings.HasPrefix(URL, "/img/") ||
 		strings.HasPrefix(URL, "/bootstrap/") ||
 		strings.HasPrefix(URL, "/bootstrap-icons/") ||
+		strings.HasPrefix(URL, "/bootswatch/") ||
 		strings.HasPrefix(URL, "/htmx/")
 }
 

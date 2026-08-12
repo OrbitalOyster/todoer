@@ -13,7 +13,10 @@ import (
 
 /* GET */
 func GetLoginPage(writer http.ResponseWriter, req *http.Request) {
-	data := struct{ Title string }{"Login"}
+	data := struct {
+		Title string
+		Year  int
+	}{"Login", time.Now().Year()}
 	pages.Execute(writer, "login", data)
 }
 

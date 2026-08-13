@@ -11,22 +11,34 @@ import (
 	"todoer/utils"
 )
 
-var publicURIs = []string{
-	"/login",
-	"/favicon.ico",
-}
+var (
+	publicPrefixes = []string{
+		"/css/",
+		"/js/",
+		"/img/",
+		"/bootstrap/",
+		"/bootstrap-icons/",
+		"/bootswatch/",
+		"/htmx/",
+	}
+	publicURIs = []string{
+		"/login",
+		"/favicon.ico",
+	}
+)
 
 const redirectToURL = "/login"
 
 func isPublicURL(URL string) bool {
-	return slices.Contains(publicURIs, URL) ||
-		strings.HasPrefix(URL, "/css/") ||
-		strings.HasPrefix(URL, "/js/") ||
-		strings.HasPrefix(URL, "/img/") ||
-		strings.HasPrefix(URL, "/bootstrap/") ||
-		strings.HasPrefix(URL, "/bootstrap-icons/") ||
-		strings.HasPrefix(URL, "/bootswatch/") ||
-		strings.HasPrefix(URL, "/htmx/")
+	if slices.Contains(publicURIs, URL) {
+		return true
+	}
+	for _, p := range publicPrefixes {
+		if strings.HasPrefix(URL, p) {
+			return true
+		}
+	}
+	return false
 }
 
 func Auth(next http.Handler) http.Handler {

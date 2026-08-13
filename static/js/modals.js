@@ -21,10 +21,10 @@ const confirmMsg = async (title, content) => {
 	titleEl.textContent = title;
 	contentEl.textContent = content;
 	/* Focus on okBtn  */
-	const shown = () => {
-		okBtn.focus()
+	const onShown = () => {
+		okBtn.focus({ focusVisible: true })
 	}
-	modalEl.addEventListener("shown.bs.modal", shown);
+	modalEl.addEventListener("shown.bs.modal", onShown);
 	confirmModal.show();
 	return new Promise((resolve) => {
 		const confirmed = () => {
@@ -33,8 +33,8 @@ const confirmMsg = async (title, content) => {
 			},
 			cleanUp = () => {
 				okBtn.removeEventListener("click", confirmed);
-				modalEl.removeEventListener("shown.bs.modal", cleanUp);
-				modalEl.removeEventListener("hidden.bs.modal", shown);
+				modalEl.removeEventListener("shown.bs.modal", onShown);
+				modalEl.removeEventListener("hidden.bs.modal", cleanUp);
 				confirmModal.hide();
 			};
 		okBtn.addEventListener("click", confirmed);

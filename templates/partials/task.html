@@ -13,11 +13,11 @@
 	</td>
 	<td class="text-center align-middle">
 		{{ if eq .Status (parseTaskStatus "InProgress") }}
-			<i class="bi bi-clock text-secondary fs-5 position-relative"></i>
+			<i class="bi bi-clock text-secondary fs-5 position-relative">
 		{{ else if eq .Status (parseTaskStatus "Done") }}
-			<i class="bi bi-check-circle-fill text-success fs-5 position-relative"></i>
+			<i class="bi bi-check-circle-fill text-success fs-5 position-relative">
 		{{ else if eq .Status (parseTaskStatus "Failed") }}
-			<i class="bi bi-emoji-angry-fill text-danger fs-5 position-relative"></i>
+			<i class="bi bi-emoji-angry-fill text-danger fs-5 position-relative">
 		{{ end }}
 			{{ if .ReadOnly }}
 				<span class="position-absolute top-0 start-100 translate-middle badge p-2">

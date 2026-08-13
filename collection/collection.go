@@ -29,11 +29,10 @@ func (item MyItem) GetValue(f string) ItemFieldValue {
 /* ========================================================================== */
 
 type MyCollection struct {
-	List []MyItem
+	List []Item[int64]
 }
 
 func (collection *MyCollection) Post(item Item[int64]) {
-	// collection.List = append(collection.List, item.(MyItem))
 	collection.List = append(collection.List, item)
 }
 

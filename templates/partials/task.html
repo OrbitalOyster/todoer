@@ -1,15 +1,23 @@
 {{ define "task" }}
-	<td class="text-center align-middle">{{ .Id }}</td>
-	<td class="text-center align-middle">{{ .Description }}</td>
-	<td class="text-center align-middle">{{ formatDatetime .Datetime }}</td>
-	<td class="text-center align-middle">{{ .User }}</td>
+	<td class="text-center align-middle">
+		{{ .Id }}
+	</td>
+	<td class="text-center align-middle">
+		{{ .Description }}
+	</td>
+	<td class="text-center align-middle">
+		{{ formatDatetime .Datetime }}
+	</td>
+	<td class="text-center align-middle">
+		{{ .User }}
+	</td>
 	<td class="text-center align-middle">
 		{{ if eq .Status (parseTaskStatus "InProgress") }}
-			<i class="bi bi-clock text-secondary fs-5 position-relative">
+			<i class="bi bi-clock text-secondary fs-5 position-relative"></i>
 		{{ else if eq .Status (parseTaskStatus "Done") }}
-			<i class="bi bi-check-circle-fill text-success fs-5 position-relative">
+			<i class="bi bi-check-circle-fill text-success fs-5 position-relative"></i>
 		{{ else if eq .Status (parseTaskStatus "Failed") }}
-			<i class="bi bi-emoji-angry-fill text-danger fs-5 position-relative">
+			<i class="bi bi-emoji-angry-fill text-danger fs-5 position-relative"></i>
 		{{ end }}
 			{{ if .ReadOnly }}
 				<span class="position-absolute top-0 start-100 translate-middle badge p-2">
@@ -19,10 +27,13 @@
 						data-bs-toggle="tooltip"
 						data-bs-placement="top"
 						data-bs-trigger="hover"
-					></i>
+					>
+					</i>
 				</span>
 			{{ end }}
 		</i>
 	</td>
-	<td class="text-center align-middle">{{ template "task-actions" . }}</td>
+	<td class="text-center align-middle">
+		{{ template "task-actions" . }}
+	</td>
 {{ end }}

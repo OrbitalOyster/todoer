@@ -16,8 +16,8 @@ func (item MyItem) GetId() int64 {
 	return item.id
 }
 
-func (item MyItem) GetValue(f string) ItemFieldValue {
-	switch f {
+func (item MyItem) GetValue(field string) ItemFieldValue {
+	switch field {
 	case "foo":
 		return item.foo
 	case "bar":
@@ -29,26 +29,26 @@ func (item MyItem) GetValue(f string) ItemFieldValue {
 /* ========================================================================== */
 
 type MyCollection struct {
-	List []Item[int64]
+	List []MyItem
 }
 
-func (collection *MyCollection) Post(item Item[int64]) {
-	collection.List = append(collection.List, item)
+func (collection *MyCollection) Post(item Item) {
+	collection.List = append(collection.List, item.(MyItem))
 }
 
 func (collection MyCollection) GetSize() int {
 	return len(collection.List)
 }
 
-func (collection MyCollection) GetOne(index int64) Item[int64] {
+func (collection MyCollection) GetOne(index int) Item {
 	return collection.List[index]
 }
 
-func DebugCollection[T int64](collection Collection[T]) Item[T] {
+func DebugCollection(collection Collection) Item {
 	if collection.GetSize() > 0 {
 		return collection.GetOne(0)
 	} else {
-		var emptyResult Item[T]
+		var emptyResult Item
 		return emptyResult
 	}
 }

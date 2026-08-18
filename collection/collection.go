@@ -1,66 +1,58 @@
 package collection
 
 import (
+	"cmp"
 	"log"
+	"slices"
 )
 
-/* ========================================================================== */
+type ItemFieldEnum uint
+
+const (
+	Id ItemFieldEnum = iota
+	Foo
+	Bar
+)
+
+type Item interface {
+	Less(Item, ItemFieldEnum) int
+}
+
+type Collection struct {
+	Items []Item
+}
+
+func (collection Collection) SortBy(field ItemFieldEnum) Collection {
+	result := Collection{Items: slices.Clone(collection.Items)}
+	return result
+}
 
 type MyItem struct {
-	id  int64
-	foo int
-	bar string
+	Foo int64
+	Bar string
 }
 
-func (item MyItem) GetId() int64 {
-	return item.id
-}
-
-func (item MyItem) GetValue(field string) ItemFieldValue {
+func (myItem MyItem) Less(otherItem Item, field ItemFieldEnum) int {
 	switch field {
-	case "foo":
-		return item.foo
-	case "bar":
-		return item.bar
-	}
-	panic("Oh no!")
-}
-
-/* ========================================================================== */
-
-type MyCollection struct {
-	List []MyItem
-}
-
-func (collection *MyCollection) Post(item Item) {
-	collection.List = append(collection.List, item.(MyItem))
-}
-
-func (collection MyCollection) GetSize() int {
-	return len(collection.List)
-}
-
-func (collection MyCollection) GetOne(index int) Item {
-	return collection.List[index]
-}
-
-func DebugCollection(collection Collection) Item {
-	if collection.GetSize() > 0 {
-		return collection.GetOne(0)
-	} else {
-		var emptyResult Item
-		return emptyResult
+	case Foo:
+		return cmp.Compare(myItem.Foo, otherItem.(MyItem).Foo)
+	case Bar:
+		return cmp.Compare(myItem.Bar, otherItem.(MyItem).Bar)
+	default:
+		panic("Oh no!")
 	}
 }
 
 func Run() {
 	log.Println("Collection test")
-	i1 := MyItem{1, 7, "Hello"}
-	i2 := MyItem{2, 77, "World"}
-	i3 := MyItem{3, 777, "boo"}
-	c := &MyCollection{}
-	c.Post(i1)
-	c.Post(i2)
-	c.Post(i3)
-	log.Printf("%#v", DebugCollection(c))
+	var _ Item = MyItem{}
+	MyCollection := Collection{
+		Items: []Item{
+			MyItem{
+				Foo: 1,
+				Bar: "1",
+			},
+		},
+	}
+	MyCollection.SortBy(Foo)
 }

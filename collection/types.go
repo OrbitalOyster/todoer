@@ -1,6 +1,7 @@
 package collection
 
 import (
+	"math"
 	"slices"
 )
 
@@ -63,4 +64,19 @@ func (collection Collection) LessThan(field ItemFieldId, otherItem Item) Collect
 		}
 	}
 	return result
+}
+
+func (collection Collection) GetPage(page uint, pageSize uint) (Collection, uint, uint) {
+	length := len(collection.Items)
+	numberOfPages := uint(math.Ceil(float64(length) / float64(pageSize)))
+	if page >= numberOfPages {
+		page = numberOfPages
+	}
+	if page == 0 {
+		page = 1
+	}
+	startInd := pageSize * (page - 1)
+	endInd := min(startInd+pageSize, uint(length))
+	result := Collection{Items: slices.Clone(collection.Items)[startInd:endInd]}
+	return result, page, numberOfPages
 }

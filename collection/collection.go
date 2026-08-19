@@ -78,6 +78,6 @@ func Run() {
 			MyItem{Id: 10, Foo: 1, Bar: "do"},
 		},
 	}
-	log.Printf("%#v\n", MyCollection.SortBy(Foo).MoreThan(Foo, MyItem{Foo: 5}))
-	log.Printf("%#v\n", MyCollection)
+	newCollection, page, totalPages := MyCollection.GetPage(0, 10)
+	log.Printf("%#vn\n%d\n%d", newCollection, page, totalPages)
 }

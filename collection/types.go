@@ -1,12 +1,15 @@
 package collection
 
-import "slices"
+import (
+	"slices"
+)
 
 type ItemFieldId uint
 
 type Item interface {
-	Compare(otherItem Item, field ItemFieldId) int
-	Filter(s string, field ItemFieldId) bool
+	MoreThan(field ItemFieldId, otherItem Item) bool
+	LessThan(field ItemFieldId, otherItem Item) bool
+	Filter(field ItemFieldId, s string) bool
 }
 
 type Collection struct {
@@ -15,7 +18,14 @@ type Collection struct {
 
 func (collection Collection) SortBy(field ItemFieldId) Collection {
 	result := Collection{Items: slices.Clone(collection.Items)}
-	slices.SortFunc(result.Items, func(a Item, b Item) int { return a.Compare(b, field) })
+	slices.SortFunc(result.Items, func(a Item, b Item) int {
+		if a.LessThan(field, b) {
+			return -1
+		} else if a.MoreThan(field, b) {
+			return 1
+		}
+		return 0
+	})
 	return result
 }
 
@@ -25,10 +35,30 @@ func (collection Collection) Reverse() Collection {
 	return result
 }
 
-func (collection Collection) Filter(s string, field ItemFieldId) Collection {
+func (collection Collection) Filter(field ItemFieldId, s string) Collection {
 	result := Collection{Items: []Item{}}
 	for _, item := range collection.Items {
-		if item.Filter(s, field) {
+		if item.Filter(field, s) {
+			result.Items = append(result.Items, item)
+		}
+	}
+	return result
+}
+
+func (collection Collection) MoreThan(field ItemFieldId, otherItem Item) Collection {
+	result := Collection{Items: []Item{}}
+	for _, item := range collection.Items {
+		if item.MoreThan(field, otherItem) {
+			result.Items = append(result.Items, item)
+		}
+	}
+	return result
+}
+
+func (collection Collection) LessThan(field ItemFieldId, otherItem Item) Collection {
+	result := Collection{Items: []Item{}}
+	for _, item := range collection.Items {
+		if item.LessThan(field, otherItem) {
 			result.Items = append(result.Items, item)
 		}
 	}

@@ -1,7 +1,6 @@
 package collection
 
 import (
-	"cmp"
 	"fmt"
 	"log"
 	"strings"
@@ -19,24 +18,41 @@ type MyItem struct {
 	Bar string
 }
 
-func (myItem MyItem) Compare(otherItem Item, field ItemFieldId) int {
+func (myItem MyItem) MoreThan(field ItemFieldId, otherItem Item) bool {
 	otherMyItem, ok := otherItem.(MyItem)
 	if !ok {
 		panic("Type assertion failed")
 	}
 	switch field {
 	case Id:
-		return cmp.Compare(myItem.Id, otherMyItem.Id)
+		return myItem.Id > otherMyItem.Id
 	case Foo:
-		return cmp.Compare(myItem.Foo, otherMyItem.Foo)
+		return myItem.Foo > otherMyItem.Foo
 	case Bar:
-		return cmp.Compare(myItem.Bar, otherMyItem.Bar)
+		return myItem.Bar > otherMyItem.Bar
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}
 }
 
-func (myItem MyItem) Filter(s string, field ItemFieldId) bool {
+func (myItem MyItem) LessThan(field ItemFieldId, otherItem Item) bool {
+	otherMyItem, ok := otherItem.(MyItem)
+	if !ok {
+		panic("Type assertion failed")
+	}
+	switch field {
+	case Id:
+		return myItem.Id < otherMyItem.Id
+	case Foo:
+		return myItem.Foo < otherMyItem.Foo
+	case Bar:
+		return myItem.Bar < otherMyItem.Bar
+	default:
+		panic(fmt.Sprintf("Invalid field: %d", field))
+	}
+}
+
+func (myItem MyItem) Filter(field ItemFieldId, s string) bool {
 	switch field {
 	case Bar:
 		return strings.Contains(myItem.Bar, s)
@@ -62,6 +78,6 @@ func Run() {
 			MyItem{Id: 10, Foo: 1, Bar: "do"},
 		},
 	}
-	log.Printf("%#v\n", MyCollection.SortBy(Foo).Filter("do", Bar).Reverse())
+	log.Printf("%#v\n", MyCollection.SortBy(Foo).MoreThan(Foo, MyItem{Foo: 5}))
 	log.Printf("%#v\n", MyCollection)
 }

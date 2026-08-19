@@ -2,44 +2,46 @@ package collection
 
 import (
 	"cmp"
+	"fmt"
 	"log"
-	"slices"
+	"strings"
 )
 
-type ItemFieldEnum uint
-
 const (
-	Id ItemFieldEnum = iota
+	Id ItemFieldId = iota
 	Foo
 	Bar
 )
 
-type Item interface {
-	Less(Item, ItemFieldEnum) int
-}
-
-type Collection struct {
-	Items []Item
-}
-
-func (collection Collection) SortBy(field ItemFieldEnum) Collection {
-	result := Collection{Items: slices.Clone(collection.Items)}
-	return result
-}
-
 type MyItem struct {
-	Foo int64
+	Id  int64
+	Foo int
 	Bar string
 }
 
-func (myItem MyItem) Less(otherItem Item, field ItemFieldEnum) int {
+func (myItem MyItem) Compare(otherItem Item, field ItemFieldId) int {
+	otherMyItem, ok := otherItem.(MyItem)
+	if !ok {
+		panic("Type assertion failed")
+	}
 	switch field {
+	case Id:
+		return cmp.Compare(myItem.Id, otherMyItem.Id)
 	case Foo:
-		return cmp.Compare(myItem.Foo, otherItem.(MyItem).Foo)
+		return cmp.Compare(myItem.Foo, otherMyItem.Foo)
 	case Bar:
-		return cmp.Compare(myItem.Bar, otherItem.(MyItem).Bar)
+		return cmp.Compare(myItem.Bar, otherMyItem.Bar)
 	default:
-		panic("Oh no!")
+		panic(fmt.Sprintf("Invalid field: %d", field))
+	}
+}
+
+func (myItem MyItem) Filter(s string, field ItemFieldId) bool {
+	switch field {
+	case Bar:
+		return strings.Contains(myItem.Bar, s)
+	default:
+		panic(fmt.Sprintf("Invalid field: %d", field))
 	}
 }
 
@@ -48,11 +50,18 @@ func Run() {
 	var _ Item = MyItem{}
 	MyCollection := Collection{
 		Items: []Item{
-			MyItem{
-				Foo: 1,
-				Bar: "1",
-			},
+			MyItem{Id: 1, Foo: 3, Bar: "Lorem"},
+			MyItem{Id: 2, Foo: 8, Bar: "ipsum"},
+			MyItem{Id: 3, Foo: 4, Bar: "dolor"},
+			MyItem{Id: 4, Foo: 9, Bar: "sit"},
+			MyItem{Id: 5, Foo: 3, Bar: "amet"},
+			MyItem{Id: 6, Foo: 7, Bar: "consectetur"},
+			MyItem{Id: 7, Foo: 5, Bar: "adipiscing"},
+			MyItem{Id: 8, Foo: 2, Bar: "elit"},
+			MyItem{Id: 9, Foo: 1, Bar: "sed"},
+			MyItem{Id: 10, Foo: 1, Bar: "do"},
 		},
 	}
-	MyCollection.SortBy(Foo)
+	log.Printf("%#v\n", MyCollection.SortBy(Foo).Filter("do", Bar).Reverse())
+	log.Printf("%#v\n", MyCollection)
 }

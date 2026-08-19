@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"todoer/collection"
 )
 
 type TaskStatus int
@@ -49,6 +50,68 @@ type Task struct {
 	Description string     `yaml:"description"`
 	Status      TaskStatus `yaml:"status"`
 	ReadOnly    bool       `yaml:"read_only"`
+}
+
+const (
+	Id collection.FieldName = iota
+	User
+	Category
+	Datetime
+	Description
+	Status
+	ReadOnly
+)
+
+func mustBeTask(item collection.Item) Task {
+	result, ok := item.(Task)
+	if !ok {
+		panic("Type assertion failed")
+	} else {
+		return result
+	}
+}
+
+func (task Task) MoreThan(field collection.FieldName, item collection.Item) bool {
+	otherTask := mustBeTask(item)
+	switch field {
+	case Datetime:
+		return task.Datetime.After(otherTask.Datetime)
+	case Description:
+		return task.Description > otherTask.Description
+	default:
+		panic(fmt.Sprintf("Invalid field: %d", field))
+	}
+}
+
+func (task Task) LessThan(field collection.FieldName, item collection.Item) bool {
+	otherTask := mustBeTask(item)
+	switch field {
+	case Datetime:
+		return task.Datetime.Before(otherTask.Datetime)
+	case Description:
+		return task.Description < otherTask.Description
+	default:
+		panic(fmt.Sprintf("Invalid field: %d", field))
+	}
+}
+
+func (task Task) Filter(field collection.FieldName, filter any) bool {
+	switch field {
+	case Id:
+		filterInt, ok := filter.(int)
+		if !ok {
+			panic(fmt.Sprintf("Invalid filter: %v", filter))
+		}
+		return filterInt == task.Id
+	case Description:
+		filterString, ok := filter.(string)
+		if !ok {
+			panic(fmt.Sprintf("Invalid filter: %v", filter))
+		}
+		return strings.Contains(task.Description, filterString)
+	default:
+		panic(fmt.Sprintf("Invalid field: %d", field))
+	}
 }
 
 /* Extra handler for converting status string to TaskStatus */

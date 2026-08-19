@@ -9,7 +9,6 @@ import (
 	"todoer/tasks"
 	"todoer/users"
 	"todoer/wad"
-	"todoer/collection"
 )
 
 const wadFilename = "wad.yaml"
@@ -61,6 +60,5 @@ func main() {
 		"GET /panic":                     routes.Panic,
 		"GET /":                          routes.NotFoundHandler, /* 404 goes here */
 	}
-	collection.Run()
 	server.Start(routerMap)
 }

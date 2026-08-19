@@ -5,27 +5,70 @@ import (
 	"slices"
 )
 
-type ItemFieldId uint
+type FieldName uint
 
 type Item interface {
-	MoreThan(field ItemFieldId, otherItem Item) bool
-	LessThan(field ItemFieldId, otherItem Item) bool
-	Filter(field ItemFieldId, s string) bool
+	MoreThan(field FieldName, item Item) bool
+	LessThan(field FieldName, item Item) bool
+	Filter(field FieldName, s any) bool
 }
 
 type Collection struct {
 	Items []Item
 }
 
-func (collection Collection) SortBy(field ItemFieldId) Collection {
-	result := Collection{Items: slices.Clone(collection.Items)}
-	slices.SortFunc(result.Items, func(a Item, b Item) int {
-		if a.LessThan(field, b) {
-			return -1
-		} else if a.MoreThan(field, b) {
-			return 1
-		}
+func (collection Collection) Length() int {
+	return len(collection.Items)
+}
+
+func (collection *Collection) Add(newItem Item) {
+	collection.Items = append(collection.Items, newItem)
+}
+
+func (collection *Collection) Delete(field FieldName, filter any) {
+	collection.Items = slices.DeleteFunc(collection.Items, func(item Item) bool {
+		return item.Filter(field, filter)
+	})
+}
+
+func (collection Collection) First() Item {
+	if len(collection.Items) < 1 {
+		panic("Empty array")
+	}
+	return collection.Items[0]
+}
+
+func compare(a Item, b Item, field FieldName) int {
+	switch {
+	case a.LessThan(field, b):
+		return -1
+	case a.MoreThan(field, b):
+		return 1
+	default:
 		return 0
+	}
+}
+
+func (collection Collection) Max(field FieldName) Item {
+	return slices.MaxFunc(collection.Items, func(a, b Item) int {
+		return compare(a, b, field)
+	})
+}
+
+func (collection Collection) SortBy(field FieldName) Collection {
+	result := Collection{Items: slices.Clone(collection.Items)}
+	/*
+		slices.SortFunc(result.Items, func(a Item, b Item) int {
+			if a.LessThan(field, b) {
+				return -1
+			} else if a.MoreThan(field, b) {
+				return 1
+			}
+			return 0
+		})
+	*/
+	slices.SortFunc(result.Items, func(a Item, b Item) int {
+		return compare(a, b, field)
 	})
 	return result
 }
@@ -36,30 +79,30 @@ func (collection Collection) Reverse() Collection {
 	return result
 }
 
-func (collection Collection) Filter(field ItemFieldId, s string) Collection {
+func (collection Collection) Filter(field FieldName, filter any) Collection {
 	result := Collection{Items: []Item{}}
 	for _, item := range collection.Items {
-		if item.Filter(field, s) {
+		if item.Filter(field, filter) {
 			result.Items = append(result.Items, item)
 		}
 	}
 	return result
 }
 
-func (collection Collection) MoreThan(field ItemFieldId, otherItem Item) Collection {
+func (collection Collection) MoreThan(field FieldName, item Item) Collection {
 	result := Collection{Items: []Item{}}
-	for _, item := range collection.Items {
-		if item.MoreThan(field, otherItem) {
+	for _, i := range collection.Items {
+		if i.MoreThan(field, item) {
 			result.Items = append(result.Items, item)
 		}
 	}
 	return result
 }
 
-func (collection Collection) LessThan(field ItemFieldId, otherItem Item) Collection {
+func (collection Collection) LessThan(field FieldName, item Item) Collection {
 	result := Collection{Items: []Item{}}
-	for _, item := range collection.Items {
-		if item.LessThan(field, otherItem) {
+	for _, i := range collection.Items {
+		if i.LessThan(field, item) {
 			result.Items = append(result.Items, item)
 		}
 	}

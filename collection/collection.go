@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Id ItemFieldId = iota
+	Id FieldName = iota
 	Foo
 	Bar
 )
@@ -18,7 +18,7 @@ type MyItem struct {
 	Bar string
 }
 
-func (myItem MyItem) MoreThan(field ItemFieldId, otherItem Item) bool {
+func (myItem MyItem) MoreThan(field FieldName, otherItem Item) bool {
 	otherMyItem, ok := otherItem.(MyItem)
 	if !ok {
 		panic("Type assertion failed")
@@ -35,8 +35,8 @@ func (myItem MyItem) MoreThan(field ItemFieldId, otherItem Item) bool {
 	}
 }
 
-func (myItem MyItem) LessThan(field ItemFieldId, otherItem Item) bool {
-	otherMyItem, ok := otherItem.(MyItem)
+func (myItem MyItem) LessThan(field FieldName, item Item) bool {
+	otherMyItem, ok := item.(MyItem)
 	if !ok {
 		panic("Type assertion failed")
 	}
@@ -52,10 +52,14 @@ func (myItem MyItem) LessThan(field ItemFieldId, otherItem Item) bool {
 	}
 }
 
-func (myItem MyItem) Filter(field ItemFieldId, s string) bool {
+func (myItem MyItem) Filter(field FieldName, filter any) bool {
 	switch field {
 	case Bar:
-		return strings.Contains(myItem.Bar, s)
+		filterString, ok := filter.(string)
+		if !ok {
+			panic(fmt.Sprintf("Invalid filter: %v", filter))
+		}
+		return strings.Contains(myItem.Bar, filterString)
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}

@@ -253,9 +253,7 @@ func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-		if err := tasks.Delete(task.Id); err != nil {
-			panic(err)
-		}
+		tasks.Delete(task.Id)
 		deletedTasks++
 	}
 	toasts.Warning(writer, "Deleted "+strconv.Itoa(deletedTasks)+" tasks", "Success")

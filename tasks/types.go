@@ -108,6 +108,9 @@ func (task Task) Filter(field collection.FieldName, filter any) bool {
 		if !ok {
 			panic(fmt.Sprintf("Invalid filter: %v", filter))
 		}
+		if filterString == "" {
+			return true
+		}
 		return strings.Contains(task.Description, filterString)
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))

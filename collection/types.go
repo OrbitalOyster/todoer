@@ -21,6 +21,10 @@ func (collection Collection) Length() int {
 	return len(collection.Items)
 }
 
+func (collection Collection) Clone() Collection {
+	return Collection{Items: slices.Clone(collection.Items)}
+}
+
 func (collection *Collection) Add(newItem Item) {
 	collection.Items = append(collection.Items, newItem)
 }
@@ -56,27 +60,15 @@ func (collection Collection) Max(field FieldName) Item {
 }
 
 func (collection Collection) SortBy(field FieldName) Collection {
-	result := Collection{Items: slices.Clone(collection.Items)}
-	/*
-		slices.SortFunc(result.Items, func(a Item, b Item) int {
-			if a.LessThan(field, b) {
-				return -1
-			} else if a.MoreThan(field, b) {
-				return 1
-			}
-			return 0
-		})
-	*/
-	slices.SortFunc(result.Items, func(a Item, b Item) int {
+	slices.SortFunc(collection.Items, func(a Item, b Item) int {
 		return compare(a, b, field)
 	})
-	return result
+	return collection
 }
 
 func (collection Collection) Reverse() Collection {
-	result := Collection{Items: slices.Clone(collection.Items)}
-	slices.Reverse(result.Items)
-	return result
+	slices.Reverse(collection.Items)
+	return collection
 }
 
 func (collection Collection) Filter(field FieldName, filter any) Collection {
@@ -93,7 +85,7 @@ func (collection Collection) MoreThan(field FieldName, item Item) Collection {
 	result := Collection{Items: []Item{}}
 	for _, i := range collection.Items {
 		if i.MoreThan(field, item) {
-			result.Items = append(result.Items, item)
+			result.Items = append(result.Items, i)
 		}
 	}
 	return result
@@ -103,7 +95,7 @@ func (collection Collection) LessThan(field FieldName, item Item) Collection {
 	result := Collection{Items: []Item{}}
 	for _, i := range collection.Items {
 		if i.LessThan(field, item) {
-			result.Items = append(result.Items, item)
+			result.Items = append(result.Items, i)
 		}
 	}
 	return result
@@ -122,4 +114,16 @@ func (collection Collection) GetPage(page uint, pageSize uint) (Collection, uint
 	endInd := min(startInd+pageSize, uint(length))
 	result := Collection{Items: slices.Clone(collection.Items)[startInd:endInd]}
 	return result, page, numberOfPages
+}
+
+func AssertType[T any](collection Collection) []T {
+	var result []T
+	for _, i := range collection.Items {
+		t, ok := i.(T)
+		if !ok {
+			panic("Type assert failed")
+		}
+		result = append(result, t)
+	}
+	return result
 }

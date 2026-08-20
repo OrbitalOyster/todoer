@@ -2,6 +2,7 @@ package tasks
 
 import (
 	// "cmp"
+
 	"fmt"
 	"log"
 
@@ -61,12 +62,47 @@ func Get(fromDateStr string, toDateStr string,
 	searchBy string,
 	page int, pageSize int,
 	sortBy utils.SortableField, sortAsc bool) ([]Task, int, int) {
-	result, actualPage, numberOfPages := list.GetPage(uint(page), uint(pageSize))
-	var actualResult []Task
-	for _, i := range result.Items {
-		actualResult = append(actualResult, i.(Task))
+
+	result := list.Clone()
+
+	/* Date */
+	fromDate, err := time.Parse(utils.HTMLDateFormat, fromDateStr)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
 	}
-	return actualResult, int(numberOfPages), int(actualPage)
+	toDate, err := time.Parse(utils.HTMLDateFormat, toDateStr)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+	result = result.
+		MoreThan(Datetime, Task{Datetime: fromDate}).
+		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
+		LessThan(Datetime, Task{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
+		Filter(Description, searchBy)
+	/* Sorting */
+	switch sortBy {
+	case utils.Description:
+		result = result.SortBy(Description)
+	case utils.Datetime:
+		result = result.SortBy(Datetime)
+	default:
+	}
+	if !sortAsc {
+		result.Reverse()
+	}
+
+	result, actualPage, numberOfPages := result.GetPage(uint(page), uint(pageSize))
+
+	/*
+		var actualResult []Task
+		for _, i := range result.Items {
+			actualResult = append(actualResult, i.(Task))
+		}
+	*/
+
+	return collection.AssertType[Task](result), int(numberOfPages), int(actualPage)
 	// result := slices.Clone(list)
 	/* Date */
 	// fromDate, err := time.Parse(utils.HTMLDateFormat, fromDateStr)

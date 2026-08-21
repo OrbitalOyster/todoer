@@ -1,9 +1,13 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"strconv"
+	"strings"
+	"todoer/config"
 	"todoer/server/pages"
 	"todoer/server/toasts"
 	"todoer/server/token"
@@ -26,6 +30,95 @@ func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task {
 	}
 }
 
+type TasksPageData struct {
+	Title      string
+	Payload    utils.Payload
+	Page       int
+	PageSize   int
+	PageSizes  []int
+	TotalPages int
+	SearchBy   string
+	Pagination []int
+}
+
+const defaultPageSize = 10
+
+type TasksQuery struct {
+	Page     int
+	Size     int
+	SearchBy string
+}
+
+func defaultTaskQuery() TasksQuery {
+	return TasksQuery{
+		Page:     1,
+		Size:     defaultPageSize,
+		SearchBy: "",
+	}
+}
+
+func (taskQuery *TasksQuery) Parse(rawQuery string) {
+	parsed, err := url.ParseQuery(rawQuery)
+	if err != nil {
+		return
+	}
+	if parsed.Has("page") {
+		if parsedPage, err := strconv.Atoi(parsed.Get("page")); err == nil {
+			taskQuery.Page = parsedPage
+		}
+	}
+	if parsed.Has("size") {
+		if parsedSize, err := strconv.Atoi(parsed.Get("size")); err == nil {
+			taskQuery.Size = parsedSize
+		}
+	}
+	if parsed.Has("searchBy") {
+		taskQuery.SearchBy = parsed.Get("searchBy")
+	}
+}
+
+func (taskQuery TasksQuery) String() string {
+	var result []string
+
+	if taskQuery.Page != 1 {
+		result = append(result, fmt.Sprintf("page=%d", taskQuery.Page))
+	}
+
+	if taskQuery.Size != defaultPageSize {
+		result = append(result, fmt.Sprintf("size=%d", taskQuery.Size))
+	}
+
+	if taskQuery.SearchBy != "" {
+		result = append(result, fmt.Sprintf("searchBy=%s", taskQuery.SearchBy))
+	}
+
+	if len(result) > 0 {
+		return "?" + strings.Join(result, "&")
+	} else {
+		return ""
+	}
+}
+
+func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
+	payload := req.Context(). /* Get context from request */
+					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
+					GetPayload()                                  /* Load actual payload */
+
+	query := defaultTaskQuery()
+	query.Parse(req.URL.RawQuery)
+
+	pages.Execute(writer, "tasks", TasksPageData{
+		Title:      "todoer - tasks",
+		Payload:    payload,
+		Page:       query.Page,
+		PageSize:   query.Size,
+		PageSizes:  config.PageSizes,
+		TotalPages: 5,
+		SearchBy:   query.SearchBy,
+		Pagination: []int{1, 2, 3, 4, 5},
+	})
+}
+
 func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
 	if task := idCheck(writer, req); task != nil {
 		pages.ExecutePartial(writer, "task", task)
@@ -44,6 +137,33 @@ func getCheckboxedTasks(req *http.Request) (result []int) {
 		result = append(result, n)
 	}
 	return result
+}
+
+func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
+	result := ""
+
+	query := defaultTaskQuery()
+
+	/* Current browser query */
+	url, err := url.Parse(req.Header.Get("HX-Current-URL"))
+	if err != nil {
+		panic(err)
+	}
+	query.Parse(url.RawQuery)
+
+	/* New stuff */
+	query.Parse(req.URL.RawQuery)
+
+	writer.Header().Add("HX-Push-Url", "/tasks" + query.String())
+
+	result += fmt.Sprintf(
+		"%d tasks. Search by \"%s\". Page %d out of ?",
+		query.Size,
+		query.SearchBy,
+		query.Page,
+	)
+
+	writer.Write([]byte("<strong>" + result + "</strong>"))
 }
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {

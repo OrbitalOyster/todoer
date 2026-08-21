@@ -1,0 +1,247 @@
+{{ define "page" }}
+	<main class="col-xl-7 col-md-100 m-auto">
+		{{ template "navbar" . }}
+		<div class="card shadow-sm">
+			<div class="card-header text-center">
+				<strong>
+					Tasks
+				</strong>
+			</div>
+			<div class="card-body">
+				<!-- Filters -->
+				<div class="d-flex gap-2 align-items-center justify-content-between" id="filters">
+					<!-- Page size -->
+					<div class="d-flex align-items-center gap-2">
+						<label class="text-nowrap" for="task-list-size">
+							Page size:
+						</label>
+						<select
+							class="form-select w-auto"
+							id="task-list-size"
+							name="size"
+							hx-get="/hx/tasks-new"
+							hx-target="#task-list"
+							hx-indicator="#task-list"
+							hx-disabled-elt=".htmx-disable"
+							autocomplete="off"
+						>
+							{{ range .PageSizes }}
+								<option {{ if eq $.PageSize . }} selected {{ end }}	value="{{ . }}">
+									{{ . }}
+								</option>
+							{{ end }}
+						</select>
+					</div>
+					<!-- Search input -->
+					<div class="input-group">
+						<input
+							class="form-control"
+							type="text"
+							name="searchBy"
+							size="32"
+							value="{{ .SearchBy }}"
+							hx-get="/hx/tasks-new"
+							hx-target="#task-list"
+							hx-indicator="#task-list"
+							hx-disabled-elt=".htmx-disable"
+							hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
+							autocomplete="off"
+						/>
+						<i class="input-group-text bi bi-search"></i>
+					</div>
+					<!-- Dates -->
+					<div id="filter-date">
+						<div class="d-flex align-items-center">
+							<!-- From -->
+							<input
+								class="form-control"
+								type="date"
+								name="from-date"
+								autocomplete="off"
+								value="{{ .Payload.FromDate }}"
+							/>
+							<i class="bi bi-slash-lg"></i>
+							<!-- To -->
+							<input
+								class="form-control"
+								type="date"
+								name="to-date"
+								autocomplete="off"
+								value="{{ .Payload.ToDate }}"
+							/>
+							<!-- Presets -->
+							<div class="dropdown-center">
+								<button
+									class="btn btn-link"
+									data-bs-toggle="dropdown"
+									data-bs-target="img.logo"
+								>
+									<i class="bi bi-three-dots-vertical fs-5"></i>
+								</button>
+								<ul class="dropdown-menu shadow-sm">
+									<li>
+										<button
+											class="dropdown-item"
+											type="submit"
+											name="date-preset"
+											value="this-month"
+										>
+											This month
+										</button>
+									</li>
+									<li>
+										<button
+											class="dropdown-item"
+											type="submit"
+											hx-vals='{
+												"from-date": "{{ getFirstDayOfPreviousMonth }}",
+												"to-date": "{{ getLastDayOfPreviousMonth }}"
+											}'
+										>
+											Previous month
+										</button>
+									</li>
+									<li>
+										<hr class="dropdown-divider" />
+									</li>
+									<li>
+										<button
+											class="dropdown-item"
+											type="submit"
+											hx-vals='{
+												"from-date": "{{ getToday }}",
+												"to-date": "{{ getToday }}"
+											}'
+										>
+											Today
+										</button>
+									</li>
+									<li>
+										<button
+											class="dropdown-item"
+											type="submit"
+											hx-vals='{
+												"from-date": "{{ getYesterday }}",
+												"to-date": "{{ getYesterday }}"
+											}'
+										>
+											Yesterday
+										</button>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="d-flex gap-1">
+						<!-- Add task -->
+						<button
+							class="btn btn-primary"
+							type="button"
+							data-bs-toggle="tooltip"
+							data-bs-placement="top"
+							data-bs-trigger="hover"
+							hx-get="/hx/add-task"
+							hx-target="#modal > div:first-child"
+							hx-indicator="#add-task-placeholder"
+							hx-swap="beforeend"
+							onclick="showHTMXModal()"
+							title="Add task"
+						>
+							<i class="bi bi-plus-lg fs-4"></i>
+						</button>
+						<!-- Refresh tasks -->
+						<button
+							class="btn btn-primary htmx-disable"
+							type="button"
+							data-bs-toggle="tooltip"
+							data-bs-placement="top"
+							data-bs-trigger="hover"
+							title="Refresh tasks"
+							hx-get="/hx/tasks"
+							hx-target="#task-list"
+							hx-indicator="#task-list"
+							hx-disabled-elt=".htmx-disable"
+						>
+							<i class="bi bi-arrow-repeat fs-4"></i>
+						</button>
+					</div>
+				</div>
+
+				<p id="task-list">Tasks here</p>
+
+				<div class="d-flex justify-content-between align-items-center">
+					<!-- Previous page -->
+					{{ if gt .TotalPages 1 }}
+						<button
+							class="btn btn-primary htmx-disable"
+							type="button"
+							id="previous-page"
+							data-bs-toggle="tooltip"
+							data-bs-placement="left"
+							data-bs-trigger="hover"
+							title="Previous page"
+							{{ if ne .Page 1 }}
+								hx-patch="/filters/previous-page"
+								hx-target="#task-list"
+								hx-indicator="#task-list"
+								hx-disabled-elt=".htmx-disable"
+							{{ else }}
+								disabled
+							{{ end }}
+						>
+							<i class="bi bi-chevron-left"></i>
+						</button>
+					{{ end }}
+					<!-- Pages -->
+					<ul class="pagination m-auto">
+						{{ range .Pagination }}
+							{{ if eq . 0 }}
+								<i class="bi bi-three-dots fs-4 text-secondary"></i>
+							{{ else }}
+								<li class="page-item">
+									<button
+										class="page-link {{ if eq $.Page . }} active {{ end }} htmx-disable"
+										type="button"
+										name="page"
+										id="page-{{ . }}"
+										value="{{ . }}"
+										{{ if ne $.Page . }}
+											hx-get="/hx/tasks-new"
+											hx-target="#task-list"
+											hx-indicator="#task-list"
+											hx-disabled-elt=".htmx-disable"
+										{{ end }}
+									>
+										{{ . }}
+									</button>
+								</li>
+							{{ end }}
+						{{ end }}
+					</ul>
+					<!-- Next page -->
+					{{ if gt .TotalPages 1 }}
+						<button
+							class="btn btn-primary htmx-disable"
+							type="button"
+							id="next-page"
+							data-bs-toggle="tooltip"
+							data-bs-placement="right"
+							data-bs-trigger="hover"
+							title="Next page"
+							{{ if ne .Page .TotalPages }}
+								hx-patch="/filters/next-page"
+								hx-target="#task-list"
+								hx-indicator="#task-list"
+								hx-disabled-elt=".htmx-disable"
+							{{ else }}
+								disabled
+							{{ end }}
+						>
+							<i class="bi bi-chevron-right"></i>
+						</button>
+					{{ end }}
+				</div>
+			</div>
+		</div>
+	</main>
+{{ end }}

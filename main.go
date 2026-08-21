@@ -28,18 +28,21 @@ func main() {
 	/* Pages */
 	pages.Add("login", "login")
 	pages.Add("main", "base")
+	pages.Add("tasks", "base")
 	pages.Add("users", "base")
 	pages.Add("categories", "base")
 	/* Routes */
 	routerMap := map[string]routes.RouterEntry{
 		/* "/{$}" exactly matches root path ("/") */
 		"GET /{$}":                       routes.GetMainPage,
+		"GET /tasks":                     routes.GetTasksPage,
 		"GET /users":                     routes.GetUsersPage,
 		"GET /categories":                routes.GetCategoriesPage,
 		"GET /login":                     routes.GetLoginPage,
 		"POST /login":                    routes.LoginAttempt,
 		"POST /logout":                   routes.Logout,
 		"GET /hx/tasks":                  routes.GetAllTasks,
+		"GET /hx/tasks-new":              routes.HXGetTasks,
 		"GET /hx/tasks/{id}":             routes.GetSingleTask,
 		"GET /hx/edit-task/{id}":         routes.GetEditTaskForm,
 		"GET /hx/add-task":               routes.GetAddTaskForm,

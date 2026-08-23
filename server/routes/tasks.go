@@ -7,6 +7,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 	"todoer/config"
 	"todoer/server/pages"
 	"todoer/server/toasts"
@@ -38,6 +39,8 @@ type TasksPageData struct {
 	PageSizes  []int
 	TotalPages int
 	SearchBy   string
+	FromDate   string
+	ToDate     string
 	Pagination []int
 }
 
@@ -47,13 +50,18 @@ type TasksQuery struct {
 	Page     int
 	Size     int
 	SearchBy string
+	FromDate string
+	ToDate   string
 }
 
 func defaultTaskQuery() TasksQuery {
+	fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	return TasksQuery{
 		Page:     1,
 		Size:     defaultPageSize,
 		SearchBy: "",
+		FromDate: fromDate.Format(utils.HTMLDateFormat),
+		ToDate:   toDate.Format(utils.HTMLDateFormat),
 	}
 }
 
@@ -75,6 +83,23 @@ func (taskQuery *TasksQuery) Parse(rawQuery string) {
 	if parsed.Has("searchBy") {
 		taskQuery.SearchBy = parsed.Get("searchBy")
 	}
+
+	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
+	if parsed.Has("from") {
+		if _, err := time.Parse(utils.HTMLDateFormat, parsed.Get("from")); err != nil {
+			taskQuery.FromDate = defaultFromDate.Format(utils.HTMLDateFormat)
+		} else {
+			taskQuery.FromDate = parsed.Get("from")
+		}
+	}
+	if parsed.Has("to") {
+		if _, err := time.Parse(utils.HTMLDateFormat, parsed.Get("to")); err != nil {
+			taskQuery.ToDate = defaultToDate.Format(utils.HTMLDateFormat)
+		} else {
+			taskQuery.ToDate = parsed.Get("to")
+		}
+	}
+
 }
 
 func (taskQuery TasksQuery) String() string {
@@ -90,6 +115,15 @@ func (taskQuery TasksQuery) String() string {
 
 	if taskQuery.SearchBy != "" {
 		result = append(result, fmt.Sprintf("searchBy=%s", taskQuery.SearchBy))
+	}
+
+	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
+	if taskQuery.FromDate != defaultFromDate.Format(utils.HTMLDateFormat) {
+		result = append(result, fmt.Sprintf("from=%s", taskQuery.FromDate))
+	}
+
+	if taskQuery.ToDate != defaultToDate.Format(utils.HTMLDateFormat) {
+		result = append(result, fmt.Sprintf("to=%s", taskQuery.ToDate))
 	}
 
 	if len(result) > 0 {
@@ -115,6 +149,8 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		PageSizes:  config.PageSizes,
 		TotalPages: 5,
 		SearchBy:   query.SearchBy,
+		FromDate:   query.FromDate,
+		ToDate:     query.ToDate,
 		Pagination: []int{1, 2, 3, 4, 5},
 	})
 }
@@ -154,15 +190,43 @@ func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
 	/* New stuff */
 	query.Parse(req.URL.RawQuery)
 
-	writer.Header().Add("HX-Push-Url", "/tasks" + query.String())
+	writer.Header().Add("HX-Push-Url", "/tasks"+query.String())
 
 	result += fmt.Sprintf(
-		"%d tasks. Search by \"%s\". Page %d out of ?",
+		"%d tasks. Search by \"%s\". Page %d out of ?. From %s to %s",
 		query.Size,
 		query.SearchBy,
 		query.Page,
+		query.FromDate,
+		query.ToDate,
 	)
 
+	/* Update calendar elements if both dates are set */
+	if req.Form.Has("from") && req.Form.Has("to") {
+		pages.ExecutePartial(
+			writer,
+			"task-dates-oob-new",
+			struct {
+				FromDate string
+				ToDate   string
+			}{
+				FromDate: query.FromDate,
+				ToDate:   query.ToDate,
+			},
+		)
+	}
+
+	//tasks.Get()
+
+	/*
+		pages.ExecutePartial(writer, "task-list", TaskListData{
+			Tasks:      selectedTasks,
+			Checkboxes: checkboxes,
+			TotalPages: totalPages,
+			Pagination: utils.GetPagination(totalPages, page),
+			Payload:    payload,
+		})
+	*/
 	writer.Write([]byte("<strong>" + result + "</strong>"))
 }
 

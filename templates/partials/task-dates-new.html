@@ -1,0 +1,104 @@
+{{ define "task-dates-new" }}
+	<div class="d-flex align-items-center">
+		<!-- From -->
+		<input
+			class="form-control"
+			type="date"
+			name="from"
+			autocomplete="off"
+			hx-get="/hx/tasks-new"
+			hx-target="#task-list"
+			hx-indicator="#task-list"
+			hx-disabled-elt=".htmx-disable"
+			value="{{ .FromDate }}"
+		/>
+		<i class="bi bi-slash-lg"></i>
+		<!-- To -->
+		<input
+			class="form-control"
+			type="date"
+			name="to"
+			autocomplete="off"
+			hx-get="/hx/tasks-new"
+			hx-target="#task-list"
+			hx-indicator="#task-list"
+			hx-disabled-elt=".htmx-disable"
+			value="{{ .ToDate }}"
+		/>
+		<!-- Presets -->
+		<div class="dropdown-center">
+			<button
+				class="btn btn-link"
+				data-bs-toggle="dropdown"
+			>
+				<i class="bi bi-three-dots-vertical fs-5"></i>
+			</button>
+			<ul class="dropdown-menu shadow-sm">
+				<li>
+					<button
+						class="dropdown-item"
+						hx-get="/hx/tasks-new"
+						hx-target="#task-list"
+						hx-indicator="#task-list, #filter-date"
+						hx-disabled-elt=".htmx-disable"
+						hx-vals='{
+							"from": "{{ getFirstDayOfMonth }}",
+							"to": "{{ getLastDayOfMonth }}"
+						}'
+					>
+						This month
+					</button>
+				</li>
+				<li>
+					<button
+						class="dropdown-item"
+						hx-get="/hx/tasks-new"
+						hx-target="#task-list"
+						hx-indicator="#task-list, #filter-date"
+						hx-disabled-elt=".htmx-disable"
+						hx-vals='{
+							"from": "{{ getFirstDayOfPreviousMonth }}",
+							"to": "{{ getLastDayOfPreviousMonth }}"
+						}'
+					>
+						Previous month
+					</button>
+				</li>
+				<li>
+					<hr class="dropdown-divider" />
+				</li>
+				<li>
+					<button
+						class="dropdown-item"
+						type="submit"
+						hx-get="/hx/tasks-new"
+						hx-target="#task-list"
+						hx-indicator="#task-list, #filter-date"
+						hx-disabled-elt=".htmx-disable"
+						hx-vals='{
+							"from": "{{ getToday }}",
+							"to": "{{ getToday }}"
+						}'
+					>
+						Today
+					</button>
+				</li>
+				<li>
+					<button
+						class="dropdown-item"
+						hx-get="/hx/tasks-new"
+						hx-target="#task-list"
+						hx-indicator="#task-list, #filter-date"
+						hx-disabled-elt=".htmx-disable"
+						hx-vals='{
+							"from": "{{ getYesterday }}",
+							"to": "{{ getYesterday }}"
+						}'
+					>
+						Yesterday
+					</button>
+				</li>
+			</ul>
+		</div>
+	</div>
+{{ end }}

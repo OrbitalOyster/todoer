@@ -52,6 +52,8 @@ type Task struct {
 	ReadOnly    bool       `yaml:"read_only"`
 }
 
+type TaskFieldName collection.FieldName
+
 const (
 	Id collection.FieldName = iota
 	User
@@ -61,6 +63,10 @@ const (
 	Status
 	ReadOnly
 )
+
+// func (collection.FieldName) String() {
+//
+// }
 
 func mustBeTask(item collection.Item) Task {
 	result, ok := item.(Task)

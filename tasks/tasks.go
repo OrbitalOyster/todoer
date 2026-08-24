@@ -1,15 +1,9 @@
 package tasks
 
 import (
-	// "cmp"
-
 	"fmt"
 	"log"
-
-	// "math"
-	// "slices"
 	"strconv"
-	// "strings"
 	"time"
 	"todoer/collection"
 	"todoer/utils"
@@ -17,6 +11,10 @@ import (
 
 // var list []Task
 var list collection.Collection
+
+func GetAll() collection.Collection {
+	return list
+}
 
 func Load(newList []Task) {
 	// list = newList

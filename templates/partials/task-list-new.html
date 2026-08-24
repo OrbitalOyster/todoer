@@ -1,4 +1,4 @@
-{{ define "task-list" }}
+{{ define "task-list-new" }}
 	<!-- More than zero tasks found -->
 	{{ if gt (len .Tasks) 0 }}
 		<form id="task-list-form">
@@ -36,8 +36,8 @@
 								hx-disabled-elt=".htmx-disable"
 							>
 								What
-								{{ if eq .Payload.SortBy (parseSortableField "Description") }}
-									{{ if eq .Payload.SortAsc true }}
+								{{ if eq .SortBy (parseSortableField "Description") }}
+									{{ if eq .SortDesc true }}
 										<i class="bi bi-sort-down-alt"></i>
 									{{ else }}
 										<i class="bi bi-sort-down"></i>
@@ -56,8 +56,8 @@
 								hx-disabled-elt=".htmx-disable"
 							>
 								When
-								{{ if eq .Payload.SortBy (parseSortableField "Datetime") }}
-									{{ if eq .Payload.SortAsc true }}
+								{{ if eq .SortBy (parseSortableField "Datetime") }}
+									{{ if eq .SortAsc true }}
 										<i class="bi bi-sort-down-alt"></i>
 									{{ else }}
 										<i class="bi bi-sort-down"></i>

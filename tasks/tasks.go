@@ -100,7 +100,7 @@ func Get(fromDateStr string, toDateStr string,
 		}
 	*/
 
-	return collection.AssertType[Task[TaskFieldName], TaskFieldName](result), int(numberOfPages), int(actualPage)
+	return collection.AssertType[Task[TaskFieldName]](result), int(numberOfPages), int(actualPage)
 	// result := slices.Clone(list)
 	/* Date */
 	// fromDate, err := time.Parse(utils.HTMLDateFormat, fromDateStr)

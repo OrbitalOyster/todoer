@@ -32,6 +32,12 @@ var TemplateFuncMap = template.FuncMap{
 	"formatDatetime": func(t time.Time) string {
 		return t.Format(utils.NiceLookingDatetimeFormat)
 	},
+	"plusOne": func(i uint) uint {
+		return i + 1
+	},
+	"minusOne": func(i uint) uint {
+		return i - 1
+	},
 	/* Preset dates */
 	"getFirstDayOfMonth": func() string {
 		fromDate, _ := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())

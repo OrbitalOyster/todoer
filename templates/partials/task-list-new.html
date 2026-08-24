@@ -30,13 +30,15 @@
 							<button
 								class="btn btn-link dotted htmx-disable"
 								type="button"
-								hx-patch="/filters/sort-by/description"
+								name="sortBy"
+								value="Description"
+								hx-get="/hx/tasks-new"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
 								hx-disabled-elt=".htmx-disable"
 							>
 								What
-								{{ if eq .SortBy (parseSortableField "Description") }}
+								{{ if eq .SortBy "Description" }}
 									{{ if eq .SortDesc true }}
 										<i class="bi bi-sort-down-alt"></i>
 									{{ else }}
@@ -49,15 +51,16 @@
 							<!-- Sort by date -->
 							<button
 								class="btn btn-link dotted htmx-disable"
-								type="button"
-								hx-patch="/filters/sort-by/datetime"
+								name="sortBy"
+								value="Datetime"
+								hx-get="/hx/tasks-new"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
 								hx-disabled-elt=".htmx-disable"
 							>
 								When
-								{{ if eq .SortBy (parseSortableField "Datetime") }}
-									{{ if eq .SortAsc true }}
+								{{ if eq .SortBy "Datetime" }}
+									{{ if eq .SortDesc true }}
 										<i class="bi bi-sort-down-alt"></i>
 									{{ else }}
 										<i class="bi bi-sort-down"></i>
@@ -102,7 +105,7 @@
 			</script>
 		</form>
 		<!-- Pagination -->
-		{{ template "pagination" . }}
+		{{ template "pagination-new" . }}
 	{{ else }}
 	 	<!-- Nothing found -->
 		{{ template "task-empty" . }}

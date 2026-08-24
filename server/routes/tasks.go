@@ -65,6 +65,7 @@ func defaultTaskQuery() TasksQuery[tasks.TaskFieldName] {
 		SearchBy: "",
 		FromDate: fromDate.Format(utils.HTMLDateFormat),
 		ToDate:   toDate.Format(utils.HTMLDateFormat),
+		SortBy: tasks.Datetime,
 		SortDesc: false,
 	}
 }
@@ -104,6 +105,10 @@ func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
 		}
 	}
 
+	/* Sorting */
+	if parsed.Has("sortBy") {
+		taskQuery.SortBy = T(tasks.ParseTaskFieldName(parsed.Get("sortBy")))
+	}
 }
 
 func (taskQuery TasksQuery[T]) String() string {
@@ -130,11 +135,56 @@ func (taskQuery TasksQuery[T]) String() string {
 		result = append(result, fmt.Sprintf("to=%s", taskQuery.ToDate))
 	}
 
+	if taskQuery.SortBy != T(tasks.Datetime) {
+		result = append(result, fmt.Sprintf("sortBy=%s", taskQuery.SortBy))
+	}
+
 	if len(result) > 0 {
 		return "?" + strings.Join(result, "&")
 	} else {
 		return ""
 	}
+}
+
+type TaskListDataNew struct {
+	Tasks      []tasks.Task[tasks.TaskFieldName]
+	Page       uint
+	Size       int
+	TotalPages int
+	Pagination []int
+	SortBy     string
+	SortDesc   bool
+	Checkboxes []bool
+}
+
+func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFieldName], uint, int) {
+	/* Date */
+	fromDate, err := time.Parse(utils.HTMLDateFormat, query.FromDate)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+	toDate, err := time.Parse(utils.HTMLDateFormat, query.ToDate)
+	/* Should not happen */
+	if err != nil {
+		panic(err)
+	}
+	result := tasks.GetAll()
+	result = result.
+		MoreThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: fromDate}).
+		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
+		LessThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
+		Filter(tasks.Description, query.SearchBy).
+		// SortBy(query.SortBy)
+		SortBy(tasks.Datetime)
+	if query.SortDesc {
+		result.Reverse()
+	}
+
+	result, page, numberOfPages := result.GetPage(uint(query.Page), uint(query.Size))
+
+	selectedTasks := collection.AssertType[tasks.Task[tasks.TaskFieldName]](result)
+	return selectedTasks, page, int(numberOfPages)
 }
 
 func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
@@ -191,57 +241,33 @@ func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
 	/* Actual htmx request */
 	query.Parse(req.URL.RawQuery)
 
-	/* Date */
-	fromDate, err := time.Parse(utils.HTMLDateFormat, query.FromDate)
-	/* Should not happen */
-	if err != nil {
-		panic(err)
-	}
-	toDate, err := time.Parse(utils.HTMLDateFormat, query.ToDate)
-	/* Should not happen */
-	if err != nil {
-		panic(err)
-	}
-	result := tasks.GetAll()
-	result = result.
-		MoreThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: fromDate}).
-		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
-		LessThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
-		Filter(tasks.Description, query.SearchBy)
-	/* Sorting */
-	switch query.SortBy {
-	case tasks.Description:
-		result = result.SortBy(tasks.Description)
-	case tasks.Datetime:
-		result = result.SortBy(tasks.Datetime)
-	default:
-	}
-	if query.SortDesc {
-		result.Reverse()
+	selectedTasks, page, numberOfPages := getTasks(query)
+
+	if page != uint(query.Page) {
+		query.Page = int(page)
 	}
 
-	result, page, numberOfPages := result.GetPage(uint(query.Page), uint(query.Size))
+	checkboxedTasks := getCheckboxedTasks(req)
+	checkboxes := make([]bool, len(selectedTasks))
+	for i, selectedTask := range selectedTasks {
+		if slices.Contains(checkboxedTasks, selectedTask.Id) {
+			checkboxes[i] = true
+		} else {
+			checkboxes[i] = false
+		}
+	}
 
 	writer.Header().Add("HX-Push-Url", "/tasks"+query.String())
 
-	/*
-		var actualResult []Task
-		for _, i := range result.Items {
-			actualResult = append(actualResult, i.(Task))
-		}
-	*/
-
-	selectedTasks := collection.AssertType[tasks.Task[tasks.TaskFieldName], tasks.TaskFieldName](result)
-
-	pages.ExecutePartial(writer, "task-list-new", struct {
-		Tasks      []tasks.Task[tasks.TaskFieldName]
-		Page       uint
-		Size       int
-		Pagination []int
-	}{
+	pages.ExecutePartial(writer, "task-list-new", TaskListDataNew{
 		Tasks:      selectedTasks,
 		Page:       page,
+		Size:       query.Size,
+		TotalPages: int(numberOfPages),
 		Pagination: utils.GetPagination(int(numberOfPages), int(page)),
+		SortBy:     query.SortBy.String(),
+		SortDesc:   query.SortDesc,
+		Checkboxes: checkboxes,
 	})
 
 	/* Update calendar elements if both dates are set */
@@ -259,7 +285,6 @@ func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
 		)
 	}
 
-	// writer.Write([]byte("<strong>" + result + "</strong>"))
 }
 
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {

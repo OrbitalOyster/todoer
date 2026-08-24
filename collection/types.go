@@ -121,11 +121,11 @@ func (collection Collection[T]) GetPage(page uint, pageSize uint) (Collection[T]
 func AssertType[T any, Y FieldName](collection Collection[Y]) []T {
 	var result []T
 	for _, i := range collection.Items {
-		t, ok := i.(T)
+		item, ok := i.(T)
 		if !ok {
 			panic("Type assert failed")
 		}
-		result = append(result, t)
+		result = append(result, item)
 	}
 	return result
 }

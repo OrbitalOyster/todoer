@@ -15,7 +15,7 @@ import (
 func executeTemplate(
 	writer http.ResponseWriter,
 	req *http.Request,
-	selectedTasks []tasks.Task,
+	selectedTasks []tasks.Task[tasks.TaskFieldName],
 	totalPages int,
 	page int) {
 	payload := req.Context(). /* Get context from request */

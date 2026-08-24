@@ -10,13 +10,13 @@ import (
 )
 
 // var list []Task
-var list collection.Collection
+var list collection.Collection[TaskFieldName]
 
-func GetAll() collection.Collection {
+func GetAll() collection.Collection[TaskFieldName]{
 	return list
 }
 
-func Load(newList []Task) {
+func Load(newList []Task[TaskFieldName]) {
 	// list = newList
 	for _, t := range newList {
 		list.Items = append(list.Items, t)
@@ -35,7 +35,7 @@ func getNextId() int {
 			return cmp.Compare(a.Id, b.Id)
 		})
 	*/
-	max, ok := list.Max(Id).(Task)
+	max, ok := list.Max(Id).(Task[TaskFieldName])
 	if !ok {
 		panic("Major screwup")
 	}
@@ -44,7 +44,7 @@ func getNextId() int {
 
 func Add(user string, description string) {
 	now := time.Now()
-	result := Task{
+	result := Task[TaskFieldName]{
 		Id:          getNextId(),
 		User:        user,
 		Description: description,
@@ -59,7 +59,7 @@ func Add(user string, description string) {
 func Get(fromDateStr string, toDateStr string,
 	searchBy string,
 	page int, pageSize int,
-	sortBy utils.SortableField, sortAsc bool) ([]Task, int, int) {
+	sortBy utils.SortableField, sortAsc bool) ([]Task[TaskFieldName], int, int) {
 
 	result := list.Clone()
 
@@ -75,9 +75,9 @@ func Get(fromDateStr string, toDateStr string,
 		panic(err)
 	}
 	result = result.
-		MoreThan(Datetime, Task{Datetime: fromDate}).
+		MoreThan(Datetime, Task[TaskFieldName]{Datetime: fromDate}).
 		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
-		LessThan(Datetime, Task{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
+		LessThan(Datetime, Task[TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
 		Filter(Description, searchBy)
 	/* Sorting */
 	switch sortBy {
@@ -100,7 +100,7 @@ func Get(fromDateStr string, toDateStr string,
 		}
 	*/
 
-	return collection.AssertType[Task](result), int(numberOfPages), int(actualPage)
+	return collection.AssertType[Task[TaskFieldName], TaskFieldName](result), int(numberOfPages), int(actualPage)
 	// result := slices.Clone(list)
 	/* Date */
 	// fromDate, err := time.Parse(utils.HTMLDateFormat, fromDateStr)
@@ -159,7 +159,7 @@ func Get(fromDateStr string, toDateStr string,
 	// return result[startInd:endInd], totalPages, page
 }
 
-func getById(id int) (*Task, error) {
+func getById(id int) (*Task[TaskFieldName], error) {
 	/*
 		ind := slices.IndexFunc(list, func(t Task) bool {
 			return t.Id == id
@@ -176,7 +176,7 @@ func getById(id int) (*Task, error) {
 	if filtered.Length() != 1 {
 		return nil, fmt.Errorf("More than one task found: %d", id)
 	}
-	result, ok := filtered.First().(Task)
+	result, ok := filtered.First().(Task[TaskFieldName])
 	if !ok {
 		panic("Major screwup")
 	}
@@ -184,7 +184,7 @@ func getById(id int) (*Task, error) {
 }
 
 /* Generic function, accepts id as int or string */
-func GetById[T int | string](id T) (*Task, error) {
+func GetById[T int | string](id T) (*Task[TaskFieldName], error) {
 	switch idAny := any(id).(type) {
 	case int:
 		return getById(idAny)
@@ -201,25 +201,25 @@ func GetById[T int | string](id T) (*Task, error) {
 	}
 }
 
-func (task *Task) SetDescription(description string) error {
+func (task *Task[TaskFieldName]) SetDescription(description string) error {
 	task.Description = description
 	log.Printf("Set task #%d description to \"%s\"", task.Id, task.Description)
 	return nil
 }
 
-func (task *Task) SetUser(user string) error {
+func (task *Task[TaskFieldName]) SetUser(user string) error {
 	task.User = user
 	log.Printf("Set task #%d user to \"%s\"", task.Id, task.User)
 	return nil
 }
 
-func (task *Task) SetStatus(status TaskStatus) error {
+func (task *Task[TaskFieldName]) SetStatus(status TaskStatus) error {
 	task.Status = status
 	log.Printf("Set task #%d status to \"%s\"", task.Id, task.Status)
 	return nil
 }
 
-func (task *Task) SetReadOnly(ro bool) error {
+func (task *Task[TaskFieldName]) SetReadOnly(ro bool) error {
 	log.Printf("Set task #%d read only to %t", task.Id, ro)
 	task.ReadOnly = ro
 	return nil

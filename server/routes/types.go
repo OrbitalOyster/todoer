@@ -11,7 +11,7 @@ type RouterEntry func(http.ResponseWriter, *http.Request)
 type RouterMap map[string]RouterEntry
 
 type TaskListData struct {
-	Tasks      []tasks.Task
+	Tasks      []tasks.Task[tasks.TaskFieldName]
 	TotalPages int
 	Pagination []int
 	Payload    utils.Payload
@@ -29,6 +29,6 @@ type DatesOOBData struct {
 }
 
 type EditTaskFormData struct {
-	Task  *tasks.Task
+	Task  *tasks.Task[tasks.TaskFieldName]
 	Users []users.User
 }

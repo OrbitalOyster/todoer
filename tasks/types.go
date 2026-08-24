@@ -42,7 +42,7 @@ func ParseStatus(status string) TaskStatus {
 	}
 }
 
-type Task struct {
+type Task[T TaskFieldName] struct {
 	Id          int        `yaml:"id"`
 	User        string     `yaml:"user"`
 	Category    string     `yaml:"category"`
@@ -52,10 +52,10 @@ type Task struct {
 	ReadOnly    bool       `yaml:"read_only"`
 }
 
-type TaskFieldName collection.FieldName
+type TaskFieldName uint
 
 const (
-	Id collection.FieldName = iota
+	Id TaskFieldName = iota
 	User
 	Category
 	Datetime
@@ -64,12 +64,12 @@ const (
 	ReadOnly
 )
 
-// func (collection.FieldName) String() {
-//
-// }
+func (field TaskFieldName) String() {
 
-func mustBeTask(item collection.Item) Task {
-	result, ok := item.(Task)
+}
+
+func mustBeTask[T TaskFieldName](item collection.Item[T]) Task[T] {
+	result, ok := item.(Task[T])
 	if !ok {
 		panic("Type assertion failed")
 	} else {
@@ -77,39 +77,39 @@ func mustBeTask(item collection.Item) Task {
 	}
 }
 
-func (task Task) MoreThan(field collection.FieldName, item collection.Item) bool {
+func (task Task[T]) MoreThan(field T, item collection.Item[T]) bool {
 	otherTask := mustBeTask(item)
 	switch field {
-	case Datetime:
+	case T(Datetime):
 		return task.Datetime.After(otherTask.Datetime)
-	case Description:
+	case T(Description):
 		return task.Description > otherTask.Description
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}
 }
 
-func (task Task) LessThan(field collection.FieldName, item collection.Item) bool {
+func (task Task[T]) LessThan(field T, item collection.Item[T]) bool {
 	otherTask := mustBeTask(item)
 	switch field {
-	case Datetime:
+	case T(Datetime):
 		return task.Datetime.Before(otherTask.Datetime)
-	case Description:
+	case T(Description):
 		return task.Description < otherTask.Description
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}
 }
 
-func (task Task) Filter(field collection.FieldName, filter any) bool {
+func (task Task[T]) Filter(field T, filter any) bool {
 	switch field {
-	case Id:
+	case T(Id):
 		filterInt, ok := filter.(int)
 		if !ok {
 			panic(fmt.Sprintf("Invalid filter: %v", filter))
 		}
 		return filterInt == task.Id
-	case Description:
+	case T(Description):
 		filterString, ok := filter.(string)
 		if !ok {
 			panic(fmt.Sprintf("Invalid filter: %v", filter))

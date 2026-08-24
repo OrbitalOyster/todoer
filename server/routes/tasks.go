@@ -18,7 +18,7 @@ import (
 	"todoer/utils"
 )
 
-func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task {
+func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task[tasks.TaskFieldName] {
 	if task, err := tasks.GetById(req.PathValue("id")); err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		_, err = writer.Write([]byte("Task not found: " + err.Error()))
@@ -47,19 +47,19 @@ type TasksPageData struct {
 
 const defaultPageSize = 10
 
-type TasksQuery struct {
+type TasksQuery[T tasks.TaskFieldName] struct {
 	Page     int
 	Size     int
 	SearchBy string
 	FromDate string
 	ToDate   string
-	SortBy   collection.FieldName
+	SortBy   T
 	SortDesc bool
 }
 
-func defaultTaskQuery() TasksQuery {
+func defaultTaskQuery() TasksQuery[tasks.TaskFieldName] {
 	fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-	return TasksQuery{
+	return TasksQuery[tasks.TaskFieldName]{
 		Page:     1,
 		Size:     defaultPageSize,
 		SearchBy: "",
@@ -69,7 +69,7 @@ func defaultTaskQuery() TasksQuery {
 	}
 }
 
-func (taskQuery *TasksQuery) Parse(rawQuery string) {
+func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
 	parsed, err := url.ParseQuery(rawQuery)
 	if err != nil {
 		return
@@ -106,7 +106,7 @@ func (taskQuery *TasksQuery) Parse(rawQuery string) {
 
 }
 
-func (taskQuery TasksQuery) String() string {
+func (taskQuery TasksQuery[T]) String() string {
 	var result []string
 
 	if taskQuery.Page != 1 {
@@ -204,9 +204,9 @@ func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
 	}
 	result := tasks.GetAll()
 	result = result.
-		MoreThan(tasks.Datetime, tasks.Task{Datetime: fromDate}).
+		MoreThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: fromDate}).
 		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
-		LessThan(tasks.Datetime, tasks.Task{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
+		LessThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
 		Filter(tasks.Description, query.SearchBy)
 	/* Sorting */
 	switch query.SortBy {
@@ -231,10 +231,10 @@ func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
 		}
 	*/
 
-	selectedTasks := collection.AssertType[tasks.Task](result)
+	selectedTasks := collection.AssertType[tasks.Task[tasks.TaskFieldName], tasks.TaskFieldName](result)
 
 	pages.ExecutePartial(writer, "task-list-new", struct {
-		Tasks      []tasks.Task
+		Tasks      []tasks.Task[tasks.TaskFieldName]
 		Page       uint
 		Size       int
 		Pagination []int
@@ -323,7 +323,7 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
-	var task *tasks.Task
+	var task *tasks.Task[tasks.TaskFieldName]
 	if task = idCheck(writer, req); task == nil {
 		return
 	}
@@ -373,7 +373,7 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	var task *tasks.Task
+	var task *tasks.Task[tasks.TaskFieldName]
 	if task = idCheck(writer, req); task == nil {
 		panic("Task not found")
 	}
@@ -451,7 +451,7 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
-	var task *tasks.Task
+	var task *tasks.Task[tasks.TaskFieldName]
 	if task = idCheck(writer, req); task == nil {
 		panic("Task not found")
 	}

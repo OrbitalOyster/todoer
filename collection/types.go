@@ -5,44 +5,46 @@ import (
 	"slices"
 )
 
-type FieldName uint
-
-type Item interface {
-	MoreThan(field FieldName, item Item) bool
-	LessThan(field FieldName, item Item) bool
-	Filter(field FieldName, s any) bool
+type FieldName interface {
+	~uint
 }
 
-type Collection struct {
-	Items []Item
+type Item[T FieldName] interface {
+	MoreThan(field T, item Item[T]) bool
+	LessThan(field T, item Item[T]) bool
+	Filter(field T, s any) bool
 }
 
-func (collection Collection) Length() int {
+type Collection[T FieldName] struct {
+	Items []Item[T]
+}
+
+func (collection Collection[T]) Length() int {
 	return len(collection.Items)
 }
 
-func (collection Collection) Clone() Collection {
-	return Collection{Items: slices.Clone(collection.Items)}
+func (collection Collection[T]) Clone() Collection[T] {
+	return Collection[T]{Items: slices.Clone(collection.Items)}
 }
 
-func (collection *Collection) Add(newItem Item) {
+func (collection *Collection[T]) Add(newItem Item[T]) {
 	collection.Items = append(collection.Items, newItem)
 }
 
-func (collection *Collection) Delete(field FieldName, filter any) {
-	collection.Items = slices.DeleteFunc(collection.Items, func(item Item) bool {
+func (collection *Collection[T]) Delete(field T, filter any) {
+	collection.Items = slices.DeleteFunc(collection.Items, func(item Item[T]) bool {
 		return item.Filter(field, filter)
 	})
 }
 
-func (collection Collection) First() Item {
+func (collection Collection[T]) First() Item[T] {
 	if len(collection.Items) < 1 {
 		panic("Empty array")
 	}
 	return collection.Items[0]
 }
 
-func compare(a Item, b Item, field FieldName) int {
+func compare[T FieldName](a Item[T], b Item[T], field T) int {
 	switch {
 	case a.LessThan(field, b):
 		return -1
@@ -53,26 +55,26 @@ func compare(a Item, b Item, field FieldName) int {
 	}
 }
 
-func (collection Collection) Max(field FieldName) Item {
-	return slices.MaxFunc(collection.Items, func(a, b Item) int {
+func (collection Collection[T]) Max(field T) Item[T] {
+	return slices.MaxFunc(collection.Items, func(a, b Item[T]) int {
 		return compare(a, b, field)
 	})
 }
 
-func (collection Collection) SortBy(field FieldName) Collection {
-	slices.SortFunc(collection.Items, func(a Item, b Item) int {
+func (collection Collection[T]) SortBy(field T) Collection[T] {
+	slices.SortFunc(collection.Items, func(a Item[T], b Item[T]) int {
 		return compare(a, b, field)
 	})
 	return collection
 }
 
-func (collection Collection) Reverse() Collection {
+func (collection Collection[T]) Reverse() Collection[T] {
 	slices.Reverse(collection.Items)
 	return collection
 }
 
-func (collection Collection) Filter(field FieldName, filter any) Collection {
-	result := Collection{Items: []Item{}}
+func (collection Collection[T]) Filter(field T, filter any) Collection[T] {
+	result := Collection[T]{Items: []Item[T]{}}
 	for _, item := range collection.Items {
 		if item.Filter(field, filter) {
 			result.Items = append(result.Items, item)
@@ -81,8 +83,8 @@ func (collection Collection) Filter(field FieldName, filter any) Collection {
 	return result
 }
 
-func (collection Collection) MoreThan(field FieldName, item Item) Collection {
-	result := Collection{Items: []Item{}}
+func (collection Collection[T]) MoreThan(field T, item Item[T]) Collection[T] {
+	result := Collection[T]{Items: []Item[T]{}}
 	for _, i := range collection.Items {
 		if i.MoreThan(field, item) {
 			result.Items = append(result.Items, i)
@@ -91,8 +93,8 @@ func (collection Collection) MoreThan(field FieldName, item Item) Collection {
 	return result
 }
 
-func (collection Collection) LessThan(field FieldName, item Item) Collection {
-	result := Collection{Items: []Item{}}
+func (collection Collection[T]) LessThan(field T, item Item[T]) Collection[T] {
+	result := Collection[T]{Items: []Item[T]{}}
 	for _, i := range collection.Items {
 		if i.LessThan(field, item) {
 			result.Items = append(result.Items, i)
@@ -101,7 +103,7 @@ func (collection Collection) LessThan(field FieldName, item Item) Collection {
 	return result
 }
 
-func (collection Collection) GetPage(page uint, pageSize uint) (Collection, uint, uint) {
+func (collection Collection[T]) GetPage(page uint, pageSize uint) (Collection[T], uint, uint) {
 	length := len(collection.Items)
 	numberOfPages := uint(math.Ceil(float64(length) / float64(pageSize)))
 	if page >= numberOfPages {
@@ -112,11 +114,11 @@ func (collection Collection) GetPage(page uint, pageSize uint) (Collection, uint
 	}
 	startInd := pageSize * (page - 1)
 	endInd := min(startInd+pageSize, uint(length))
-	result := Collection{Items: slices.Clone(collection.Items)[startInd:endInd]}
+	result := Collection[T]{Items: slices.Clone(collection.Items)[startInd:endInd]}
 	return result, page, numberOfPages
 }
 
-func AssertType[T any](collection Collection) []T {
+func AssertType[T any, Y FieldName](collection Collection[Y]) []T {
 	var result []T
 	for _, i := range collection.Items {
 		t, ok := i.(T)

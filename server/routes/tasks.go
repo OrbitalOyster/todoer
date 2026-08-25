@@ -104,39 +104,46 @@ func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
 			taskQuery.ToDate = parsed.Get("to")
 		}
 	}
-
 	/* Sorting */
 	if parsed.Has("sortBy") {
 		taskQuery.SortBy = T(tasks.ParseTaskFieldName(parsed.Get("sortBy")))
+	}
+	if parsed.Has("sortDesc") {
+		newSortDesc, err := strconv.ParseBool(parsed.Get("sortDesc"))
+		if err != nil {
+			newSortDesc = false
+		}
+		taskQuery.SortDesc = newSortDesc
 	}
 }
 
 func (taskQuery TasksQuery[T]) String() string {
 	var result []string
-
+	/* Pagination */
 	if taskQuery.Page != 1 {
 		result = append(result, fmt.Sprintf("page=%d", taskQuery.Page))
 	}
-
 	if taskQuery.Size != defaultPageSize {
 		result = append(result, fmt.Sprintf("size=%d", taskQuery.Size))
 	}
-
+	/* Search by */
 	if taskQuery.SearchBy != "" {
 		result = append(result, fmt.Sprintf("searchBy=%s", taskQuery.SearchBy))
 	}
-
+	/* Dates */
 	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	if taskQuery.FromDate != defaultFromDate.Format(utils.HTMLDateFormat) {
 		result = append(result, fmt.Sprintf("from=%s", taskQuery.FromDate))
 	}
-
 	if taskQuery.ToDate != defaultToDate.Format(utils.HTMLDateFormat) {
 		result = append(result, fmt.Sprintf("to=%s", taskQuery.ToDate))
 	}
-
+	/* Sorting */
 	if taskQuery.SortBy != T(tasks.Datetime) {
 		result = append(result, fmt.Sprintf("sortBy=%s", taskQuery.SortBy))
+	}
+	if taskQuery.SortDesc {
+		result = append(result, "sortDesc")
 	}
 
 	if len(result) > 0 {
@@ -175,8 +182,7 @@ func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFie
 		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
 		LessThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
 		Filter(tasks.Description, query.SearchBy).
-		// SortBy(query.SortBy)
-		SortBy(tasks.Datetime)
+		SortBy(query.SortBy)
 	if query.SortDesc {
 		result.Reverse()
 	}

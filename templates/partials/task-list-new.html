@@ -30,19 +30,25 @@
 							<button
 								class="btn btn-link dotted htmx-disable"
 								type="button"
-								name="sortBy"
-								value="Description"
 								hx-get="/hx/tasks-new"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
 								hx-disabled-elt=".htmx-disable"
+								hx-vals='{
+									"sortBy": "Description",
+									{{ if eq .SortBy "Description" }}
+										"sortDesc": {{ if eq .SortDesc true }} false {{ else }} true {{ end }}
+									{{ else }}
+										"sortDesc": false
+									{{ end }}
+								}'
 							>
 								What
 								{{ if eq .SortBy "Description" }}
 									{{ if eq .SortDesc true }}
-										<i class="bi bi-sort-down-alt"></i>
-									{{ else }}
 										<i class="bi bi-sort-down"></i>
+									{{ else }}
+										<i class="bi bi-sort-down-alt"></i>
 									{{ end }}
 								{{ end }}
 							</button>
@@ -51,19 +57,25 @@
 							<!-- Sort by date -->
 							<button
 								class="btn btn-link dotted htmx-disable"
-								name="sortBy"
-								value="Datetime"
 								hx-get="/hx/tasks-new"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
 								hx-disabled-elt=".htmx-disable"
+								hx-vals='{
+									"sortBy": "Datetime",
+									{{ if eq .SortBy "Datetime" }}
+										"sortDesc": {{ if eq .SortDesc true }} false {{ else }} true {{ end }}
+									{{ else }}
+										"sortDesc": false
+									{{ end }}
+								}'
 							>
 								When
 								{{ if eq .SortBy "Datetime" }}
 									{{ if eq .SortDesc true }}
-										<i class="bi bi-sort-down-alt"></i>
-									{{ else }}
 										<i class="bi bi-sort-down"></i>
+									{{ else }}
+										<i class="bi bi-sort-down-alt"></i>
 									{{ end }}
 								{{ end }}
 							</button>

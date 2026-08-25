@@ -87,9 +87,12 @@
 						</button>
 					</div>
 				</div>
-				<p id="task-list">
-					Tasks here
-				</p>
+				<div id="task-list">
+					{{ template "task-list-new" . }}
+				</div>
+				<script>
+					createSelectAllGroup("#select-all-tasks", ".select-task");
+				</script>
 			</div>
 		</div>
 	</main>

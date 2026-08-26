@@ -31,6 +31,20 @@ func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task[tasks.Ta
 
 const defaultPageSize = 10
 
+type TaskListDataNew struct {
+	Tasks      []tasks.Task[tasks.TaskFieldName]
+	Page       uint
+	PageSize   int
+	TotalPages int
+	Pagination []int
+	SearchBy   string
+	FromDate   string
+	ToDate     string
+	SortBy     string
+	SortDesc   bool
+	Checkboxes []bool
+}
+
 func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFieldName], uint, int) {
 	/* Date */
 	fromDate, err := time.Parse(utils.HTMLDateFormat, query.FromDate)
@@ -45,9 +59,15 @@ func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFie
 	}
 	result := tasks.GetAll()
 	result = result.
-		MoreThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: fromDate}).
+		MoreThan(
+			tasks.Datetime,
+			tasks.Task[tasks.TaskFieldName]{Datetime: fromDate},
+		).
 		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
-		LessThan(tasks.Datetime, tasks.Task[tasks.TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
+		LessThan(
+			tasks.Datetime,
+			tasks.Task[tasks.TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)},
+		).
 		Filter(tasks.Description, query.SearchBy).
 		SortBy(query.SortBy)
 	if query.SortDesc {
@@ -64,6 +84,7 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		GetPayload()
 
 	query := CreateQueryFromRequest(req)
+
 	selectedTasks, page, totalPages := getTasks(query)
 	checkboxedTasks := getCheckboxedTasks(req)
 	checkboxes := make([]bool, len(selectedTasks))
@@ -76,35 +97,27 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	pages.Execute(writer, "tasks", struct {
-		Title      string
-		Payload    utils.Payload
-		Tasks      []tasks.Task[tasks.TaskFieldName]
-		Page       uint
-		PageSize   int
-		PageSizes  []int
-		TotalPages int
-		Pagination []int
-		SearchBy   string
-		FromDate   string
-		ToDate     string
-		SortBy     string
-		SortDesc   bool
-		Checkboxes []bool
+		Title     string
+		Payload   utils.Payload
+		PageSizes []int
+		TaskListDataNew
 	}{
-		Title:      "todoer - tasks",
-		Payload:    payload,
-		Tasks:      selectedTasks,
-		Page:       page,
-		PageSize:   query.Size,
-		PageSizes:  config.PageSizes,
-		TotalPages: totalPages,
-		Pagination: utils.GetPagination(int(totalPages), int(page)),
-		SearchBy:   query.SearchBy,
-		FromDate:   query.FromDate,
-		ToDate:     query.ToDate,
-		SortBy:     query.SortBy.String(),
-		SortDesc:   query.SortDesc,
-		Checkboxes: checkboxes,
+		Title:     "todoer - tasks",
+		Payload:   payload,
+		PageSizes: config.PageSizes,
+		TaskListDataNew: TaskListDataNew{
+			Tasks:      selectedTasks,
+			Page:       page,
+			PageSize:   query.Size,
+			TotalPages: totalPages,
+			Pagination: utils.GetPagination(int(totalPages), int(page)),
+			SearchBy:   query.SearchBy,
+			FromDate:   query.FromDate,
+			ToDate:     query.ToDate,
+			SortBy:     query.SortBy.String(),
+			SortDesc:   query.SortDesc,
+			Checkboxes: checkboxes,
+		},
 	})
 }
 
@@ -128,9 +141,9 @@ func getCheckboxedTasks(req *http.Request) (result []int) {
 	return result
 }
 
-func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
+func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	query := CreateQueryFromRequest(req)
-
+	/* Get tasks */
 	tasksOnCurrentPage, page, numberOfPages := getTasks(query)
 	if page != uint(query.Page) {
 		query.Page = int(page)
@@ -164,58 +177,17 @@ func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	/* Send actual list */
-	pages.ExecutePartial(writer, "task-list-new",
-		struct {
-			Tasks      []tasks.Task[tasks.TaskFieldName]
-			Page       uint
-			Size       int
-			TotalPages int
-			Pagination []int
-			SortBy     string
-			SortDesc   bool
-			Checkboxes []bool
-		}{
-			Tasks:      tasksOnCurrentPage,
-			Page:       page,
-			Size:       query.Size,
-			TotalPages: int(numberOfPages),
-			Pagination: utils.GetPagination(int(numberOfPages), int(page)),
-			SortBy:     query.SortBy.String(),
-			SortDesc:   query.SortDesc,
-			Checkboxes: checkboxes,
-		},
-	)
-}
-
-/*
-func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
-	payload := req.Context().
-					Value("token").(*token.Token[utils.Payload]).
-					GetPayload()
-	selectedTasks, totalPages, page := tasks.Get(
-		payload.FromDate, payload.ToDate,
-		payload.SearchBy,
-		payload.Page, payload.PageSize,
-		payload.SortBy, payload.SortAsc,
-	)
-	checkboxedTasks := getCheckboxedTasks(req)
-	checkboxes := make([]bool, len(selectedTasks))
-	for i, selectedTask := range selectedTasks {
-		if slices.Contains(checkboxedTasks, selectedTask.Id) {
-			checkboxes[i] = true
-		} else {
-			checkboxes[i] = false
-		}
-	}
-	pages.ExecutePartial(writer, "task-list", TaskListData{
-		Tasks:      selectedTasks,
+	pages.ExecutePartial(writer, "task-list-new", TaskListDataNew{
+		Tasks:      tasksOnCurrentPage,
+		Page:       page,
+		PageSize:   query.Size,
+		TotalPages: int(numberOfPages),
+		Pagination: utils.GetPagination(int(numberOfPages), int(page)),
+		SortBy:     query.SortBy.String(),
+		SortDesc:   query.SortDesc,
 		Checkboxes: checkboxes,
-		TotalPages: totalPages,
-		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    payload,
 	})
 }
-*/
 
 func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
 	pages.ExecutePartial(writer, "addTaskForm", nil)
@@ -247,7 +219,7 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "New task", "Success")
 	// GetAllTasks(writer, req)
-	HXGetTasks(writer, req)
+	GetTaskList(writer, req)
 }
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
@@ -298,7 +270,7 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
 	// GetAllTasks(writer, req)
-	HXGetTasks(writer, req)
+	GetTaskList(writer, req)
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
@@ -336,7 +308,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	}
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
 	// GetAllTasks(writer, req)
-	HXGetTasks(writer, req)
+	GetTaskList(writer, req)
 }
 
 func PatchTasks(writer http.ResponseWriter, req *http.Request) {
@@ -378,7 +350,7 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	}
 	toasts.Info(writer, "Updated "+strconv.Itoa(patched)+" tasks", "Success")
 
-	HXGetTasks(writer, req)
+	GetTaskList(writer, req)
 	// GetAllTasks(writer, req)
 }
 
@@ -391,7 +363,7 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 	tasks.Delete(taskId)
 	toasts.Warning(writer, "Task "+strconv.Itoa(taskId)+" deleted", "Success")
 
-	HXGetTasks(writer, req)
+	GetTaskList(writer, req)
 
 	// GetAllTasks(writer, req)
 }
@@ -409,7 +381,7 @@ func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 	}
 	toasts.Warning(writer, "Deleted "+strconv.Itoa(deletedTasks)+" tasks", "Success")
 
-	HXGetTasks(writer, req)
+	GetTaskList(writer, req)
 
 	// GetAllTasks(writer, req)
 }

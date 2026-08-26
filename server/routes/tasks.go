@@ -2,7 +2,6 @@ package routes
 
 import (
 	"net/http"
-	"net/url"
 	"slices"
 	"strconv"
 	"time"
@@ -54,47 +53,18 @@ func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFie
 	if query.SortDesc {
 		result.Reverse()
 	}
-
 	result, page, numberOfPages := result.GetPage(uint(query.Page), uint(query.Size))
-
 	selectedTasks := collection.AssertType[tasks.Task[tasks.TaskFieldName]](result)
 	return selectedTasks, page, int(numberOfPages)
 }
 
 func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
-	payload := req.Context(). /* Get context from request */
-					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
-					GetPayload()                                  /* Load actual payload */
+	payload := req.Context().
+		Value("token").(*token.Token[utils.Payload]).
+		GetPayload()
 
-	query := defaultTaskQuery()
-	query.Parse(req.URL.RawQuery)
-
-	selectedTasks, page, numberOfPages := getTasks(query)
-
-	/*
-		pages.ExecutePartial(writer, "task-list-new",
-			struct {
-				Tasks      []tasks.Task[tasks.TaskFieldName]
-				Page       uint
-				Size       int
-				TotalPages int
-				Pagination []int
-				SortBy     string
-				SortDesc   bool
-				Checkboxes []bool
-			}{
-				Tasks:      selectedTasks,
-				Page:       page,
-				Size:       query.Size,
-				TotalPages: int(numberOfPages),
-				Pagination: utils.GetPagination(int(numberOfPages), int(page)),
-				SortBy:     query.SortBy.String(),
-				SortDesc:   query.SortDesc,
-				Checkboxes: checkboxes,
-			},
-		)
-	*/
-
+	query := CreateQueryFromRequest(req)
+	selectedTasks, page, totalPages := getTasks(query)
 	checkboxedTasks := getCheckboxedTasks(req)
 	checkboxes := make([]bool, len(selectedTasks))
 	for i, selectedTask := range selectedTasks {
@@ -127,8 +97,8 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		Page:       page,
 		PageSize:   query.Size,
 		PageSizes:  config.PageSizes,
-		TotalPages: numberOfPages,
-		Pagination: utils.GetPagination(int(numberOfPages), int(page)),
+		TotalPages: totalPages,
+		Pagination: utils.GetPagination(int(totalPages), int(page)),
 		SearchBy:   query.SearchBy,
 		FromDate:   query.FromDate,
 		ToDate:     query.ToDate,
@@ -159,26 +129,16 @@ func getCheckboxedTasks(req *http.Request) (result []int) {
 }
 
 func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
-	query := defaultTaskQuery()
+	query := CreateQueryFromRequest(req)
 
-	/* Current browser query */
-	url, err := url.Parse(req.Header.Get("HX-Current-URL"))
-	if err != nil {
-		panic(err)
-	}
-	query.Parse(url.RawQuery)
-	/* Actual htmx request */
-	query.Parse(req.URL.RawQuery)
-
-	selectedTasks, page, numberOfPages := getTasks(query)
-
+	tasksOnCurrentPage, page, numberOfPages := getTasks(query)
 	if page != uint(query.Page) {
 		query.Page = int(page)
 	}
 
 	checkboxedTasks := getCheckboxedTasks(req)
-	checkboxes := make([]bool, len(selectedTasks))
-	for i, selectedTask := range selectedTasks {
+	checkboxes := make([]bool, len(tasksOnCurrentPage))
+	for i, selectedTask := range tasksOnCurrentPage {
 		if slices.Contains(checkboxedTasks, selectedTask.Id) {
 			checkboxes[i] = true
 		} else {
@@ -186,30 +146,8 @@ func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	/* Update URL */
 	writer.Header().Add("HX-Push-Url", "/tasks"+query.String())
-
-	pages.ExecutePartial(writer, "task-list-new",
-		struct {
-			Tasks      []tasks.Task[tasks.TaskFieldName]
-			Page       uint
-			Size       int
-			TotalPages int
-			Pagination []int
-			SortBy     string
-			SortDesc   bool
-			Checkboxes []bool
-		}{
-			Tasks:      selectedTasks,
-			Page:       page,
-			Size:       query.Size,
-			TotalPages: int(numberOfPages),
-			Pagination: utils.GetPagination(int(numberOfPages), int(page)),
-			SortBy:     query.SortBy.String(),
-			SortDesc:   query.SortDesc,
-			Checkboxes: checkboxes,
-		},
-	)
-
 	/* Update calendar elements if both dates are set */
 	if req.Form.Has("from") && req.Form.Has("to") {
 		pages.ExecutePartial(
@@ -225,12 +163,35 @@ func HXGetTasks(writer http.ResponseWriter, req *http.Request) {
 		)
 	}
 
+	/* Send actual list */
+	pages.ExecutePartial(writer, "task-list-new",
+		struct {
+			Tasks      []tasks.Task[tasks.TaskFieldName]
+			Page       uint
+			Size       int
+			TotalPages int
+			Pagination []int
+			SortBy     string
+			SortDesc   bool
+			Checkboxes []bool
+		}{
+			Tasks:      tasksOnCurrentPage,
+			Page:       page,
+			Size:       query.Size,
+			TotalPages: int(numberOfPages),
+			Pagination: utils.GetPagination(int(numberOfPages), int(page)),
+			SortBy:     query.SortBy.String(),
+			SortDesc:   query.SortDesc,
+			Checkboxes: checkboxes,
+		},
+	)
 }
 
+/*
 func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
-	payload := req.Context(). /* Get context from request */
-					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
-					GetPayload()                                  /* Load actual payload */
+	payload := req.Context().
+					Value("token").(*token.Token[utils.Payload]).
+					GetPayload()
 	selectedTasks, totalPages, page := tasks.Get(
 		payload.FromDate, payload.ToDate,
 		payload.SearchBy,
@@ -254,6 +215,7 @@ func GetAllTasks(writer http.ResponseWriter, req *http.Request) {
 		Payload:    payload,
 	})
 }
+*/
 
 func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
 	pages.ExecutePartial(writer, "addTaskForm", nil)
@@ -284,7 +246,8 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 	tasks.Add(user, description)
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "New task", "Success")
-	GetAllTasks(writer, req)
+	// GetAllTasks(writer, req)
+	HXGetTasks(writer, req)
 }
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
@@ -334,7 +297,8 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	/* Done */
 	writer.Header().Set("HX-Trigger", "hideModal")
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
-	GetAllTasks(writer, req)
+	// GetAllTasks(writer, req)
+	HXGetTasks(writer, req)
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
@@ -371,7 +335,8 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		}
 	}
 	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
-	GetAllTasks(writer, req)
+	// GetAllTasks(writer, req)
+	HXGetTasks(writer, req)
 }
 
 func PatchTasks(writer http.ResponseWriter, req *http.Request) {
@@ -412,7 +377,9 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 		}
 	}
 	toasts.Info(writer, "Updated "+strconv.Itoa(patched)+" tasks", "Success")
-	GetAllTasks(writer, req)
+
+	HXGetTasks(writer, req)
+	// GetAllTasks(writer, req)
 }
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
@@ -423,7 +390,10 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 	taskId := task.Id
 	tasks.Delete(taskId)
 	toasts.Warning(writer, "Task "+strconv.Itoa(taskId)+" deleted", "Success")
-	GetAllTasks(writer, req)
+
+	HXGetTasks(writer, req)
+
+	// GetAllTasks(writer, req)
 }
 
 func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
@@ -438,5 +408,8 @@ func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 		deletedTasks++
 	}
 	toasts.Warning(writer, "Deleted "+strconv.Itoa(deletedTasks)+" tasks", "Success")
-	GetAllTasks(writer, req)
+
+	HXGetTasks(writer, req)
+
+	// GetAllTasks(writer, req)
 }

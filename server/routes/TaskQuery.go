@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -31,6 +32,35 @@ func defaultTaskQuery() TasksQuery[tasks.TaskFieldName] {
 		SortBy:   tasks.Datetime,
 		SortDesc: false,
 	}
+}
+
+/*
+func (taskQuery *TasksQuery[T]) Default() {
+	fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
+	taskQuery.Page = 1
+	taskQuery.Size = defaultPageSize
+	taskQuery.SearchBy = ""
+	taskQuery.FromDate = fromDate.Format(utils.HTMLDateFormat)
+	taskQuery.ToDate = toDate.Format(utils.HTMLDateFormat)
+	taskQuery.SortBy = T(tasks.Datetime)
+	taskQuery.SortDesc = false
+}
+*/
+
+func CreateQueryFromRequest(req *http.Request) TasksQuery[tasks.TaskFieldName] {
+	query := defaultTaskQuery()
+	/* HTMX request */
+	if hxCurrentUrl := req.Header.Get("HX-Current-URL"); hxCurrentUrl != "" {
+		/* Current browser query */
+		url, err := url.Parse(hxCurrentUrl)
+		if err != nil {
+			panic(err)
+		}
+		query.Parse(url.RawQuery)
+	}
+	/* Actual request */
+	query.Parse(req.URL.RawQuery)
+	return query
 }
 
 func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
@@ -72,11 +102,16 @@ func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
 		taskQuery.SortBy = T(tasks.ParseTaskFieldName(parsed.Get("sortBy")))
 	}
 	if parsed.Has("sortDesc") {
-		newSortDesc, err := strconv.ParseBool(parsed.Get("sortDesc"))
-		if err != nil {
-			newSortDesc = false
+		/* Empty query parameter counts as "true" */
+		if parsed.Get("sortDesc") == "" {
+			taskQuery.SortDesc = true
+		} else {
+			newSortDesc, err := strconv.ParseBool(parsed.Get("sortDesc"))
+			if err != nil {
+				newSortDesc = false
+			}
+			taskQuery.SortDesc = newSortDesc
 		}
-		taskQuery.SortDesc = newSortDesc
 	}
 }
 

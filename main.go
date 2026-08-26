@@ -41,7 +41,7 @@ func main() {
 		"GET /login":                     routes.GetLoginPage,
 		"POST /login":                    routes.LoginAttempt,
 		"POST /logout":                   routes.Logout,
-		"GET /hx/tasks":                  routes.GetAllTasks,
+		// "GET /hx/tasks":                  routes.GetAllTasks,
 		"GET /hx/tasks-new":              routes.HXGetTasks,
 		"GET /hx/tasks/{id}":             routes.GetSingleTask,
 		"GET /hx/edit-task/{id}":         routes.GetEditTaskForm,

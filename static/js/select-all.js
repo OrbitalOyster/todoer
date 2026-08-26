@@ -14,10 +14,13 @@ const createSelectAllGroup = (masterSelector, childrenSelector) => {
 	/* On children change */
 	const updateMaster = () => {
 		masterEl.indeterminate = false
-		if (allSelected()) masterEl.checked = true
-		else if (noneSelected()) masterEl.checked = false
-		else masterEl.indeterminate = true
+		if (allSelected())
+			masterEl.checked = true
+		else if (noneSelected())
+			masterEl.checked = false
+		else
+			masterEl.indeterminate = true
 	}
-	childrenEls.forEach((el) => (el.onchange = updateMaster))
+	childrenEls.forEach((e) => (e.onchange = updateMaster))
 	updateMaster()
 }

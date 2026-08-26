@@ -1,22 +1,19 @@
-"use strict";
+"use strict"
 
 const removeActiveTooltips = () => {
-	const activeTooltips = document.querySelectorAll(".tooltip");
-	activeTooltips.forEach((t) => t.remove());
-};
+	document.querySelectorAll(".tooltip").forEach((e) => e.remove())
+}
 
 const updateTooltips = (el) => {
-	const tooltipTriggerList = el.querySelectorAll('[data-bs-toggle="tooltip"]');
-	[...tooltipTriggerList].map(
-		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
-	);
-};
+	/* Find all elements with tooltips */
+	const tooltipTriggerList = [...el.querySelectorAll('[data-bs-toggle="tooltip"]')]
+	/* Create tooltip */
+	tooltipTriggerList.map((e) => new bootstrap.Tooltip(e))
+}
 
 const initTooltips = () => {
-	/* Update tooltips after any htmx DOM swap */
-	document.addEventListener("htmx:beforeRequest", removeActiveTooltips);
-	document.addEventListener("htmx:afterSettle", (e) =>
-		updateTooltips(e.detail.elt),
-	);
 	updateTooltips(document);
-};
+	/* Update tooltips after any htmx DOM swap */
+	document.addEventListener("htmx:beforeRequest", removeActiveTooltips)
+	document.addEventListener("htmx:afterSettle", (e) => updateTooltips(e.detail.elt))
+}

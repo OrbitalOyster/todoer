@@ -38,35 +38,24 @@ type TaskListDataNew struct {
 	TotalPages int
 	Pagination []int
 	SearchBy   string
-	FromDate   string
-	ToDate     string
+	FromDate   time.Time
+	ToDate     time.Time
 	SortBy     string
 	SortDesc   bool
 	Checkboxes []bool
 }
 
 func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFieldName], uint, int) {
-	/* Date */
-	fromDate, err := time.Parse(utils.HTMLDateFormat, query.FromDate)
-	/* Should not happen */
-	if err != nil {
-		panic(err)
-	}
-	toDate, err := time.Parse(utils.HTMLDateFormat, query.ToDate)
-	/* Should not happen */
-	if err != nil {
-		panic(err)
-	}
 	result := tasks.GetAll()
 	result = result.
 		MoreThan(
 			tasks.Datetime,
-			tasks.Task[tasks.TaskFieldName]{Datetime: fromDate},
+			tasks.Task[tasks.TaskFieldName]{Datetime: query.FromDate},
 		).
 		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
 		LessThan(
 			tasks.Datetime,
-			tasks.Task[tasks.TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)},
+			tasks.Task[tasks.TaskFieldName]{Datetime: query.ToDate.Add(time.Hour*24 - time.Second)},
 		).
 		Filter(tasks.Description, query.SearchBy).
 		SortBy(query.SortBy)
@@ -159,22 +148,23 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	/* Update URL */
-	writer.Header().Add("HX-Push-Url", "/tasks"+query.String())
 	/* Update calendar elements if both dates are set */
 	if req.Form.Has("from") && req.Form.Has("to") {
 		pages.ExecutePartial(
 			writer,
 			"task-dates-oob-new",
 			struct {
-				FromDate string
-				ToDate   string
+				FromDate time.Time
+				ToDate   time.Time
 			}{
 				FromDate: query.FromDate,
 				ToDate:   query.ToDate,
 			},
 		)
 	}
+
+	/* Update URL */
+	writer.Header().Add("HX-Push-Url", "/tasks"+query.String())
 
 	/* Send actual list */
 	pages.ExecutePartial(writer, "task-list-new", TaskListDataNew{

@@ -15,8 +15,8 @@ type TasksQuery[T tasks.TaskFieldName] struct {
 	Page     int
 	Size     int
 	SearchBy string
-	FromDate string
-	ToDate   string
+	FromDate time.Time
+	ToDate   time.Time
 	SortBy   T
 	SortDesc bool
 }
@@ -27,8 +27,8 @@ func defaultTaskQuery() TasksQuery[tasks.TaskFieldName] {
 		Page:     1,
 		Size:     defaultPageSize,
 		SearchBy: "",
-		FromDate: fromDate.Format(utils.HTMLDateFormat),
-		ToDate:   toDate.Format(utils.HTMLDateFormat),
+		FromDate: fromDate,
+		ToDate:   toDate,
 		SortBy:   tasks.Datetime,
 		SortDesc: false,
 	}
@@ -84,17 +84,17 @@ func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
 
 	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	if parsed.Has("from") {
-		if _, err := time.Parse(utils.HTMLDateFormat, parsed.Get("from")); err != nil {
-			taskQuery.FromDate = defaultFromDate.Format(utils.HTMLDateFormat)
+		if fromDate, err := time.Parse(utils.HTMLDateFormat, parsed.Get("from")); err != nil {
+			taskQuery.FromDate = defaultFromDate
 		} else {
-			taskQuery.FromDate = parsed.Get("from")
+			taskQuery.FromDate = fromDate
 		}
 	}
 	if parsed.Has("to") {
-		if _, err := time.Parse(utils.HTMLDateFormat, parsed.Get("to")); err != nil {
-			taskQuery.ToDate = defaultToDate.Format(utils.HTMLDateFormat)
+		if toDate, err := time.Parse(utils.HTMLDateFormat, parsed.Get("to")); err != nil {
+			taskQuery.ToDate = defaultToDate
 		} else {
-			taskQuery.ToDate = parsed.Get("to")
+			taskQuery.ToDate = toDate
 		}
 	}
 	/* Sorting */
@@ -130,11 +130,11 @@ func (taskQuery TasksQuery[T]) String() string {
 	}
 	/* Dates */
 	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-	if taskQuery.FromDate != defaultFromDate.Format(utils.HTMLDateFormat) {
-		result = append(result, fmt.Sprintf("from=%s", taskQuery.FromDate))
+	if taskQuery.FromDate != defaultFromDate {
+		result = append(result, fmt.Sprintf("from=%s", taskQuery.FromDate.Format(utils.HTMLDateFormat)))
 	}
-	if taskQuery.ToDate != defaultToDate.Format(utils.HTMLDateFormat) {
-		result = append(result, fmt.Sprintf("to=%s", taskQuery.ToDate))
+	if taskQuery.ToDate != defaultToDate {
+		result = append(result, fmt.Sprintf("to=%s", taskQuery.ToDate.Format(utils.HTMLDateFormat)))
 	}
 	/* Sorting */
 	if taskQuery.SortBy != T(tasks.Datetime) {

@@ -32,6 +32,9 @@ var TemplateFuncMap = template.FuncMap{
 	"formatDatetime": func(t time.Time) string {
 		return t.Format(utils.NiceLookingDatetimeFormat)
 	},
+	"formatDate": func(t time.Time) string {
+		return t.Format(utils.HTMLDateFormat)
+	},
 	"plusOne": func(i uint) uint {
 		return i + 1
 	},

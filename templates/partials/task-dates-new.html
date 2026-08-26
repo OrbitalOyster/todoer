@@ -10,7 +10,7 @@
 			hx-target="#task-list"
 			hx-indicator="#task-list"
 			hx-disabled-elt=".htmx-disable"
-			value="{{ .FromDate }}"
+			value="{{ formatDate .FromDate }}"
 		/>
 		<i class="bi bi-slash-lg"></i>
 		<!-- To -->
@@ -23,7 +23,7 @@
 			hx-target="#task-list"
 			hx-indicator="#task-list"
 			hx-disabled-elt=".htmx-disable"
-			value="{{ .ToDate }}"
+			value="{{ formatDate .ToDate }}"
 		/>
 		<!-- Presets -->
 		<div class="dropdown-center">

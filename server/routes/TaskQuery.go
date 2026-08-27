@@ -84,14 +84,14 @@ func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
 
 	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	if parsed.Has("from") {
-		if fromDate, err := time.Parse(utils.HTMLDateFormat, parsed.Get("from")); err != nil {
+		if fromDate, err := time.ParseInLocation(utils.HTMLDateFormat, parsed.Get("from"), time.Local); err != nil {
 			taskQuery.FromDate = defaultFromDate
 		} else {
 			taskQuery.FromDate = fromDate
 		}
 	}
 	if parsed.Has("to") {
-		if toDate, err := time.Parse(utils.HTMLDateFormat, parsed.Get("to")); err != nil {
+		if toDate, err := time.ParseInLocation(utils.HTMLDateFormat, parsed.Get("to"), time.Local); err != nil {
 			taskQuery.ToDate = defaultToDate
 		} else {
 			taskQuery.ToDate = toDate
@@ -130,6 +130,8 @@ func (taskQuery TasksQuery[T]) String() string {
 	}
 	/* Dates */
 	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
+	// log.Println("Hello!")
+	// log.Println(defaultFromDate, taskQuery.FromDate)
 	if taskQuery.FromDate != defaultFromDate {
 		result = append(result, fmt.Sprintf("from=%s", taskQuery.FromDate.Format(utils.HTMLDateFormat)))
 	}

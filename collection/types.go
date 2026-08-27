@@ -12,7 +12,7 @@ type FieldName interface {
 type Item[T FieldName] interface {
 	MoreThan(field T, item Item[T]) bool
 	LessThan(field T, item Item[T]) bool
-	Filter(field T, s any) bool
+	Filter(field T, value any) bool
 }
 
 type Collection[T FieldName] struct {
@@ -32,9 +32,12 @@ func (collection *Collection[T]) Add(newItem Item[T]) {
 }
 
 func (collection *Collection[T]) Delete(field T, filter any) {
-	collection.Items = slices.DeleteFunc(collection.Items, func(item Item[T]) bool {
-		return item.Filter(field, filter)
-	})
+	collection.Items = slices.DeleteFunc(
+		collection.Items,
+		func(item Item[T]) bool {
+			return item.Filter(field, filter)
+		},
+	)
 }
 
 func (collection Collection[T]) First() Item[T] {
@@ -118,8 +121,7 @@ func (collection Collection[T]) GetPage(page uint, pageSize uint) (Collection[T]
 	return result, page, numberOfPages
 }
 
-func AssertType[T any, Y FieldName](collection Collection[Y]) []T {
-	var result []T
+func AssertType[T any, Y FieldName](collection Collection[Y]) (result []T) {
 	for _, i := range collection.Items {
 		item, ok := i.(T)
 		if !ok {
@@ -127,5 +129,5 @@ func AssertType[T any, Y FieldName](collection Collection[Y]) []T {
 		}
 		result = append(result, item)
 	}
-	return result
+	return
 }

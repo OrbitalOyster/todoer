@@ -139,18 +139,18 @@ func (task Task[T]) LessThan(field T, item collection.Item[T]) bool {
 	}
 }
 
-func (task Task[T]) Filter(field T, filter any) bool {
+func (task Task[T]) Filter(field T, value any) bool {
 	switch field {
 	case T(Id):
-		filterInt, ok := filter.(int)
+		filterInt, ok := value.(int)
 		if !ok {
-			panic(fmt.Sprintf("Invalid filter: %v", filter))
+			panic(fmt.Sprintf("Invalid filter: %v", value))
 		}
 		return filterInt == task.Id
 	case T(Description):
-		filterString, ok := filter.(string)
+		filterString, ok := value.(string)
 		if !ok {
-			panic(fmt.Sprintf("Invalid filter: %v", filter))
+			panic(fmt.Sprintf("Invalid filter: %v", value))
 		}
 		if filterString == "" {
 			return true

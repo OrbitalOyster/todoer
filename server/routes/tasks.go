@@ -369,10 +369,7 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 	taskId := task.Id
 	tasks.Delete(taskId)
 	toasts.Warning(writer, "Task "+strconv.Itoa(taskId)+" deleted", "Success")
-
 	GetTaskList(writer, req)
-
-	// GetAllTasks(writer, req)
 }
 
 func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
@@ -387,8 +384,5 @@ func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 		deletedTasks++
 	}
 	toasts.Warning(writer, "Deleted "+strconv.Itoa(deletedTasks)+" tasks", "Success")
-
 	GetTaskList(writer, req)
-
-	// GetAllTasks(writer, req)
 }

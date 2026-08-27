@@ -9,7 +9,6 @@ import (
 	"todoer/utils"
 )
 
-// var list []Task
 var list collection.Collection[TaskFieldName]
 
 func GetAll() collection.Collection[TaskFieldName]{
@@ -17,7 +16,6 @@ func GetAll() collection.Collection[TaskFieldName]{
 }
 
 func Load(newList []Task[TaskFieldName]) {
-	// list = newList
 	for _, t := range newList {
 		list.Items = append(list.Items, t)
 	}
@@ -25,16 +23,10 @@ func Load(newList []Task[TaskFieldName]) {
 
 func getNextId() int {
 	/* No tasks */
-	// if len(list) == 0 {
 	if list.Length() == 0 {
 		return 1
 	}
 	/* Find biggest id, add 1 */
-	/*
-		result := slices.MaxFunc(list, func(a, b Task) int {
-			return cmp.Compare(a.Id, b.Id)
-		})
-	*/
 	max, ok := list.Max(Id).(Task[TaskFieldName])
 	if !ok {
 		panic("Major screwup")
@@ -51,7 +43,6 @@ func Add(user string, description string) {
 		Datetime:    now,
 		Status:      InProgress,
 	}
-	// list = append(list, result)
 	list.Add(result)
 	log.Printf("New task: \"%s\"", result.Description)
 }
@@ -160,15 +151,6 @@ func Get(fromDateStr string, toDateStr string,
 }
 
 func getById(id int) (*Task[TaskFieldName], error) {
-	/*
-		ind := slices.IndexFunc(list, func(t Task) bool {
-			return t.Id == id
-		})
-		if ind == -1 {
-			return nil, fmt.Errorf("Task not found: %d", id)
-		}
-		return &list[ind], nil
-	*/
 	filtered := list.Filter(Id, id)
 	if filtered.Length() == 0 {
 		return nil, fmt.Errorf("Task not found: %d", id)
@@ -226,16 +208,5 @@ func (task *Task[TaskFieldName]) SetReadOnly(ro bool) error {
 }
 
 func Delete(id int) {
-	/*
-		ind := slices.IndexFunc(list, func(t Task) bool {
-			return t.Id == id
-		})
-		if ind == -1 {
-			return fmt.Errorf("Task not found: %d", id)
-		}
-		list = slices.Delete(list, ind, ind+1)
-		log.Printf("Deleted task #%d", id)
-		return nil
-	*/
 	list.Delete(Id, id)
 }

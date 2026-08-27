@@ -34,19 +34,6 @@ func defaultTaskQuery() TasksQuery[tasks.TaskFieldName] {
 	}
 }
 
-/*
-func (taskQuery *TasksQuery[T]) Default() {
-	fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-	taskQuery.Page = 1
-	taskQuery.Size = defaultPageSize
-	taskQuery.SearchBy = ""
-	taskQuery.FromDate = fromDate.Format(utils.HTMLDateFormat)
-	taskQuery.ToDate = toDate.Format(utils.HTMLDateFormat)
-	taskQuery.SortBy = T(tasks.Datetime)
-	taskQuery.SortDesc = false
-}
-*/
-
 func (taskQuery *TasksQuery[T]) parse(rawQuery string) {
 	parsed, err := url.ParseQuery(rawQuery)
 	if err != nil {
@@ -125,33 +112,33 @@ func CreateQueryFromRequest(req *http.Request) (query TasksQuery[tasks.TaskField
 }
 
 func (taskQuery TasksQuery[T]) String() string {
-	var result []string
+	var fields []string
 	/* Pagination */
 	if taskQuery.Page != 1 {
-		result = append(result, fmt.Sprintf("page=%d", taskQuery.Page))
+		fields = append(fields, fmt.Sprintf("page=%d", taskQuery.Page))
 	}
 	if taskQuery.Size != defaultPageSize {
-		result = append(result, fmt.Sprintf("size=%d", taskQuery.Size))
+		fields = append(fields, fmt.Sprintf("size=%d", taskQuery.Size))
 	}
 	/* Search by */
 	if taskQuery.SearchBy != "" {
-		result = append(result, fmt.Sprintf("searchBy=%s", taskQuery.SearchBy))
+		fields = append(fields, fmt.Sprintf("searchBy=%s", taskQuery.SearchBy))
 	}
 	/* Dates */
 	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	if taskQuery.FromDate != defaultFromDate {
-		result = append(result, fmt.Sprintf("from=%s", taskQuery.FromDate.Format(utils.HTMLDateFormat)))
+		fields = append(fields, fmt.Sprintf("from=%s", taskQuery.FromDate.Format(utils.HTMLDateFormat)))
 	}
 	if taskQuery.ToDate != defaultToDate {
-		result = append(result, fmt.Sprintf("to=%s", taskQuery.ToDate.Format(utils.HTMLDateFormat)))
+		fields = append(fields, fmt.Sprintf("to=%s", taskQuery.ToDate.Format(utils.HTMLDateFormat)))
 	}
 	/* Sorting */
 	if taskQuery.SortBy != T(tasks.Datetime) {
-		result = append(result, fmt.Sprintf("sortBy=%s", taskQuery.SortBy))
+		fields = append(fields, fmt.Sprintf("sortBy=%s", taskQuery.SortBy))
 	}
 	if taskQuery.SortDesc {
-		result = append(result, "sortDesc")
+		fields = append(fields, "sortDesc")
 	}
 
-	return strings.Join(result, "&")
+	return strings.Join(fields, "&")
 }

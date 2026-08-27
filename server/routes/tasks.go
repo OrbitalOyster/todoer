@@ -72,7 +72,17 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		Value("token").(*token.Token[utils.Payload]).
 		GetPayload()
 
-	query := CreateQueryFromRequest(req)
+	query, redirect := CreateQueryFromRequest(req)
+
+	/* Update URL */
+	if redirect {
+		queryStr := query.String()
+		if len(queryStr) > 0 {
+			queryStr = "?" + queryStr
+		}
+		http.Redirect(writer, req, "/tasks" + queryStr, http.StatusSeeOther)
+		return
+	}
 
 	selectedTasks, page, totalPages := getTasks(query)
 	checkboxedTasks := getCheckboxedTasks(req)
@@ -131,7 +141,8 @@ func getCheckboxedTasks(req *http.Request) (result []int) {
 }
 
 func GetTaskList(writer http.ResponseWriter, req *http.Request) {
-	query := CreateQueryFromRequest(req)
+	query, push := CreateQueryFromRequest(req)
+
 	/* Get tasks */
 	tasksOnCurrentPage, page, numberOfPages := getTasks(query)
 	if page != uint(query.Page) {
@@ -164,7 +175,13 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	/* Update URL */
-	writer.Header().Add("HX-Push-Url", "/tasks"+query.String())
+	if push {
+		queryStr := query.String()
+		if len(queryStr) > 0 {
+			queryStr = "?" + queryStr
+		}
+		writer.Header().Add("HX-Push-Url", "/tasks"+queryStr)
+	}
 
 	/* Send actual list */
 	pages.ExecutePartial(writer, "task-list-new", TaskListDataNew{

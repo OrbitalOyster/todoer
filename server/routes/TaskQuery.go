@@ -47,41 +47,28 @@ func (taskQuery *TasksQuery[T]) Default() {
 }
 */
 
-func CreateQueryFromRequest(req *http.Request) TasksQuery[tasks.TaskFieldName] {
-	query := defaultTaskQuery()
-	/* HTMX request */
-	if hxCurrentUrl := req.Header.Get("HX-Current-URL"); hxCurrentUrl != "" {
-		/* Current browser query */
-		url, err := url.Parse(hxCurrentUrl)
-		if err != nil {
-			panic(err)
-		}
-		query.Parse(url.RawQuery)
-	}
-	/* Actual request */
-	query.Parse(req.URL.RawQuery)
-	return query
-}
-
-func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
+func (taskQuery *TasksQuery[T]) parse(rawQuery string) {
 	parsed, err := url.ParseQuery(rawQuery)
 	if err != nil {
 		return
 	}
+	/* Page */
 	if parsed.Has("page") {
 		if parsedPage, err := strconv.Atoi(parsed.Get("page")); err == nil {
 			taskQuery.Page = parsedPage
 		}
 	}
+	/* Page size */
 	if parsed.Has("size") {
 		if parsedSize, err := strconv.Atoi(parsed.Get("size")); err == nil {
 			taskQuery.Size = parsedSize
 		}
 	}
+	/* Search by */
 	if parsed.Has("searchBy") {
 		taskQuery.SearchBy = parsed.Get("searchBy")
 	}
-
+	/* Dates */
 	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
 	if parsed.Has("from") {
 		if fromDate, err := time.ParseInLocation(utils.HTMLDateFormat, parsed.Get("from"), time.Local); err != nil {
@@ -115,6 +102,28 @@ func (taskQuery *TasksQuery[T]) Parse(rawQuery string) {
 	}
 }
 
+func CreateQueryFromRequest(req *http.Request) (query TasksQuery[tasks.TaskFieldName], updated bool) {
+	query = defaultTaskQuery()
+	updated = false
+	currentQuery := req.URL.RawQuery
+	/* HTMX request, fish out the original URL */
+	if hxCurrentUrl := req.Header.Get("HX-Current-URL"); hxCurrentUrl != "" {
+		url, err := url.Parse(hxCurrentUrl)
+		if err != nil {
+			panic(err)
+		}
+		query.parse(url.RawQuery)
+		currentQuery = query.String()
+	}
+	/* Parse the actual request */
+	query.parse(req.URL.RawQuery)
+	if currentQuery != query.String() {
+		updated = true
+	}
+	/* "Naked" return */
+	return
+}
+
 func (taskQuery TasksQuery[T]) String() string {
 	var result []string
 	/* Pagination */
@@ -130,8 +139,6 @@ func (taskQuery TasksQuery[T]) String() string {
 	}
 	/* Dates */
 	defaultFromDate, defaultToDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-	// log.Println("Hello!")
-	// log.Println(defaultFromDate, taskQuery.FromDate)
 	if taskQuery.FromDate != defaultFromDate {
 		result = append(result, fmt.Sprintf("from=%s", taskQuery.FromDate.Format(utils.HTMLDateFormat)))
 	}
@@ -146,9 +153,5 @@ func (taskQuery TasksQuery[T]) String() string {
 		result = append(result, "sortDesc")
 	}
 
-	if len(result) > 0 {
-		return "?" + strings.Join(result, "&")
-	} else {
-		return ""
-	}
+	return strings.Join(result, "&")
 }

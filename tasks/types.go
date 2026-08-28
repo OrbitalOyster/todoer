@@ -161,6 +161,22 @@ func (task Task[T]) Filter(field T, value any) bool {
 	}
 }
 
+/*
+func (task *Task[T]) Patch(field T, value any) {
+	switch field {
+	case T(Id):
+	case T(User):
+	case T(Category):
+	case T(Datetime):
+	case T(Description):
+	case T(Status):
+	case T(ReadOnly):
+	default:
+		panic(fmt.Sprintf("Invalid field: %d", field))
+	}
+}
+*/
+
 /* Extra handler for converting status string to TaskStatus */
 func (status *TaskStatus) UnmarshalYAML(unmarshal func(any) error) error {
 	var str string

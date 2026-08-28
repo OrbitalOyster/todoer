@@ -80,7 +80,7 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		if len(queryStr) > 0 {
 			queryStr = "?" + queryStr
 		}
-		http.Redirect(writer, req, "/tasks" + queryStr, http.StatusSeeOther)
+		http.Redirect(writer, req, "/tasks"+queryStr, http.StatusSeeOther)
 		return
 	}
 
@@ -101,22 +101,20 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		PageSizes []int
 		TaskListDataNew
 	}{
-		Title:     "todoer - tasks",
-		Payload:   payload,
-		PageSizes: config.PageSizes,
-		TaskListDataNew: TaskListDataNew{
-			Tasks:      selectedTasks,
-			Page:       page,
-			PageSize:   query.Size,
-			TotalPages: totalPages,
-			Pagination: utils.GetPagination(int(totalPages), int(page)),
-			SearchBy:   query.SearchBy,
-			FromDate:   query.FromDate,
-			ToDate:     query.ToDate,
-			SortBy:     query.SortBy.String(),
-			SortDesc:   query.SortDesc,
-			Checkboxes: checkboxes,
-		},
+		Title:      "todoer - tasks",
+		Payload:    payload,
+		PageSizes:  config.PageSizes,
+		Tasks:      selectedTasks,
+		Page:       page,
+		PageSize:   query.Size,
+		TotalPages: totalPages,
+		Pagination: utils.GetPagination(int(totalPages), int(page)),
+		SearchBy:   query.SearchBy,
+		FromDate:   query.FromDate,
+		ToDate:     query.ToDate,
+		SortBy:     query.SortBy.String(),
+		SortDesc:   query.SortDesc,
+		Checkboxes: checkboxes,
 	})
 }
 

@@ -7,41 +7,6 @@ import (
 	"todoer/collection"
 )
 
-type TaskStatus int
-
-const (
-	InProgress TaskStatus = iota
-	Done
-	Failed
-)
-
-func (status TaskStatus) String() string {
-	switch status {
-	case InProgress:
-		return "InProgress"
-	case Done:
-		return "Done"
-	case Failed:
-		return "Failed"
-	default:
-		/* Major screwup */
-		panic("Invalid TaskStatus")
-	}
-}
-
-func ParseStatus(status string) TaskStatus {
-	switch strings.ToLower(status) {
-	case "inprogress":
-		return InProgress
-	case "done":
-		return Done
-	case "failed":
-		return Failed
-	default:
-		panic(fmt.Sprintf("Invalid TaskStatus: %s", status))
-	}
-}
-
 type Task[T TaskFieldName] struct {
 	Id          int        `yaml:"id"`
 	User        string     `yaml:"user"`
@@ -50,60 +15,6 @@ type Task[T TaskFieldName] struct {
 	Description string     `yaml:"description"`
 	Status      TaskStatus `yaml:"status"`
 	ReadOnly    bool       `yaml:"read_only"`
-}
-
-type TaskFieldName uint
-
-const (
-	Id TaskFieldName = iota
-	User
-	Category
-	Datetime
-	Description
-	Status
-	ReadOnly
-)
-
-func (field TaskFieldName) String() string {
-	switch field {
-	case Id:
-		return "Id"
-	case User:
-		return "User"
-	case Category:
-		return "Category"
-	case Datetime:
-		return "Datetime"
-	case Description:
-		return "Description"
-	case Status:
-		return "Status"
-	case ReadOnly:
-		return "ReadOnly"
-	default:
-		panic("Invalid type")
-	}
-}
-
-func ParseTaskFieldName(s string) TaskFieldName {
-	switch strings.ToLower(s) {
-	case "id":
-		return Id
-	case "user":
-		return User
-	case "category":
-		return Category
-	case "datetime":
-		return Datetime
-	case "description":
-		return Description
-	case "status":
-		return Status
-	case "readonly":
-		return ReadOnly
-	default:
-		panic("Invalid type")
-	}
 }
 
 func mustBeTask[T TaskFieldName](item collection.Item[T]) Task[T] {
@@ -115,47 +26,47 @@ func mustBeTask[T TaskFieldName](item collection.Item[T]) Task[T] {
 	}
 }
 
-func (task Task[T]) Field(field T) any {
+func (task Task[TaskFiledName]) Field(field TaskFiledName) any {
 	switch field {
-	case T(Id):
+	case TaskFiledName(Id):
 		return task.Id
-	case T(User):
+	case TaskFiledName(User):
 		return task.User
-	case T(Category):
+	case TaskFiledName(Category):
 		return task.Category
-	case T(Datetime):
+	case TaskFiledName(Datetime):
 		return task.Datetime
-	case T(Description):
+	case TaskFiledName(Description):
 		return task.Description
-	case T(Status):
+	case TaskFiledName(Status):
 		return task.Status
-	case T(ReadOnly):
+	case TaskFiledName(ReadOnly):
 		return task.ReadOnly
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}
 }
 
-func (task Task[T]) MoreThan(field T, value any) bool {
+func (task Task[TaskFiledName]) MoreThan(field TaskFiledName, value any) bool {
 	switch field {
-	case T(Datetime):
+	case TaskFiledName(Datetime):
 		return task.Datetime.After(value.(time.Time))
-	case T(Description):
+	case TaskFiledName(Description):
 		return task.Description > value.(string)
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}
 }
 
-func (task Task[T]) LessThan(field T, value any) bool {
+func (task Task[TaskFiledName]) LessThan(field TaskFiledName, value any) bool {
 	switch field {
-	case T(Datetime):
+	case TaskFiledName(Datetime):
 		valueTime, ok := value.(time.Time)
 		if !ok {
 			panic ("Type assert failed")
 		}
 		return task.Datetime.Before(valueTime)
-	case T(Description):
+	case TaskFiledName(Description):
 		valueString, ok := value.(string)
 		if !ok {
 			panic ("Type assert failed")
@@ -166,15 +77,15 @@ func (task Task[T]) LessThan(field T, value any) bool {
 	}
 }
 
-func (task Task[T]) Filter(field T, value any) bool {
+func (task Task[TaskFiledName]) Filter(field TaskFiledName, value any) bool {
 	switch field {
-	case T(Id):
+	case TaskFiledName(Id):
 		filterInt, ok := value.(int)
 		if !ok {
 			panic(fmt.Sprintf("Invalid filter: %v", value))
 		}
 		return filterInt == task.Id
-	case T(Description):
+	case TaskFiledName(Description):
 		filterString, ok := value.(string)
 		if !ok {
 			panic(fmt.Sprintf("Invalid filter: %v", value))

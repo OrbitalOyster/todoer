@@ -19,7 +19,7 @@ var (
 
 	bootstrapFolder      = filepath.Join("external", "bootstrap", "dist")
 	bootstrapIconsFolder = filepath.Join("external", "bootstrap-icons", "font")
-	bootswatchFolder  = filepath.Join("external", "bootswatch", "dist")
+	bootswatchFolder     = filepath.Join("external", "bootswatch", "dist")
 	htmxFolder           = filepath.Join("external", "htmx", "dist")
 )
 

@@ -30,17 +30,27 @@
 							<button
 								class="btn btn-link dotted htmx-disable"
 								type="button"
-								hx-patch="/filters/sort-by/description"
+								hx-get="/hx/tasks"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
 								hx-disabled-elt=".htmx-disable"
-							>
-								What
-								{{ if eq .Payload.SortBy (parseSortableField "Description") }}
-									{{ if eq .Payload.SortAsc true }}
-										<i class="bi bi-sort-down-alt"></i>
+								hx-vals='{
+									"sortBy": "Description",
+									{{ if eq .SortBy "Description" }}
+										"sortDesc": {{ if eq .SortDesc true }} false {{ else }} true {{ end }}
 									{{ else }}
+										"sortDesc": false
+									{{ end }}
+								}'
+							>
+								<b>
+									What
+								</b>
+								{{ if eq .SortBy "Description" }}
+									{{ if eq .SortDesc true }}
 										<i class="bi bi-sort-down"></i>
+									{{ else }}
+										<i class="bi bi-sort-down-alt"></i>
 									{{ end }}
 								{{ end }}
 							</button>
@@ -49,18 +59,27 @@
 							<!-- Sort by date -->
 							<button
 								class="btn btn-link dotted htmx-disable"
-								type="button"
-								hx-patch="/filters/sort-by/datetime"
+								hx-get="/hx/tasks"
 								hx-target="#task-list"
 								hx-indicator="#task-list"
 								hx-disabled-elt=".htmx-disable"
-							>
-								When
-								{{ if eq .Payload.SortBy (parseSortableField "Datetime") }}
-									{{ if eq .Payload.SortAsc true }}
-										<i class="bi bi-sort-down-alt"></i>
+								hx-vals='{
+									"sortBy": "Datetime",
+									{{ if eq .SortBy "Datetime" }}
+										"sortDesc": {{ if eq .SortDesc true }} false {{ else }} true {{ end }}
 									{{ else }}
+										"sortDesc": false
+									{{ end }}
+								}'
+							>
+								<b>
+									When
+								</b>
+								{{ if eq .SortBy "Datetime" }}
+									{{ if eq .SortDesc true }}
 										<i class="bi bi-sort-down"></i>
+									{{ else }}
+										<i class="bi bi-sort-down-alt"></i>
 									{{ end }}
 								{{ end }}
 							</button>

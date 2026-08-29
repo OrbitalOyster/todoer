@@ -13,7 +13,7 @@ type RouterMap map[string]RouterEntry
 type MainPageData struct {
 	Title     string
 	PageSizes []int
-	Payload utils.Payload
+	Payload   utils.Payload
 	TaskListData
 }
 

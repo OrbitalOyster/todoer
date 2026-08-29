@@ -156,7 +156,7 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	if req.Form.Has("from") && req.Form.Has("to") {
 		pages.ExecutePartial(
 			writer,
-			"task-dates-oob-new",
+			"task-dates-oob",
 			struct {
 				FromDate time.Time
 				ToDate   time.Time
@@ -177,7 +177,7 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	/* Send actual list */
-	pages.ExecutePartial(writer, "task-list-new", TaskListData{
+	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      tasksOnCurrentPage.Items,
 		Page:       page,
 		PageSize:   query.Size,

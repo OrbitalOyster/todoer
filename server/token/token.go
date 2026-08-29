@@ -49,11 +49,9 @@ func (token *Token[T]) SetLifetime(lifetime int) {
 	issuedAt := time.Now()
 	expires := issuedAt.Add(time.Duration(lifetime) * time.Second)
 	token.Claims = claims[T]{
-		Payload: token.Claims.Payload,
-		RegisteredClaims: jwt.RegisteredClaims{
-			IssuedAt:  jwt.NewNumericDate(issuedAt),
-			ExpiresAt: jwt.NewNumericDate(expires),
-		},
+		Payload:   token.Claims.Payload,
+		IssuedAt:  jwt.NewNumericDate(issuedAt),
+		ExpiresAt: jwt.NewNumericDate(expires),
 	}
 }
 

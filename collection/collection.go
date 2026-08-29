@@ -119,14 +119,3 @@ func (collection Collection[T]) GetPage(page uint, pageSize uint) (Collection[T]
 	result := Collection[T]{Items: slices.Clone(collection.Items)[startInd:endInd]}
 	return result, page, numberOfPages
 }
-
-func AssertType[T any, Y FieldName](collection Collection[Y]) (result []T) {
-	for _, i := range collection.Items {
-		item, ok := i.(T)
-		if !ok {
-			panic("Type assert failed")
-		}
-		result = append(result, item)
-	}
-	return
-}

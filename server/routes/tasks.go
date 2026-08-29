@@ -32,7 +32,7 @@ func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task[tasks.Ta
 const defaultPageSize = 10
 
 type TaskListDataNew struct {
-	Tasks      []tasks.Task[tasks.TaskFieldName]
+	Tasks      []collection.Item[tasks.TaskFieldName]
 	Page       uint
 	PageSize   int
 	TotalPages int
@@ -45,7 +45,7 @@ type TaskListDataNew struct {
 	Checkboxes []bool
 }
 
-func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFieldName], uint, int) {
+func getTasks(query TasksQuery[tasks.TaskFieldName]) (collection.Collection[tasks.TaskFieldName], uint, int) {
 	result := tasks.GetAll()
 	result = result.
 		MoreThan(
@@ -63,8 +63,9 @@ func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFie
 		result.Reverse()
 	}
 	result, page, numberOfPages := result.GetPage(uint(query.Page), uint(query.Size))
-	selectedTasks := collection.AssertType[tasks.Task[tasks.TaskFieldName]](result)
-	return selectedTasks, page, int(numberOfPages)
+	// selectedTasks := collection.AssertType[tasks.Task[tasks.TaskFieldName]](result)
+	// return selectedTasks, page, int(numberOfPages)
+	return result, page, int(numberOfPages)
 }
 
 func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
@@ -86,9 +87,9 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 
 	selectedTasks, page, totalPages := getTasks(query)
 	checkboxedTasks := getCheckboxedTasks(req)
-	checkboxes := make([]bool, len(selectedTasks))
-	for i, selectedTask := range selectedTasks {
-		if slices.Contains(checkboxedTasks, selectedTask.Id) {
+	checkboxes := make([]bool, selectedTasks.Length())
+	for i, selectedTask := range selectedTasks.Items {
+		if slices.Contains(checkboxedTasks, selectedTask.Field(tasks.Id).(int)) {
 			checkboxes[i] = true
 		} else {
 			checkboxes[i] = false
@@ -104,7 +105,7 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		Title:      "todoer - tasks",
 		Payload:    payload,
 		PageSizes:  config.PageSizes,
-		Tasks:      selectedTasks,
+		Tasks:      selectedTasks.Items,
 		Page:       page,
 		PageSize:   query.Size,
 		TotalPages: totalPages,
@@ -148,9 +149,9 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	checkboxedTasks := getCheckboxedTasks(req)
-	checkboxes := make([]bool, len(tasksOnCurrentPage))
-	for i, selectedTask := range tasksOnCurrentPage {
-		if slices.Contains(checkboxedTasks, selectedTask.Id) {
+	checkboxes := make([]bool, tasksOnCurrentPage.Length())
+	for i, selectedTask := range tasksOnCurrentPage.Items {
+		if slices.Contains(checkboxedTasks, selectedTask.Field(tasks.Id).(int)) {
 			checkboxes[i] = true
 		} else {
 			checkboxes[i] = false
@@ -183,7 +184,7 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 
 	/* Send actual list */
 	pages.ExecutePartial(writer, "task-list-new", TaskListDataNew{
-		Tasks:      tasksOnCurrentPage,
+		Tasks:      tasksOnCurrentPage.Items,
 		Page:       page,
 		PageSize:   query.Size,
 		TotalPages: int(numberOfPages),

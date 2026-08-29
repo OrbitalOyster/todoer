@@ -16,8 +16,8 @@ func GetAll() collection.Collection[TaskFieldName] {
 }
 
 func Load(newList []Task[TaskFieldName]) {
-	for _, t := range newList {
-		list.Items = append(list.Items, &t)
+	for _, task := range newList {
+		list.Add(&task)
 	}
 }
 
@@ -50,7 +50,7 @@ func Add(user string, description string) {
 func Get(fromDateStr string, toDateStr string,
 	searchBy string,
 	page int, pageSize int,
-	sortBy utils.SortableField, sortAsc bool) ([]Task[TaskFieldName], int, int) {
+	sortBy utils.SortableField, sortAsc bool) (collection.Collection[TaskFieldName], int, int) {
 
 	result := list.Clone()
 
@@ -91,7 +91,7 @@ func Get(fromDateStr string, toDateStr string,
 		}
 	*/
 
-	return collection.AssertType[Task[TaskFieldName]](result), int(numberOfPages), int(actualPage)
+	return result, int(numberOfPages), int(actualPage)
 	// result := slices.Clone(list)
 	/* Date */
 	// fromDate, err := time.Parse(utils.HTMLDateFormat, fromDateStr)

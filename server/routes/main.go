@@ -20,14 +20,12 @@ func GetMainPage(writer http.ResponseWriter, req *http.Request) {
 		payload.SortBy, payload.SortAsc,
 	)
 	pages.Execute(writer, "main", MainPageData{
-		Title:     "todoer",
-		PageSizes: config.PageSizes,
-		TaskListData: TaskListData{
-			TotalPages: totalPages,
-			Tasks:      selectedTasks,
-			Pagination: utils.GetPagination(totalPages, page),
-			Payload:    payload,
-			Checkboxes: make([]bool, payload.PageSize),
-		},
+		Title:      "todoer",
+		PageSizes:  config.PageSizes,
+		TotalPages: totalPages,
+		Tasks:      selectedTasks.Items,
+		Pagination: utils.GetPagination(totalPages, page),
+		Payload:    payload,
+		Checkboxes: make([]bool, payload.PageSize),
 	})
 }

@@ -41,7 +41,6 @@ func main() {
 		"GET /login":                     routes.GetLoginPage,
 		"POST /login":                    routes.LoginAttempt,
 		"POST /logout":                   routes.Logout,
-		// "GET /hx/tasks":                  routes.GetAllTasks,
 		"GET /hx/tasks-new":              routes.GetTaskList,
 		"GET /hx/tasks/{id}":             routes.GetSingleTask,
 		"GET /hx/edit-task/{id}":         routes.GetEditTaskForm,
@@ -53,13 +52,6 @@ func main() {
 		"PATCH /hx/tasks":                routes.PatchTasks,
 		"DELETE /hx/tasks/{id}":          routes.DeleteTask,
 		"DELETE /hx/tasks":               routes.DeleteTasks,
-		"PATCH /filters/page-size":       routes.SetPageSize,
-		"PATCH /filters/page/{page}":     routes.SetPage,
-		"PATCH /filters/next-page":       routes.NextPage,
-		"PATCH /filters/previous-page":   routes.PreviousPage,
-		"PATCH /filters/sort-by/{field}": routes.SetSortBy,
-		"PATCH /filters/searchBy":        routes.SetSearchBy,
-		"PATCH /filters/date":            routes.SetDate,
 		"GET /panic":                     routes.Panic,
 		"GET /":                          routes.NotFoundHandler, /* 404 goes here */
 	}

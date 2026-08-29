@@ -150,9 +150,17 @@ func (task Task[T]) MoreThan(field T, value any) bool {
 func (task Task[T]) LessThan(field T, value any) bool {
 	switch field {
 	case T(Datetime):
-		return task.Datetime.Before(value.(time.Time))
+		valueTime, ok := value.(time.Time)
+		if !ok {
+			panic ("Type assert failed")
+		}
+		return task.Datetime.Before(valueTime)
 	case T(Description):
-		return task.Description < value.(string)
+		valueString, ok := value.(string)
+		if !ok {
+			panic ("Type assert failed")
+		}
+		return task.Description < valueString
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}

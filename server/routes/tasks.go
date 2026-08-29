@@ -31,7 +31,7 @@ func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task[tasks.Ta
 
 const defaultPageSize = 10
 
-type TaskListDataNew struct {
+type TaskListData struct {
 	Tasks      []collection.Item[tasks.TaskFieldName]
 	Page       uint
 	PageSize   int
@@ -100,7 +100,7 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		Title     string
 		Payload   utils.Payload
 		PageSizes []int
-		TaskListDataNew
+		TaskListData
 	}{
 		Title:      "todoer - tasks",
 		Payload:    payload,
@@ -117,12 +117,6 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		SortDesc:   query.SortDesc,
 		Checkboxes: checkboxes,
 	})
-}
-
-func GetSingleTask(writer http.ResponseWriter, req *http.Request) {
-	if task := idCheck(writer, req); task != nil {
-		pages.ExecutePartial(writer, "task", task)
-	}
 }
 
 func getCheckboxedTasks(req *http.Request) (result []int) {
@@ -183,7 +177,7 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	/* Send actual list */
-	pages.ExecutePartial(writer, "task-list-new", TaskListDataNew{
+	pages.ExecutePartial(writer, "task-list-new", TaskListData{
 		Tasks:      tasksOnCurrentPage.Items,
 		Page:       page,
 		PageSize:   query.Size,

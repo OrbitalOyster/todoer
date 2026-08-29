@@ -2,7 +2,6 @@ package routes
 
 import (
 	"net/http"
-	"todoer/collection"
 	"todoer/tasks"
 	"todoer/users"
 	"todoer/utils"
@@ -11,17 +10,10 @@ import (
 type RouterEntry func(http.ResponseWriter, *http.Request)
 type RouterMap map[string]RouterEntry
 
-type TaskListData struct {
-	Tasks      []collection.Item[tasks.TaskFieldName]
-	TotalPages int
-	Pagination []int
-	Payload    utils.Payload
-	Checkboxes []bool
-}
-
 type MainPageData struct {
 	Title     string
 	PageSizes []int
+	Payload utils.Payload
 	TaskListData
 }
 

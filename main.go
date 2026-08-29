@@ -42,7 +42,7 @@ func main() {
 		"POST /login":                    routes.LoginAttempt,
 		"POST /logout":                   routes.Logout,
 		"GET /hx/tasks-new":              routes.GetTaskList,
-		"GET /hx/tasks/{id}":             routes.GetSingleTask,
+		// "GET /hx/tasks/{id}":             routes.GetSingleTask,
 		"GET /hx/edit-task/{id}":         routes.GetEditTaskForm,
 		"GET /hx/add-task":               routes.GetAddTaskForm,
 		"GET /hx/clone-task/{id}":        routes.GetCloneTaskForm,

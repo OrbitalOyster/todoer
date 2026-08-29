@@ -21,11 +21,11 @@ func GetMainPage(writer http.ResponseWriter, req *http.Request) {
 	)
 	pages.Execute(writer, "main", MainPageData{
 		Title:      "todoer",
+		Payload:    payload,
 		PageSizes:  config.PageSizes,
 		TotalPages: totalPages,
 		Tasks:      selectedTasks.Items,
 		Pagination: utils.GetPagination(totalPages, page),
-		Payload:    payload,
 		Checkboxes: make([]bool, payload.PageSize),
 	})
 }

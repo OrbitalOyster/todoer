@@ -10,8 +10,9 @@ type FieldName interface {
 }
 
 type Item[T FieldName] interface {
-	MoreThan(field T, item Item[T]) bool
-	LessThan(field T, item Item[T]) bool
+	Field(field T) any
+	MoreThan(field T, value any) bool
+	LessThan(field T, value any) bool
 	Filter(field T, value any) bool
 	// Patch(field T, value any)
 }
@@ -50,9 +51,9 @@ func (collection Collection[T]) First() Item[T] {
 
 func compare[T FieldName](a Item[T], b Item[T], field T) int {
 	switch {
-	case a.LessThan(field, b):
+	case a.LessThan(field, b.Field(field)):
 		return -1
-	case a.MoreThan(field, b):
+	case a.MoreThan(field, b.Field(field)):
 		return 1
 	default:
 		return 0
@@ -87,20 +88,20 @@ func (collection Collection[T]) Filter(field T, filter any) Collection[T] {
 	return result
 }
 
-func (collection Collection[T]) MoreThan(field T, item Item[T]) Collection[T] {
+func (collection Collection[T]) MoreThan(field T, value any) Collection[T] {
 	result := Collection[T]{Items: []Item[T]{}}
 	for _, i := range collection.Items {
-		if i.MoreThan(field, item) {
+		if i.MoreThan(field, value) {
 			result.Items = append(result.Items, i)
 		}
 	}
 	return result
 }
 
-func (collection Collection[T]) LessThan(field T, item Item[T]) Collection[T] {
+func (collection Collection[T]) LessThan(field T, value any) Collection[T] {
 	result := Collection[T]{Items: []Item[T]{}}
 	for _, i := range collection.Items {
-		if i.LessThan(field, item) {
+		if i.LessThan(field, value) {
 			result.Items = append(result.Items, i)
 		}
 	}

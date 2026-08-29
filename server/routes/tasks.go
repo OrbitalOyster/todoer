@@ -50,12 +50,12 @@ func getTasks(query TasksQuery[tasks.TaskFieldName]) ([]tasks.Task[tasks.TaskFie
 	result = result.
 		MoreThan(
 			tasks.Datetime,
-			tasks.Task[tasks.TaskFieldName]{Datetime: query.FromDate},
+			query.FromDate,
 		).
 		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
 		LessThan(
 			tasks.Datetime,
-			tasks.Task[tasks.TaskFieldName]{Datetime: query.ToDate.Add(time.Hour*24 - time.Second)},
+			query.ToDate.Add(time.Hour*24 - time.Second),
 		).
 		Filter(tasks.Description, query.SearchBy).
 		SortBy(query.SortBy)

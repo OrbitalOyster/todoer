@@ -11,7 +11,7 @@ import (
 
 var list collection.Collection[TaskFieldName]
 
-func GetAll() collection.Collection[TaskFieldName]{
+func GetAll() collection.Collection[TaskFieldName] {
 	return list
 }
 
@@ -66,9 +66,9 @@ func Get(fromDateStr string, toDateStr string,
 		panic(err)
 	}
 	result = result.
-		MoreThan(Datetime, Task[TaskFieldName]{Datetime: fromDate}).
+		MoreThan(Datetime, fromDate).
 		/* "Not after 20/03/2026" means "Not after 20/03/2026 23:59:59"  */
-		LessThan(Datetime, Task[TaskFieldName]{Datetime: toDate.Add(time.Hour*24 - time.Second)}).
+		LessThan(Datetime, toDate.Add(time.Hour*24-time.Second)).
 		Filter(Description, searchBy)
 	/* Sorting */
 	switch sortBy {

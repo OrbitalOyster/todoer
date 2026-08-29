@@ -115,25 +115,44 @@ func mustBeTask[T TaskFieldName](item collection.Item[T]) Task[T] {
 	}
 }
 
-func (task Task[T]) MoreThan(field T, item collection.Item[T]) bool {
-	otherTask := mustBeTask(item)
+func (task Task[T]) Field(field T) any {
 	switch field {
+	case T(Id):
+		return task.Id
+	case T(User):
+		return task.User
+	case T(Category):
+		return task.Category
 	case T(Datetime):
-		return task.Datetime.After(otherTask.Datetime)
+		return task.Datetime
 	case T(Description):
-		return task.Description > otherTask.Description
+		return task.Description
+	case T(Status):
+		return task.Status
+	case T(ReadOnly):
+		return task.ReadOnly
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}
 }
 
-func (task Task[T]) LessThan(field T, item collection.Item[T]) bool {
-	otherTask := mustBeTask(item)
+func (task Task[T]) MoreThan(field T, value any) bool {
 	switch field {
 	case T(Datetime):
-		return task.Datetime.Before(otherTask.Datetime)
+		return task.Datetime.After(value.(time.Time))
 	case T(Description):
-		return task.Description < otherTask.Description
+		return task.Description > value.(string)
+	default:
+		panic(fmt.Sprintf("Invalid field: %d", field))
+	}
+}
+
+func (task Task[T]) LessThan(field T, value any) bool {
+	switch field {
+	case T(Datetime):
+		return task.Datetime.Before(value.(time.Time))
+	case T(Description):
+		return task.Description < value.(string)
 	default:
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}

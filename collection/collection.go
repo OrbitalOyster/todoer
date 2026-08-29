@@ -14,7 +14,7 @@ type Item[T FieldName] interface {
 	MoreThan(field T, value any) bool
 	LessThan(field T, value any) bool
 	Filter(field T, value any) bool
-	// Patch(field T, value any)
+	Patch(field T, value any)
 }
 
 type Collection[T FieldName] struct {

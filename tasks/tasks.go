@@ -17,7 +17,7 @@ func GetAll() collection.Collection[TaskFieldName] {
 
 func Load(newList []Task[TaskFieldName]) {
 	for _, t := range newList {
-		list.Items = append(list.Items, t)
+		list.Items = append(list.Items, &t)
 	}
 }
 
@@ -27,24 +27,24 @@ func getNextId() int {
 		return 1
 	}
 	/* Find biggest id, add 1 */
-	max, ok := list.Max(Id).(Task[TaskFieldName])
+	maxId, ok := list.Max(Id).Field(Id).(int)
 	if !ok {
 		panic("Major screwup")
 	}
-	return max.Id + 1
+	return maxId
 }
 
 func Add(user string, description string) {
 	now := time.Now()
-	result := Task[TaskFieldName]{
+	newTask := Task[TaskFieldName]{
 		Id:          getNextId(),
 		User:        user,
 		Description: description,
 		Datetime:    now,
 		Status:      InProgress,
 	}
-	list.Add(result)
-	log.Printf("New task: \"%s\"", result.Description)
+	list.Add(&newTask)
+	log.Printf("New task: \"%s\"", newTask.Description)
 }
 
 func Get(fromDateStr string, toDateStr string,
@@ -158,11 +158,11 @@ func getById(id int) (*Task[TaskFieldName], error) {
 	if filtered.Length() != 1 {
 		return nil, fmt.Errorf("More than one task found: %d", id)
 	}
-	result, ok := filtered.First().(Task[TaskFieldName])
+	result, ok := filtered.First().(*Task[TaskFieldName])
 	if !ok {
 		panic("Major screwup")
 	}
-	return &result, nil
+	return result, nil
 }
 
 /* Generic function, accepts id as int or string */

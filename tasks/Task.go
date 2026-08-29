@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"time"
-	"todoer/collection"
 )
 
 type Task[T TaskFieldName] struct {
@@ -15,15 +14,6 @@ type Task[T TaskFieldName] struct {
 	Description string     `yaml:"description"`
 	Status      TaskStatus `yaml:"status"`
 	ReadOnly    bool       `yaml:"read_only"`
-}
-
-func mustBeTask[T TaskFieldName](item collection.Item[T]) Task[T] {
-	result, ok := item.(Task[T])
-	if !ok {
-		panic("Type assertion failed")
-	} else {
-		return result
-	}
 }
 
 func (task Task[TaskFiledName]) Field(field TaskFiledName) any {
@@ -63,13 +53,13 @@ func (task Task[TaskFiledName]) LessThan(field TaskFiledName, value any) bool {
 	case TaskFiledName(Datetime):
 		valueTime, ok := value.(time.Time)
 		if !ok {
-			panic ("Type assert failed")
+			panic("Type assert failed")
 		}
 		return task.Datetime.Before(valueTime)
 	case TaskFiledName(Description):
 		valueString, ok := value.(string)
 		if !ok {
-			panic ("Type assert failed")
+			panic("Type assert failed")
 		}
 		return task.Description < valueString
 	default:
@@ -99,7 +89,6 @@ func (task Task[TaskFiledName]) Filter(field TaskFiledName, value any) bool {
 	}
 }
 
-/*
 func (task *Task[T]) Patch(field T, value any) {
 	switch field {
 	case T(Id):
@@ -113,7 +102,6 @@ func (task *Task[T]) Patch(field T, value any) {
 		panic(fmt.Sprintf("Invalid field: %d", field))
 	}
 }
-*/
 
 /* Extra handler for converting status string to TaskStatus */
 func (status *TaskStatus) UnmarshalYAML(unmarshal func(any) error) error {

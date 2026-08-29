@@ -78,34 +78,31 @@ func (collection Collection[T]) Reverse() Collection[T] {
 	return collection
 }
 
-func (collection Collection[T]) Filter(field T, filter any) Collection[T] {
-	result := Collection[T]{Items: []Item[T]{}}
+func (collection Collection[T]) Filter(field T, filter any) (result Collection[T]) {
 	for _, item := range collection.Items {
 		if item.Filter(field, filter) {
 			result.Items = append(result.Items, item)
 		}
 	}
-	return result
+	return
 }
 
-func (collection Collection[T]) MoreThan(field T, value any) Collection[T] {
-	result := Collection[T]{Items: []Item[T]{}}
+func (collection Collection[T]) MoreThan(field T, value any) (result Collection[T]) {
 	for _, i := range collection.Items {
 		if i.MoreThan(field, value) {
 			result.Items = append(result.Items, i)
 		}
 	}
-	return result
+	return
 }
 
-func (collection Collection[T]) LessThan(field T, value any) Collection[T] {
-	result := Collection[T]{Items: []Item[T]{}}
+func (collection Collection[T]) LessThan(field T, value any) (result Collection[T]) {
 	for _, i := range collection.Items {
 		if i.LessThan(field, value) {
 			result.Items = append(result.Items, i)
 		}
 	}
-	return result
+	return
 }
 
 func (collection Collection[T]) GetPage(page uint, pageSize uint) (Collection[T], uint, uint) {

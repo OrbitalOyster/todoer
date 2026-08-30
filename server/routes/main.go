@@ -2,10 +2,8 @@ package routes
 
 import (
 	"net/http"
-	"todoer/config"
 	"todoer/server/pages"
 	"todoer/server/token"
-	"todoer/tasks"
 	"todoer/utils"
 )
 
@@ -13,19 +11,11 @@ func GetMainPage(writer http.ResponseWriter, req *http.Request) {
 	payload := req.Context(). /* Get context from request */
 					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
 					GetPayload()                                  /* Load actual payload */
-	selectedTasks, totalPages, page := tasks.Get(
-		payload.FromDate, payload.ToDate,
-		payload.SearchBy,
-		payload.Page, payload.PageSize,
-		payload.SortBy, payload.SortAsc,
-	)
-	pages.Execute(writer, "main", MainPageData{
-		Title:      "todoer",
-		Payload:    payload,
-		PageSizes:  config.PageSizes,
-		TotalPages: totalPages,
-		Tasks:      selectedTasks.Items,
-		Pagination: utils.GetPagination(totalPages, page),
-		Checkboxes: make([]bool, payload.PageSize),
+	pages.Execute(writer, "main", struct {
+		Title   string
+		Payload utils.Payload
+	}{
+		Title:   "todoer",
+		Payload: payload,
 	})
 }

@@ -48,7 +48,6 @@ func Load() {
 	if len(JWTSecret) == 0 {
 		log.Panic("Missing JWT_SECRET variable")
 	}
-
 	/* TODO: Load from somewhere */
 	PageSizes = []int{5, 10, 25, 50}
 	DefaultPageSize = 10

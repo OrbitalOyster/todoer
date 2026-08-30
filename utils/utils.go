@@ -57,8 +57,8 @@ func GetMonthBounds(year int, month time.Month) (time.Time, time.Time) {
 	return fromDate, toDate
 }
 
-func GetPagination(totalPages int, selectedPage int) []int {
-	result := make([]int, 0, totalPages)
+func GetPagination(totalPages uint, selectedPage uint) []uint {
+	result := make([]uint, 0, totalPages)
 	for i := range totalPages {
 		/* First 5 pages */
 		if i < 5 {

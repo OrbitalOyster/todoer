@@ -12,8 +12,8 @@ import (
 )
 
 type TasksQuery[T tasks.TaskFieldName] struct {
-	Page     int
-	Size     int
+	Page     uint
+	Size     uint
 	SearchBy string
 	FromDate time.Time
 	ToDate   time.Time
@@ -42,13 +42,13 @@ func (taskQuery *TasksQuery[T]) parse(rawQuery string) {
 	/* Page */
 	if parsed.Has("page") {
 		if parsedPage, err := strconv.Atoi(parsed.Get("page")); err == nil {
-			taskQuery.Page = parsedPage
+			taskQuery.Page = uint(parsedPage)
 		}
 	}
 	/* Page size */
 	if parsed.Has("size") {
 		if parsedSize, err := strconv.Atoi(parsed.Get("size")); err == nil {
-			taskQuery.Size = parsedSize
+			taskQuery.Size = uint(parsedSize)
 		}
 	}
 	/* Search by */
@@ -139,6 +139,5 @@ func (taskQuery TasksQuery[T]) String() string {
 	if taskQuery.SortDesc {
 		fields = append(fields, "sortDesc")
 	}
-
 	return strings.Join(fields, "&")
 }

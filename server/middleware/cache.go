@@ -1,13 +1,19 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 )
 
+/* 30 days cache */
+const maxAgeSeconds = 60 * 60 * 24 * 30
+
 func Cache(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
-		/* 30 days cache */
-		writer.Header().Set("Cache-Control", "max-age=2592000, public")
+		writer.Header().Set(
+			"Cache-Control",
+			fmt.Sprintf("max-age=%d, public", maxAgeSeconds),
+		)
 		next.ServeHTTP(writer, req)
 	})
 }

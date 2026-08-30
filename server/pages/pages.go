@@ -105,11 +105,3 @@ func ExecutePartial(writer http.ResponseWriter, name string, data any) {
 	}
 	writer.Header().Set("Content-Type", "text/html")
 }
-
-func ExecutePartialTask(writer http.ResponseWriter, name string, data any) {
-	err := partials.ExecuteTemplate(writer, name, data)
-	if err != nil {
-		panic(err)
-	}
-	writer.Header().Set("Content-Type", "text/html")
-}

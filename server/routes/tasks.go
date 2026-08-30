@@ -86,11 +86,7 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 	checkboxedTasks := getCheckboxedTasks(req)
 	checkboxes := make([]bool, selectedTasks.Length())
 	for i, selectedTask := range selectedTasks.Items {
-		if slices.Contains(checkboxedTasks, selectedTask.Field(tasks.Id).(int)) {
-			checkboxes[i] = true
-		} else {
-			checkboxes[i] = false
-		}
+		checkboxes[i] = slices.Contains(checkboxedTasks, selectedTask.Field(tasks.Id).(int))
 	}
 
 	pages.Execute(writer, "tasks", struct {
@@ -142,11 +138,7 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	checkboxedTasks := getCheckboxedTasks(req)
 	checkboxes := make([]bool, tasksOnCurrentPage.Length())
 	for i, selectedTask := range tasksOnCurrentPage.Items {
-		if slices.Contains(checkboxedTasks, selectedTask.Field(tasks.Id).(int)) {
-			checkboxes[i] = true
-		} else {
-			checkboxes[i] = false
-		}
+		checkboxes[i] = slices.Contains(checkboxedTasks, selectedTask.Field(tasks.Id).(int))
 	}
 
 	/* Update calendar elements if both dates are set */

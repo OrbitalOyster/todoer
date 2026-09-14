@@ -42,19 +42,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 			lifetime = config.CookieLifetime
 		}
 		token.SetLifetime(lifetime)
-		fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-		/* Payload */
-		defaultPayload := utils.Payload{
-			UserID:   username,
-			PageSize: config.DefaultPageSize,
-			Page:     1,
-			SearchBy: "",
-			SortBy:   utils.Datetime,
-			SortAsc:  true,
-			FromDate: fromDate.Format(utils.HTMLDateFormat),
-			ToDate:   toDate.Format(utils.HTMLDateFormat),
-		}
-		token.SetPayload(defaultPayload)
+		/* Default payload */
+		token.SetPayload(utils.Payload{UserID: username})
 		writer.Header().Set("HX-Redirect", "/")
 		log.Printf("User %s logged in", username)
 	} else {

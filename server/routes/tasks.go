@@ -9,7 +9,6 @@ import (
 	"todoer/config"
 	"todoer/server/pages"
 	"todoer/server/toasts"
-	"todoer/server/token"
 	"todoer/tasks"
 	"todoer/users"
 	"todoer/utils"
@@ -66,12 +65,8 @@ func getTasks(query TasksQuery[tasks.TaskFieldName]) (collection.Collection[task
 }
 
 func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
-	payload := req.Context().
-		Value("token").(*token.Token[utils.Payload]).
-		GetPayload()
-
+	payload := utils.GetTokenPayload(req)
 	query, redirect := CreateQueryFromRequest(req)
-
 	/* Update URL */
 	if redirect {
 		queryStr := query.String()
@@ -202,9 +197,7 @@ func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
 }
 
 func AddTask(writer http.ResponseWriter, req *http.Request) {
-	payload := req.Context(). /* Get context from request */
-					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
-					GetPayload()                                  /* Load actual payload */
+	payload := utils.GetTokenPayload(req)
 	user := payload.UserID
 	description := req.FormValue("description")
 	tasks.Add(user, description)

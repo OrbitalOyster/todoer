@@ -3,15 +3,12 @@ package routes
 import (
 	"net/http"
 	"todoer/server/pages"
-	"todoer/server/token"
 	"todoer/users"
 	"todoer/utils"
 )
 
 func GetUsersPage(writer http.ResponseWriter, req *http.Request) {
-	payload := req.Context(). /* Get context from request */
-					Value("token").(*token.Token[utils.Payload]). /* Get "token" field */
-					GetPayload()
+	payload := utils.GetTokenPayload(req)
 	allUsers := users.GetAllUsers()
 	pages.Execute(
 		writer,

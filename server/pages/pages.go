@@ -67,7 +67,6 @@ var TemplateFuncMap = template.FuncMap{
 		yesterday := now.AddDate(0, 0, -1)
 		return yesterday.Format(utils.HTMLDateFormat)
 	},
-	"parseSortableField": utils.ParseSortableField,
 	"parseTaskStatus":    tasks.ParseStatus,
 }
 

@@ -34,14 +34,14 @@ func main() {
 	/* Routes */
 	routerMap := map[string]routes.RouterEntry{
 		/* "/{$}" exactly matches root path ("/") */
-		"GET /{$}":        routes.GetMainPage,
-		"GET /tasks":      routes.GetTasksPage,
-		"GET /users":      routes.GetUsersPage,
-		"GET /categories": routes.GetCategoriesPage,
-		"GET /login":      routes.GetLoginPage,
-		"POST /login":     routes.LoginAttempt,
-		"POST /logout":    routes.Logout,
-		"GET /hx/tasks":   routes.GetTaskList,
+		"GET /{$}":                     routes.GetMainPage,
+		"GET /tasks":                   routes.GetTasksPage,
+		"GET /users":                   routes.GetUsersPage,
+		"GET /categories":              routes.GetCategoriesPage,
+		"GET /login":                   routes.GetLoginPage,
+		"POST /login":                  routes.LoginAttempt,
+		"POST /logout":                 routes.Logout,
+		"GET /hx/tasks":                routes.GetTaskList,
 		"GET /hx/edit-task/{id}":       routes.GetEditTaskForm,
 		"GET /hx/add-task":             routes.GetAddTaskForm,
 		"GET /hx/clone-task/{id}":      routes.GetCloneTaskForm,

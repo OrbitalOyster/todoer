@@ -56,7 +56,10 @@ func (token *Token[T]) SetLifetime(lifetime int) {
 }
 
 func (token Token[T]) GetLifetime() int {
-	return int(token.Claims.ExpiresAt.Time.Sub(token.Claims.IssuedAt.Time).Seconds())
+	seconds := token.Claims.ExpiresAt.Time. /* Get expiration date */
+						Sub(token.Claims.IssuedAt.Time). /* Substract "issued at" date */
+						Seconds()                        /* Convert to seconds */
+	return int(seconds) /* Seconds are in float64 */
 }
 
 func (token Token[T]) Save() {

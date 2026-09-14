@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"strings"
+	"net/http"
 	"time"
+	"todoer/server/token"
 )
 
 const (
@@ -10,44 +11,14 @@ const (
 	NiceLookingDatetimeFormat = "2.01.2006 15:04:05"
 )
 
-type SortableField int
-
-const (
-	Description SortableField = iota
-	Datetime
-)
-
 type Payload struct {
-	UserID   string        `json:"user_id"`
-	SearchBy string        `json:"search_by"`
-	Page     int           `json:"page"`
-	PageSize int           `json:"page_size"`
-	SortBy   SortableField `json:"sort_by"`
-	SortAsc  bool          `json:"sort_asc"`
-	FromDate string        `json:"from_date"`
-	ToDate   string        `json:"to_date"`
+	UserID string `json:"user_id"`
 }
 
-func (field SortableField) String() string {
-	switch field {
-	case Description:
-		return "Description"
-	case Datetime:
-		return "Datetime"
-	default:
-		panic("Invalid SortableField")
-	}
-}
-
-func ParseSortableField(field string) SortableField {
-	switch strings.ToLower(field) {
-	case "description":
-		return Description
-	case "datetime":
-		return Datetime
-	default:
-		panic("Invalid SortableField")
-	}
+func GetTokenPayload(req *http.Request) Payload {
+	return req.Context(). /* Get context from request */
+				Value("token").(*token.Token[Payload]). /* Get "token" field */
+				GetPayload()
 }
 
 /* Returns first and last day of month */

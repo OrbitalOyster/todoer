@@ -40,7 +40,7 @@
 				<!-- Unlock -->
 				<li>
 					<button
-						class="dropdown-item text-info"
+						class="dropdown-item link-info"
 						hx-patch="/hx/tasks/{{ .Id }}/read-only"
 						hx-target="#task-list"
 						hx-indicator="#task-list"
@@ -54,7 +54,7 @@
 				<!-- Lock -->
 				<li>
 					<button
-						class="dropdown-item text-info"
+						class="dropdown-item link-info"
 						hx-patch="/hx/tasks/{{ .Id }}/read-only"
 						hx-vals='{ "read-only": true }'
 						hx-target="#task-list"
@@ -95,7 +95,7 @@
 				<!-- Done -->
 				<li>
 					<button
-						class="dropdown-item text-success"
+						class="dropdown-item link-success"
 						type="button"
 						hx-patch="/hx/tasks/{{ .Id }}/status"
 						hx-vals='{ "status": "Done" }'
@@ -112,7 +112,7 @@
 				<!-- Failed -->
 				<li>
 					<button
-						class="dropdown-item text-danger"
+						class="dropdown-item link-danger"
 						type="button"
 						hx-patch="/hx/tasks/{{ .Id }}/status"
 						hx-vals='{ "status": "Failed" }'
@@ -131,7 +131,7 @@
 			<!-- Delete -->
 			<li>
 				<button
-					class="dropdown-item text-danger"
+					class="dropdown-item link-danger"
 					type="button"
 					hx-delete="/hx/tasks/{{ .Id }}"
 					hx-target="#task-list"

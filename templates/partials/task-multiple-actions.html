@@ -3,7 +3,7 @@
 		<!-- Lock -->
 		<li>
 			<button
-				class="dropdown-item text-info"
+				class="dropdown-item link-info"
 				type="button"
 				hx-patch="/hx/tasks"
 				hx-vals='{ "read-only": true }'
@@ -19,7 +19,7 @@
 		<!-- Unlock -->
 		<li>
 			<button
-				class="dropdown-item text-info"
+				class="dropdown-item link-info"
 				type="button"
 				hx-patch="/hx/tasks"
 				hx-vals='{ "read-only": false }'
@@ -58,7 +58,7 @@
 		<!-- Done -->
 		<li>
 			<button
-				class="dropdown-item text-success"
+				class="dropdown-item link-success"
 				type="button"
 				hx-patch="/hx/tasks"
 				hx-vals='{ "status": "Done" }'
@@ -73,7 +73,7 @@
 		<!-- Failed -->
 		<li>
 			<button
-				class="dropdown-item text-danger"
+				class="dropdown-item link-danger"
 				type="button"
 				hx-patch="/hx/tasks"
 				hx-vals='{ "status": "Failed" }'
@@ -91,7 +91,7 @@
 		<!-- Delete -->
 		<li>
 			<button
-				class="dropdown-item text-danger"
+				class="dropdown-item link-danger"
 				type="button"
 				hx-delete="/hx/tasks"
 				hx-target="#task-list"

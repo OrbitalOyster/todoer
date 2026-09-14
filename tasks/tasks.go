@@ -3,7 +3,6 @@ package tasks
 import (
 	"fmt"
 	"log"
-	"strconv"
 	"time"
 	"todoer/collection"
 )
@@ -46,7 +45,7 @@ func Add(user string, description string) {
 	log.Printf("New task: \"%s\"", newTask.Description)
 }
 
-func getById(id int) (*Task[TaskFieldName], error) {
+func GetById(id int) (*Task[TaskFieldName], error) {
 	filtered := list.Filter(Id, id)
 	if filtered.Length() == 0 {
 		return nil, fmt.Errorf("Task not found: %d", id)
@@ -59,24 +58,6 @@ func getById(id int) (*Task[TaskFieldName], error) {
 		panic("Major screwup")
 	}
 	return result, nil
-}
-
-/* Generic function, accepts id as int or string */
-func GetById[T int | string](id T) (*Task[TaskFieldName], error) {
-	switch idAny := any(id).(type) {
-	case int:
-		return getById(idAny)
-	case string:
-		idInt, err := strconv.Atoi(idAny)
-		/* Unparseable string */
-		if err != nil {
-			return nil, fmt.Errorf("Invalid task identifier: \"%s\"", idAny)
-		}
-		return getById(idInt)
-	default:
-		/* Major screwup */
-		panic("Invalid task type")
-	}
 }
 
 func (task *Task[TaskFieldName]) SetDescription(description string) error {

@@ -16,24 +16,24 @@ type Task[T TaskFieldName] struct {
 	ReadOnly    bool       `yaml:"read_only"`
 }
 
-func (task Task[TaskFiledName]) Field(field TaskFiledName) any {
-	switch field {
-	case TaskFiledName(Id):
+func (task Task[TaskFieldName]) Field(fieldName TaskFieldName) any {
+	switch fieldName {
+	case TaskFieldName(Id):
 		return task.Id
-	case TaskFiledName(User):
+	case TaskFieldName(User):
 		return task.User
-	case TaskFiledName(Category):
+	case TaskFieldName(Category):
 		return task.Category
-	case TaskFiledName(Datetime):
+	case TaskFieldName(Datetime):
 		return task.Datetime
-	case TaskFiledName(Description):
+	case TaskFieldName(Description):
 		return task.Description
-	case TaskFiledName(Status):
+	case TaskFieldName(Status):
 		return task.Status
-	case TaskFiledName(ReadOnly):
+	case TaskFieldName(ReadOnly):
 		return task.ReadOnly
 	default:
-		panic(fmt.Sprintf("Invalid field: %d", field))
+		panic(fmt.Sprintf("Invalid TaskFieldName: %d", fieldName))
 	}
 }
 

@@ -1,6 +1,9 @@
 package tasks
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type TaskFieldName uint
 
@@ -14,8 +17,8 @@ const (
 	ReadOnly
 )
 
-func (field TaskFieldName) String() string {
-	switch field {
+func (fieldName TaskFieldName) String() string {
+	switch fieldName {
 	case Id:
 		return "Id"
 	case User:
@@ -31,12 +34,12 @@ func (field TaskFieldName) String() string {
 	case ReadOnly:
 		return "ReadOnly"
 	default:
-		panic("Invalid type")
+		panic(fmt.Sprintf("Invalid TaskFieldName: %d", fieldName))
 	}
 }
 
-func ParseTaskFieldName(s string) TaskFieldName {
-	switch strings.ToLower(s) {
+func ParseTaskFieldName(fieldName string) TaskFieldName {
+	switch strings.ToLower(fieldName) {
 	case "id":
 		return Id
 	case "user":
@@ -52,6 +55,6 @@ func ParseTaskFieldName(s string) TaskFieldName {
 	case "readonly":
 		return ReadOnly
 	default:
-		panic("Invalid type")
+		panic(fmt.Sprintf("Invalid TaskFieldName: %s", fieldName))
 	}
 }

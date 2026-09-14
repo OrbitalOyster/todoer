@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type TaskStatus int
+type TaskStatus uint
 
 const (
 	InProgress TaskStatus = iota

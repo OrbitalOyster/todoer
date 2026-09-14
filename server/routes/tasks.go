@@ -15,7 +15,11 @@ import (
 )
 
 func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task[tasks.TaskFieldName] {
-	if task, err := tasks.GetById(req.PathValue("id")); err != nil {
+	id, err := strconv.Atoi(req.PathValue("id"))
+	if err != nil {
+		return nil
+	}
+	if task, err := tasks.GetById(id); err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		_, err = writer.Write([]byte("Task not found: " + err.Error()))
 		/* Major screwup */

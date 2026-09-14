@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 	"slices"
 	"strconv"
@@ -13,24 +14,6 @@ import (
 	"todoer/users"
 	"todoer/utils"
 )
-
-func idCheck(writer http.ResponseWriter, req *http.Request) *tasks.Task[tasks.TaskFieldName] {
-	id, err := strconv.Atoi(req.PathValue("id"))
-	if err != nil {
-		return nil
-	}
-	if task, err := tasks.GetById(id); err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		_, err = writer.Write([]byte("Task not found: " + err.Error()))
-		/* Major screwup */
-		if err != nil {
-			panic(err)
-		}
-		return nil
-	} else {
-		return task
-	}
-}
 
 const defaultPageSize = 10
 
@@ -70,9 +53,9 @@ func getTasks(query TasksQuery[tasks.TaskFieldName]) (collection.Collection[task
 
 func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 	payload := utils.GetTokenPayload(req)
-	query, redirect := CreateQueryFromRequest(req)
+	query, urlUpdate := CreateQueryFromRequest(req)
 	/* Update URL */
-	if redirect {
+	if urlUpdate {
 		queryStr := query.String()
 		if len(queryStr) > 0 {
 			queryStr = "?" + queryStr
@@ -126,7 +109,7 @@ func getCheckboxedTasks(req *http.Request) (result []int) {
 }
 
 func GetTaskList(writer http.ResponseWriter, req *http.Request) {
-	query, push := CreateQueryFromRequest(req)
+	query, urlUpdate := CreateQueryFromRequest(req)
 
 	/* Get tasks */
 	tasksOnCurrentPage, page, numberOfPages := getTasks(query)
@@ -156,7 +139,7 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	/* Update URL */
-	if push {
+	if urlUpdate {
 		queryStr := query.String()
 		if len(queryStr) > 0 {
 			queryStr = "?" + queryStr
@@ -182,22 +165,30 @@ func GetAddTaskForm(writer http.ResponseWriter, req *http.Request) {
 }
 
 func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
-	if task := idCheck(writer, req); task != nil {
-		data := struct {
-			Task  *tasks.Task[tasks.TaskFieldName]
-			Users []users.User
-		}{
-			task,
-			users.GetAllUsers(),
-		}
-		pages.ExecutePartial(writer, "editTaskForm", data)
+	id := req.PathValue("id")
+	task, err := tasks.GetById(id)
+	if err != nil {
+		pages.ExecutePartial(writer, "taskNotFound", nil)
+		return
 	}
+	data := struct {
+		Task  *tasks.Task[tasks.TaskFieldName]
+		Users []users.User
+	}{
+		task,
+		users.GetAllUsers(),
+	}
+	pages.ExecutePartial(writer, "editTaskForm", data)
 }
 
 func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
-	if task := idCheck(writer, req); task != nil {
-		pages.ExecutePartial(writer, "cloneTaskForm", task)
+	id := req.PathValue("id")
+	task, err := tasks.GetById(id)
+	if err != nil {
+		toasts.Warning(writer, "Unable to clone", fmt.Sprintf("Task #%s not found", id))
+		return
 	}
+	pages.ExecutePartial(writer, "cloneTaskForm", task)
 }
 
 func AddTask(writer http.ResponseWriter, req *http.Request) {
@@ -211,8 +202,12 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
-	var task *tasks.Task[tasks.TaskFieldName]
-	if task = idCheck(writer, req); task == nil {
+	id := req.PathValue("id")
+	task, err := tasks.GetById(id)
+	if err != nil {
+		toasts.Warning(writer, "Unable to edit", fmt.Sprintf("Task #%s not found", id))
+		writer.Header().Set("HX-Trigger", "hideModal")
+		GetTaskList(writer, req)
 		return
 	}
 	description, user, readOnlyStr :=
@@ -261,9 +256,12 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	var task *tasks.Task[tasks.TaskFieldName]
-	if task = idCheck(writer, req); task == nil {
-		panic("Task not found")
+	id := req.PathValue("id")
+	task, err := tasks.GetById(id)
+	if err != nil {
+		toasts.Warning(writer, "Unable to patch", fmt.Sprintf("Task #%s not found", id))
+		GetTaskList(writer, req)
+		return
 	}
 	field := req.PathValue("field")
 	switch field {
@@ -317,7 +315,8 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	for _, id := range checkboxed {
 		task, err := tasks.GetById(id)
 		if err != nil {
-			panic(err)
+			toasts.Warning(writer, "Unable to patch", fmt.Sprintf("Task #%d not found", id))
+			continue
 		}
 		/* Status */
 		if changes["status"] != nil && task.Status != changes["status"] {
@@ -339,9 +338,12 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
-	var task *tasks.Task[tasks.TaskFieldName]
-	if task = idCheck(writer, req); task == nil {
-		panic("Task not found")
+	id := req.PathValue("id")
+	task, err := tasks.GetById(id)
+	if err != nil {
+		toasts.Warning(writer, "Unable to delete", fmt.Sprintf("Task #%s not found", id))
+		GetTaskList(writer, req)
+		return
 	}
 	taskId := task.Id
 	tasks.Delete(taskId)
@@ -355,7 +357,8 @@ func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 	for _, id := range checkboxed {
 		task, err := tasks.GetById(id)
 		if err != nil {
-			panic(err)
+			toasts.Warning(writer, "Unable to delete", fmt.Sprintf("Task #%d not found", id))
+			continue
 		}
 		tasks.Delete(task.Id)
 		deletedTasks++

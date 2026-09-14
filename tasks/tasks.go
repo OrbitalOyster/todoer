@@ -3,6 +3,7 @@ package tasks
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 	"todoer/collection"
 )
@@ -45,13 +46,29 @@ func Add(user string, description string) {
 	log.Printf("New task: \"%s\"", newTask.Description)
 }
 
-func GetById(id int) (*Task[TaskFieldName], error) {
+func GetById[T int | string](idIntOrStr T) (*Task[TaskFieldName], error) {
+	/* Check generic type */
+	var id int
+	switch idAny := any(idIntOrStr).(type) {
+	case string:
+		idInt, err := strconv.Atoi(idAny)
+		/* Unparseable string */
+		if err != nil {
+			return nil, fmt.Errorf("Invalid id string: %s", idAny)
+		}
+		id = idInt
+	case int:
+		id = idAny
+	default:
+		panic("Invalid type")
+	}
+
 	filtered := list.Filter(Id, id)
 	if filtered.Length() == 0 {
-		return nil, fmt.Errorf("Task not found: %d", id)
+		return nil, fmt.Errorf("Task not found: %v", id)
 	}
 	if filtered.Length() != 1 {
-		return nil, fmt.Errorf("More than one task found: %d", id)
+		return nil, fmt.Errorf("More than one task found: %v", id)
 	}
 	result, ok := filtered.First().(*Task[TaskFieldName])
 	if !ok {

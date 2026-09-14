@@ -1,0 +1,32 @@
+{{ define "taskNotFound" }}
+	<div class="modal-content" id="edit-task-form">
+		<div class="modal-header position-relative">
+			<h1 class="modal-title fs-5">
+				Something went wrong
+			</h1>
+			<button
+				class="btn-close"
+				type="button"
+				data-bs-dismiss="modal"
+			>
+			</button>
+		</div>
+		<div class="modal-body d-flex flex-column gap-3">
+			Task not found. Press "Ok" to refresh the list
+		</div>
+		<div class="modal-footer">
+			<button
+				class="btn btn-primary htmx-disable"
+				type="button"
+				data-bs-dismiss="modal"
+				hx-get="/hx/tasks"
+				hx-target="#task-list"
+				hx-indicator="#task-list"
+				hx-disabled-elt=".htmx-disable"
+			>
+				<i class="bi bi-check-lg" id="ok-btn-icon"></i>
+				Ok
+			</button>
+		</div>
+	</div>
+{{ end }}

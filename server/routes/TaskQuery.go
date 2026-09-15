@@ -73,7 +73,11 @@ func (taskQuery *TasksQuery[T]) parse(rawQuery string) {
 	}
 	/* Sorting */
 	if parsed.Has("sortBy") {
-		taskQuery.SortBy = T(tasks.ParseTaskFieldName(parsed.Get("sortBy")))
+		sortByField, err := tasks.ParseTaskField(parsed.Get("sortBy"))
+		if err != nil {
+			panic("Invalid sortByField: " + sortByField.String())
+		}
+		taskQuery.SortBy = T(sortByField)
 	}
 	if parsed.Has("sortDesc") {
 		/* Empty query parameter counts as "true" */

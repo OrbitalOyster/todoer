@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"fmt"
+	"log"
 	"strings"
 	"time"
 )
@@ -37,32 +38,56 @@ func (task Task[T]) Field(field TaskField) any {
 	}
 }
 
-func (task *Task[T]) Patch(field TaskField, value any) {
+func (task *Task[T]) Patch(field TaskField, value any) (success bool) {
 	switch field {
 	case User:
 		valueStr, ok := value.(string)
 		if !ok {
 			panic("Type assertion failed")
 		}
-		task.User = valueStr
+		if task.User != valueStr {
+			task.User = valueStr
+			log.Printf("Set task #%d user to \"%s\"", task.Id, task.User)
+			return true
+		} else {
+			return false
+		}
 	case Description:
 		valueString, ok := value.(string)
 		if !ok {
 			panic("Type assertion failed")
 		}
-		task.Description = valueString
+		if task.Description != valueString {
+			task.Description = valueString
+			log.Printf("Set task #%d description to \"%s\"", task.Id, task.Description)
+			return true
+		} else {
+			return false
+		}
 	case Status:
 		valueStatus, ok := value.(TaskStatus)
 		if !ok {
 			panic("Type assertion failed")
 		}
-		task.Status = valueStatus
+		if task.Status != valueStatus {
+			task.Status = valueStatus
+			log.Printf("Set task #%d status to \"%s\"", task.Id, task.Status)
+			return true
+		} else {
+			return false
+		}
 	case ReadOnly:
 		valueBool, ok := value.(bool)
 		if !ok {
 			panic("Type assertion failed")
 		}
-		task.ReadOnly = valueBool
+		if task.ReadOnly != valueBool {
+			task.ReadOnly = valueBool
+			log.Printf("Set task #%d read only to %t", task.Id, task.ReadOnly)
+			return true
+		} else {
+			return false
+		}
 	default:
 		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
@@ -122,10 +147,17 @@ func (task Task[T]) Filter(field TaskField, value any) bool {
 
 /* Extra handler for converting status string to TaskStatus */
 func (status *TaskStatus) UnmarshalYAML(unmarshal func(any) error) error {
-	var str string
+	var (
+		str string
+		err error
+	)
+	/* Not a string */
 	if err := unmarshal(&str); err != nil {
 		return err
 	}
-	*status = ParseStatus(str)
+	/* Not a valid status */
+	if *status, err = ParseStatus(str); err != nil {
+		return err
+	}
 	return nil
 }

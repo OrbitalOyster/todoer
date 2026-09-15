@@ -38,23 +38,23 @@ func (field TaskField) String() string {
 	}
 }
 
-func ParseTaskFieldName(field string) TaskField {
+func ParseTaskField(field string) (TaskField, error) {
 	switch strings.ToLower(field) {
 	case "id":
-		return Id
+		return Id, nil
 	case "user":
-		return User
+		return User, nil
 	case "category":
-		return Category
+		return Category, nil
 	case "datetime":
-		return Datetime
+		return Datetime, nil
 	case "description":
-		return Description
+		return Description, nil
 	case "status":
-		return Status
+		return Status, nil
 	case "readonly", "read-only":
-		return ReadOnly
+		return ReadOnly, nil
 	default:
-		panic(fmt.Sprintf("Invalid field: %#v", field))
+		return 0, fmt.Errorf("Invalid field: %#v", field)
 	}
 }

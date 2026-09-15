@@ -27,15 +27,15 @@ func (status TaskStatus) String() string {
 	}
 }
 
-func ParseStatus(status string) TaskStatus {
+func ParseStatus(status string) (TaskStatus, error) {
 	switch strings.ToLower(status) {
 	case "inprogress":
-		return InProgress
+		return InProgress, nil
 	case "done":
-		return Done
+		return Done, nil
 	case "failed":
-		return Failed
+		return Failed, nil
 	default:
-		panic(fmt.Sprintf("Invalid TaskStatus: %s", status))
+		return 0, fmt.Errorf("Invalid TaskStatus: %s", status)
 	}
 }

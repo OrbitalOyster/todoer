@@ -77,8 +77,8 @@ func GetById[T int | string](idIntOrStr T) (*Task[TaskField], error) {
 	return result, nil
 }
 
-func FilterAndPatch(field TaskField, filter any, fieldToPatch TaskField, value any) {
-	list.FilterAndPatch(field, filter, fieldToPatch, value)
+func FilterAndPatch(field TaskField, filter any, fieldToPatch TaskField, value any) uint {
+	return list.FilterAndPatch(field, filter, fieldToPatch, value)
 }
 
 func (task *Task[TaskFieldName]) SetDescription(description string) error {

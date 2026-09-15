@@ -60,7 +60,7 @@ func GetById[T int | string](idIntOrStr T) (*Task[TaskFieldName], error) {
 	case int:
 		id = idAny
 	default:
-		panic("Invalid type")
+		panic(fmt.Sprintf("Invalid type: %v", idAny))
 	}
 
 	filtered := list.Filter(Id, id)

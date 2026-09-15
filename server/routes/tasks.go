@@ -96,7 +96,7 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 
 func getCheckboxedTasks(req *http.Request) (result []int) {
 	if !req.Form.Has("checked") { /* Nothing checked */
-		return result
+		return
 	}
 	for _, checkboxStr := range req.Form["checked"] {
 		n, err := strconv.Atoi(checkboxStr)
@@ -105,7 +105,7 @@ func getCheckboxedTasks(req *http.Request) (result []int) {
 		}
 		result = append(result, n)
 	}
-	return result
+	return
 }
 
 func GetTaskList(writer http.ResponseWriter, req *http.Request) {

@@ -63,7 +63,7 @@ func GetById[T int | string](idIntOrStr T) (*Task[TaskField], error) {
 		panic(fmt.Sprintf("Invalid type: %v", idAny))
 	}
 
-	filtered := list.Filter(Id, id)
+	filtered := list.Filter(Id, []any{id})
 	if filtered.Length() == 0 {
 		return nil, fmt.Errorf("Task not found: %v", id)
 	}
@@ -77,7 +77,7 @@ func GetById[T int | string](idIntOrStr T) (*Task[TaskField], error) {
 	return result, nil
 }
 
-func FilterAndPatch(field TaskField, filter any, fieldToPatch TaskField, value any) uint {
+func FilterAndPatch(field TaskField, filter []any, fieldToPatch TaskField, value any) uint {
 	return list.FilterAndPatch(field, filter, fieldToPatch, value)
 }
 
@@ -105,6 +105,6 @@ func (task *Task[TaskFieldName]) SetReadOnly(ro bool) error {
 	return nil
 }
 
-func Delete(id int) {
-	list.Delete(Id, id)
+func DeleteOne(id int) {
+	list.Delete(Id, []any{id})
 }

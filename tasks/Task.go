@@ -123,23 +123,30 @@ func (task Task[T]) LessThan(field TaskField, value any) bool {
 	}
 }
 
-func (task Task[T]) Filter(field TaskField, value any) bool {
+func (task Task[T]) Filter(field TaskField, values []any) bool {
 	switch field {
 	case Id:
-		filterInt, ok := value.(int)
-		if !ok {
-			panic(fmt.Sprintf("Invalid filter: %#v", value))
+		for _, value := range values {
+			filterInt, ok := value.(int)
+			if !ok {
+				panic(fmt.Sprintf("Invalid filter value: %#v", value))
+			}
+			if filterInt == task.Id {
+				return true
+			}
 		}
-		return filterInt == task.Id
+		return false
 	case Description:
-		filterString, ok := value.(string)
-		if !ok {
-			panic(fmt.Sprintf("Invalid filter: %#v", value))
+		for _, value := range values {
+			filterString, ok := value.(string)
+			if !ok {
+				panic(fmt.Sprintf("Invalid filter: %#v", values))
+			}
+			if filterString == "" || strings.Contains(task.Description, filterString) {
+				return true
+			}
 		}
-		if filterString == "" {
-			return true
-		}
-		return strings.Contains(task.Description, filterString)
+		return false
 	default:
 		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
@@ -152,7 +159,7 @@ func (status *TaskStatus) UnmarshalYAML(unmarshal func(any) error) error {
 		err error
 	)
 	/* Not a string */
-	if err := unmarshal(&str); err != nil {
+	if err = unmarshal(&str); err != nil {
 		return err
 	}
 	/* Not a valid status */

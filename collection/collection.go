@@ -14,7 +14,7 @@ type Item[T FieldName] interface {
 	Patch(field T, value any) bool
 	MoreThan(field T, value any) bool
 	LessThan(field T, value any) bool
-	Filter(field T, value any) bool
+	Filter(field T, value []any) bool
 }
 
 type Collection[T FieldName] struct {
@@ -33,7 +33,7 @@ func (collection *Collection[T]) Add(newItem Item[T]) {
 	collection.Items = append(collection.Items, newItem)
 }
 
-func (collection *Collection[T]) Delete(field T, filter any) {
+func (collection *Collection[T]) Delete(field T, filter []any) {
 	collection.Items = slices.DeleteFunc(
 		collection.Items,
 		func(item Item[T]) bool {
@@ -78,7 +78,7 @@ func (collection Collection[T]) Reverse() Collection[T] {
 	return collection
 }
 
-func (collection Collection[T]) Filter(field T, filter any) (result Collection[T]) {
+func (collection Collection[T]) Filter(field T, filter []any) (result Collection[T]) {
 	for _, item := range collection.Items {
 		if item.Filter(field, filter) {
 			result.Items = append(result.Items, item)
@@ -87,7 +87,7 @@ func (collection Collection[T]) Filter(field T, filter any) (result Collection[T
 	return
 }
 
-func (collection *Collection[T]) FilterAndPatch(field T, filter any, fieldToPatch T, value any) (patched uint) {
+func (collection *Collection[T]) FilterAndPatch(field T, filter []any, fieldToPatch T, value any) (patched uint) {
 	for i, item := range collection.Items {
 		if item.Filter(field, filter) && collection.Items[i].Patch(fieldToPatch, value) {
 			patched++

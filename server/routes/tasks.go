@@ -43,7 +43,7 @@ func getTasks(query TasksQuery[tasks.TaskField]) (collection.Collection[tasks.Ta
 			tasks.Datetime,
 			query.ToDate.Add(time.Hour*24-time.Second),
 		).
-		Filter(tasks.Description, query.SearchBy).
+		Filter(tasks.Description, []any{query.SearchBy}).
 		SortBy(query.SortBy)
 	if query.SortDesc {
 		result.Reverse()
@@ -289,7 +289,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 				fmt.Sprintf("Invalid status: %#v", status),
 			)
 		} else {
-			patched += tasks.FilterAndPatch(tasks.Id, id, tasks.Status, status)
+			patched += tasks.FilterAndPatch(tasks.Id, []any{id}, tasks.Status, status)
 		}
 	case tasks.ReadOnly:
 		readOnly := false
@@ -297,7 +297,7 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 		if readOnlyStr == "true" {
 			readOnly = true
 		}
-		tasks.FilterAndPatch(tasks.Id, id, tasks.ReadOnly, readOnly)
+		tasks.FilterAndPatch(tasks.Id, []any{id}, tasks.ReadOnly, readOnly)
 	default:
 		toasts.Danger(writer, "Haxxor alert!", fmt.Sprintf("Invalid task field: %#v", fieldStr))
 	}
@@ -307,54 +307,67 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 
 func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	checkboxed := getCheckboxedTasks(req)
-
-	/* TODO: Stoopid */
-	changes := make(map[tasks.TaskField]any)
-	if req.Form.Has("status") {
-		var err error
-		changes[tasks.Status], err = tasks.ParseStatus(req.FormValue("status"))
-		if err != nil {
-			panic(err)
+	/* Nothing selected */
+	if len(checkboxed) == 0 {
+		toasts.Warning(writer, "No tasks updated", "Nothing selected")
+	} else {
+		filterBy := make([]any, len(checkboxed))
+		for i, c := range checkboxed {
+			filterBy[i] = c
 		}
-	}
-	if req.Form.Has("read-only") {
-		var err error
-		changes[tasks.ReadOnly], err = strconv.ParseBool(req.FormValue("read-only"))
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	var patched uint = 0
-	for _, id := range checkboxed {
-		if changes[tasks.Status] != nil {
-			patched += tasks.FilterAndPatch(tasks.Id, id, tasks.Status, changes[tasks.Status])
-		}
-		if changes[tasks.ReadOnly] != nil {
-			patched += tasks.FilterAndPatch(tasks.Id, id, tasks.ReadOnly, changes[tasks.ReadOnly])
-		}
-		/*
-			task, err := tasks.GetById(id)
+		message := ""
+		/* Status */
+		if req.Form.Has("status") {
+			statusStr := req.FormValue("status")
+			status, err := tasks.ParseStatus(statusStr)
+			/* Invalid status string */
 			if err != nil {
-				toasts.Warning(writer, "Unable to patch", fmt.Sprintf("Task #%d not found", id))
-				continue
-			}
-			if changes["status"] != nil && task.Status != changes["status"] {
-				if err := task.SetStatus(changes["status"].(tasks.TaskStatus)); err != nil {
-					panic(err)
+				toasts.Danger(
+					writer,
+					"Error",
+					fmt.Sprintf("Not a valid status: %#v", statusStr),
+				)
+			} else {
+				patchedStatus := tasks.FilterAndPatch(
+					tasks.Id,
+					filterBy,
+					tasks.Status,
+					status,
+				)
+				if patchedStatus > 0 {
+					message += fmt.Sprintf("Updated status: %d", patchedStatus)
 				}
-				patched++
 			}
-			if changes["read-only"] != nil && task.ReadOnly != changes["read-only"] {
-				if err := task.SetReadOnly(changes["read-only"].(bool)); err != nil {
-					panic(err)
-				}
-				patched++
+		}
+		/* Read only */
+		if req.Form.Has("read-only") {
+			readOnlyStr := req.FormValue("read-only")
+			readOnly, err := strconv.ParseBool(readOnlyStr)
+			if err != nil {
+				toasts.Danger(
+					writer,
+					"Error",
+					fmt.Sprintf("Not a valid boolean: %#v", readOnlyStr),
+				)
 			}
-		*/
+			patchedReadOnly := tasks.FilterAndPatch(
+				tasks.Id,
+				filterBy,
+				tasks.ReadOnly,
+				readOnly,
+			)
+			if patchedReadOnly > 0 {
+				message += fmt.Sprintf("Updated lock: %d", patchedReadOnly)
+			}
+		}
+		/* Send results to user */
+		if message != "" {
+			toasts.Info(writer, "Updated tasks", message)
+		} else {
+			toasts.Warning(writer, "Updated tasks", "Nothing changed")
+		}
 	}
-
-	toasts.Info(writer, "Updated "+strconv.Itoa(int(patched))+" tasks", "Success")
+	/* Done */
 	GetTaskList(writer, req)
 }
 
@@ -367,7 +380,7 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 	taskId := task.Id
-	tasks.Delete(taskId)
+	tasks.DeleteOne(taskId)
 	toasts.Warning(writer, "Task "+strconv.Itoa(taskId)+" deleted", "Success")
 	GetTaskList(writer, req)
 }
@@ -381,7 +394,7 @@ func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 			toasts.Warning(writer, "Unable to delete", fmt.Sprintf("Task #%d not found", id))
 			continue
 		}
-		tasks.Delete(task.Id)
+		tasks.DeleteOne(task.Id)
 		deletedTasks++
 	}
 	toasts.Warning(writer, "Deleted "+strconv.Itoa(deletedTasks)+" tasks", "Success")

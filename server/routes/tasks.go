@@ -202,56 +202,48 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
-	id := req.PathValue("id")
-	task, err := tasks.GetById(id)
+	/* Check if id is parseable */
+	idStr := req.PathValue("id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		toasts.Warning(writer, "Unable to edit", fmt.Sprintf("Task #%s not found", id))
-		writer.Header().Set("HX-Trigger", "hideModal")
-		GetTaskList(writer, req)
-		return
-	}
-	description, user, readOnlyStr :=
-		req.FormValue("description"),
-		req.FormValue("user"),
-		req.FormValue("read-only")
-	readOnly := false
-	if readOnlyStr == "true" {
-		readOnly = true
-	}
-	/* Description */
-	if task.Description != description {
-		if err := task.SetDescription(description); err != nil {
-			writer.WriteHeader(http.StatusBadRequest)
-			_, err = writer.Write([]byte("Unable to set task description:" + err.Error()))
-			if err != nil {
-				panic(err)
+		toasts.Danger(
+			writer,
+			"Haxxor alert!",
+			fmt.Sprintf("Not a valid task id: %#v", id),
+		)
+	} else {
+		tasksFound := tasks.GetAll().Filter(tasks.Id, []any{id})
+		/* Check if task exists */
+		if tasksFound.Length() == 0 {
+			toasts.Danger(
+				writer,
+				"Error",
+				fmt.Sprintf("Task %d not found", id),
+			)
+		} else if tasksFound.Length() > 1 {
+			panic("Major screwup")
+		} else {
+			task := tasksFound.First()
+			description, user, readOnlyStr :=
+				req.FormValue("description"),
+				req.FormValue("user"),
+				req.FormValue("read-only")
+			readOnly := false
+			if readOnlyStr == "true" {
+				readOnly = true
+			}
+			updatedDescription := task.Patch(tasks.Description, description)
+			updatedUser := task.Patch(tasks.User, user)
+			updatedReadOnly := task.Patch(tasks.ReadOnly, readOnly)
+			if updatedDescription || updatedUser || updatedReadOnly {
+				toasts.Success(writer, "Update task", "Success")
+			} else {
+				toasts.Info(writer, "Update task", "Nothing changed")
 			}
 		}
 	}
-	/* User */
-	if task.User != user {
-		if err := task.SetUser(user); err != nil {
-			writer.WriteHeader(http.StatusBadRequest)
-			_, err = writer.Write([]byte("Unable to change user:" + err.Error()))
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
-	/* Read only */
-	if task.ReadOnly != readOnly {
-		if err := task.SetReadOnly(readOnly); err != nil {
-			writer.WriteHeader(http.StatusBadRequest)
-			_, err = writer.Write([]byte("Unable to change task:" + err.Error()))
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
-
 	/* Done */
 	writer.Header().Set("HX-Trigger", "hideModal")
-	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
 	GetTaskList(writer, req)
 }
 
@@ -362,7 +354,7 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 		}
 		/* Send results to user */
 		if message != "" {
-			toasts.Info(writer, "Updated tasks", message)
+			toasts.Success(writer, "Updated tasks", message)
 		} else {
 			toasts.Warning(writer, "Updated tasks", "Nothing changed")
 		}

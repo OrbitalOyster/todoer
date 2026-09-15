@@ -43,7 +43,7 @@ func (collection *Collection[T]) Delete(field T, filter []any) {
 }
 
 func (collection Collection[T]) First() Item[T] {
-	if len(collection.Items) < 1 {
+	if len(collection.Items) == 0 {
 		panic("Empty array")
 	}
 	return collection.Items[0]

@@ -47,12 +47,10 @@ func Add(user string, description string) {
 }
 
 func GetById[T int | string](idIntOrStr T) (*Task[TaskField], error) {
-	/* Check generic type */
 	var id int
 	switch idAny := any(idIntOrStr).(type) {
 	case string:
 		idInt, err := strconv.Atoi(idAny)
-		/* Unparseable string */
 		if err != nil {
 			return nil, fmt.Errorf("Invalid id string: %s", idAny)
 		}
@@ -79,30 +77,6 @@ func GetById[T int | string](idIntOrStr T) (*Task[TaskField], error) {
 
 func FilterAndPatch(field TaskField, filter []any, fieldToPatch TaskField, value any) uint {
 	return list.FilterAndPatch(field, filter, fieldToPatch, value)
-}
-
-func (task *Task[TaskFieldName]) SetDescription(description string) error {
-	task.Description = description
-	log.Printf("Set task #%d description to \"%s\"", task.Id, task.Description)
-	return nil
-}
-
-func (task *Task[TaskFieldName]) SetUser(user string) error {
-	task.User = user
-	log.Printf("Set task #%d user to \"%s\"", task.Id, task.User)
-	return nil
-}
-
-func (task *Task[TaskFieldName]) SetStatus(status TaskStatus) error {
-	task.Status = status
-	log.Printf("Set task #%d status to \"%s\"", task.Id, task.Status)
-	return nil
-}
-
-func (task *Task[TaskFieldName]) SetReadOnly(ro bool) error {
-	log.Printf("Set task #%d read only to %t", task.Id, ro)
-	task.ReadOnly = ro
-	return nil
 }
 
 func DeleteOne(id int) {

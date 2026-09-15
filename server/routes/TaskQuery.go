@@ -11,7 +11,7 @@ import (
 	"todoer/utils"
 )
 
-type TasksQuery[T tasks.TaskFieldName] struct {
+type TasksQuery[T tasks.TaskField] struct {
 	Page     uint
 	Size     uint
 	SearchBy string
@@ -21,9 +21,9 @@ type TasksQuery[T tasks.TaskFieldName] struct {
 	SortDesc bool
 }
 
-func defaultTaskQuery() TasksQuery[tasks.TaskFieldName] {
+func defaultTaskQuery() TasksQuery[tasks.TaskField] {
 	fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-	return TasksQuery[tasks.TaskFieldName]{
+	return TasksQuery[tasks.TaskField]{
 		Page:     1,
 		Size:     defaultPageSize,
 		SearchBy: "",
@@ -89,7 +89,7 @@ func (taskQuery *TasksQuery[T]) parse(rawQuery string) {
 	}
 }
 
-func CreateQueryFromRequest(req *http.Request) (query TasksQuery[tasks.TaskFieldName], updated bool) {
+func CreateQueryFromRequest(req *http.Request) (query TasksQuery[tasks.TaskField], updated bool) {
 	query = defaultTaskQuery()
 	updated = false
 	currentQuery := req.URL.RawQuery

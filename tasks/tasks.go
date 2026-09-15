@@ -8,13 +8,13 @@ import (
 	"todoer/collection"
 )
 
-var list collection.Collection[TaskFieldName]
+var list collection.Collection[TaskField]
 
-func GetAll() collection.Collection[TaskFieldName] {
+func GetAll() collection.Collection[TaskField] {
 	return list
 }
 
-func Load(newList []Task[TaskFieldName]) {
+func Load(newList []Task[TaskField]) {
 	for _, task := range newList {
 		list.Add(&task)
 	}
@@ -35,7 +35,7 @@ func getNextId() int {
 
 func Add(user string, description string) {
 	now := time.Now()
-	newTask := Task[TaskFieldName]{
+	newTask := Task[TaskField]{
 		Id:          getNextId(),
 		User:        user,
 		Description: description,
@@ -46,7 +46,7 @@ func Add(user string, description string) {
 	log.Printf("New task: \"%s\"", newTask.Description)
 }
 
-func GetById[T int | string](idIntOrStr T) (*Task[TaskFieldName], error) {
+func GetById[T int | string](idIntOrStr T) (*Task[TaskField], error) {
 	/* Check generic type */
 	var id int
 	switch idAny := any(idIntOrStr).(type) {
@@ -70,11 +70,15 @@ func GetById[T int | string](idIntOrStr T) (*Task[TaskFieldName], error) {
 	if filtered.Length() != 1 {
 		return nil, fmt.Errorf("More than one task found: %v", id)
 	}
-	result, ok := filtered.First().(*Task[TaskFieldName])
+	result, ok := filtered.First().(*Task[TaskField])
 	if !ok {
 		panic("Major screwup")
 	}
 	return result, nil
+}
+
+func FilterAndPatch(field TaskField, filter any, fieldToPatch TaskField, value any) {
+	list.FilterAndPatch(field, filter, fieldToPatch, value)
 }
 
 func (task *Task[TaskFieldName]) SetDescription(description string) error {

@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type Task[T TaskFieldName] struct {
+type Task[T TaskField] struct {
 	Id          int        `yaml:"id"`
 	User        string     `yaml:"user"`
 	Category    string     `yaml:"category"`
@@ -16,76 +16,107 @@ type Task[T TaskFieldName] struct {
 	ReadOnly    bool       `yaml:"read_only"`
 }
 
-func (task Task[TaskFieldName]) Field(fieldName TaskFieldName) any {
-	switch fieldName {
-	case TaskFieldName(Id):
+func (task Task[T]) Field(field TaskField) any {
+	switch field {
+	case Id:
 		return task.Id
-	case TaskFieldName(User):
+	case User:
 		return task.User
-	case TaskFieldName(Category):
+	case Category:
 		return task.Category
-	case TaskFieldName(Datetime):
+	case Datetime:
 		return task.Datetime
-	case TaskFieldName(Description):
+	case Description:
 		return task.Description
-	case TaskFieldName(Status):
+	case Status:
 		return task.Status
-	case TaskFieldName(ReadOnly):
+	case ReadOnly:
 		return task.ReadOnly
 	default:
-		panic(fmt.Sprintf("Invalid TaskFieldName: %d", fieldName))
+		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
 }
 
-func (task Task[TaskFiledName]) MoreThan(field TaskFiledName, value any) bool {
+func (task *Task[T]) Patch(field TaskField, value any) {
 	switch field {
-	case TaskFiledName(Datetime):
-		return task.Datetime.After(value.(time.Time))
-	case TaskFiledName(Description):
-		return task.Description > value.(string)
-	default:
-		panic(fmt.Sprintf("Invalid field: %d", field))
-	}
-}
-
-func (task Task[TaskFiledName]) LessThan(field TaskFiledName, value any) bool {
-	switch field {
-	case TaskFiledName(Datetime):
-		valueTime, ok := value.(time.Time)
+	case User:
+		valueStr, ok := value.(string)
 		if !ok {
-			panic("Type assert failed")
+			panic("Type assertion failed")
 		}
-		return task.Datetime.Before(valueTime)
-	case TaskFiledName(Description):
+		task.User = valueStr
+	case Description:
 		valueString, ok := value.(string)
 		if !ok {
-			panic("Type assert failed")
+			panic("Type assertion failed")
+		}
+		task.Description = valueString
+	case Status:
+		valueStatus, ok := value.(TaskStatus)
+		if !ok {
+			panic("Type assertion failed")
+		}
+		task.Status = valueStatus
+	case ReadOnly:
+		valueBool, ok := value.(bool)
+		if !ok {
+			panic("Type assertion failed")
+		}
+		task.ReadOnly = valueBool
+	default:
+		panic(fmt.Sprintf("Invalid field: %#v", field))
+	}
+}
+
+func (task Task[T]) MoreThan(field TaskField, value any) bool {
+	switch field {
+	case Datetime:
+		return task.Datetime.After(value.(time.Time))
+	case Description:
+		return task.Description > value.(string)
+	default:
+		panic(fmt.Sprintf("Invalid field: %#v", field))
+	}
+}
+
+func (task Task[T]) LessThan(field TaskField, value any) bool {
+	switch field {
+	case Datetime:
+		valueTime, ok := value.(time.Time)
+		if !ok {
+			panic("Type assertion failed")
+		}
+		return task.Datetime.Before(valueTime)
+	case Description:
+		valueString, ok := value.(string)
+		if !ok {
+			panic("Type assertion failed")
 		}
 		return task.Description < valueString
 	default:
-		panic(fmt.Sprintf("Invalid field: %d", field))
+		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
 }
 
-func (task Task[TaskFiledName]) Filter(field TaskFiledName, value any) bool {
+func (task Task[T]) Filter(field TaskField, value any) bool {
 	switch field {
-	case TaskFiledName(Id):
+	case Id:
 		filterInt, ok := value.(int)
 		if !ok {
-			panic(fmt.Sprintf("Invalid filter: %v", value))
+			panic(fmt.Sprintf("Invalid filter: %#v", value))
 		}
 		return filterInt == task.Id
-	case TaskFiledName(Description):
+	case Description:
 		filterString, ok := value.(string)
 		if !ok {
-			panic(fmt.Sprintf("Invalid filter: %v", value))
+			panic(fmt.Sprintf("Invalid filter: %#v", value))
 		}
 		if filterString == "" {
 			return true
 		}
 		return strings.Contains(task.Description, filterString)
 	default:
-		panic(fmt.Sprintf("Invalid field: %d", field))
+		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
 }
 

@@ -11,6 +11,7 @@ type FieldName interface {
 
 type Item[T FieldName] interface {
 	Field(field T) any
+	Patch(field T, value any)
 	MoreThan(field T, value any) bool
 	LessThan(field T, value any) bool
 	Filter(field T, value any) bool
@@ -84,6 +85,14 @@ func (collection Collection[T]) Filter(field T, filter any) (result Collection[T
 		}
 	}
 	return
+}
+
+func (collection *Collection[T]) FilterAndPatch(field T, filter any, fieldToPatch T, value any) {
+	for i, item := range collection.Items {
+		if item.Filter(field, filter) {
+			collection.Items[i].Patch(fieldToPatch, value)
+		}
+	}
 }
 
 func (collection Collection[T]) MoreThan(field T, value any) (result Collection[T]) {

@@ -18,7 +18,7 @@ import (
 const defaultPageSize = 10
 
 type TaskListData struct {
-	Tasks      []collection.Item[tasks.TaskFieldName]
+	Tasks      []collection.Item[tasks.TaskField]
 	Page       uint
 	PageSize   uint
 	TotalPages uint
@@ -31,7 +31,7 @@ type TaskListData struct {
 	Checkboxes []bool
 }
 
-func getTasks(query TasksQuery[tasks.TaskFieldName]) (collection.Collection[tasks.TaskFieldName], uint, uint) {
+func getTasks(query TasksQuery[tasks.TaskField]) (collection.Collection[tasks.TaskField], uint, uint) {
 	result := tasks.GetAll()
 	result = result.
 		MoreThan(
@@ -172,7 +172,7 @@ func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 	data := struct {
-		Task  *tasks.Task[tasks.TaskFieldName]
+		Task  *tasks.Task[tasks.TaskField]
 		Users []users.User
 	}{
 		task,
@@ -256,42 +256,33 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	id := req.PathValue("id")
-	task, err := tasks.GetById(id)
+	idStr := req.PathValue("id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		toasts.Warning(writer, "Unable to patch", fmt.Sprintf("Task #%s not found", id))
-		GetTaskList(writer, req)
+		toasts.Danger(
+			writer,
+			"Haxxor alert!",
+			fmt.Sprintf("Not a valid task id: %#v", id),
+		)
 		return
 	}
-	field := req.PathValue("field")
+	fieldStr := req.PathValue("field")
+	field := tasks.ParseTaskFieldName(fieldStr)
 	switch field {
-	case "status":
+	case tasks.Status:
 		status := tasks.ParseStatus(req.FormValue("status"))
-		if err := task.SetStatus(status); err != nil {
-			_, err = writer.Write([]byte("Unable to change task status:" + err.Error()))
-			if err != nil {
-				panic(err)
-			}
-		}
-	case "read-only":
+		tasks.FilterAndPatch(tasks.Id, id, tasks.Status, status)
+	case tasks.ReadOnly:
 		readOnly := false
 		readOnlyStr := req.FormValue("read-only")
 		if readOnlyStr == "true" {
 			readOnly = true
 		}
-		if err := task.SetReadOnly(readOnly); err != nil {
-			_, err = writer.Write([]byte("Unable to change task:" + err.Error()))
-			if err != nil {
-				panic(err)
-			}
-		}
+		tasks.FilterAndPatch(tasks.Id, id, tasks.ReadOnly, readOnly)
 	default:
-		_, err := writer.Write([]byte("Invalid task field: " + field))
-		if err != nil {
-			panic(err)
-		}
+		toasts.Danger(writer, "Haxxor alert!", fmt.Sprintf("Invalid task field: %#v", fieldStr))
 	}
-	toasts.Success(writer, "Task "+strconv.Itoa(task.Id), "Success")
+	toasts.Success(writer, "Patch task", "Success")
 	GetTaskList(writer, req)
 }
 
@@ -299,13 +290,13 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	checkboxed := getCheckboxedTasks(req)
 
 	/* TODO: Stoopid */
-	changes := make(map[string]any)
+	changes := make(map[tasks.TaskField]any)
 	if req.Form.Has("status") {
-		changes["status"] = tasks.ParseStatus(req.FormValue("status"))
+		changes[tasks.Status] = tasks.ParseStatus(req.FormValue("status"))
 	}
 	if req.Form.Has("read-only") {
 		var err error
-		changes["read-only"], err = strconv.ParseBool(req.FormValue("read-only"))
+		changes[tasks.ReadOnly], err = strconv.ParseBool(req.FormValue("read-only"))
 		if err != nil {
 			panic(err)
 		}
@@ -313,26 +304,36 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 
 	patched := 0
 	for _, id := range checkboxed {
+
+		if changes[tasks.Status] != nil {
+			tasks.FilterAndPatch(tasks.Id, id, tasks.Status, changes[tasks.Status])
+			patched++
+		}
+		if changes[tasks.ReadOnly] != nil {
+			tasks.FilterAndPatch(tasks.Id, id, tasks.ReadOnly, changes[tasks.ReadOnly])
+			patched++
+		}
+		/*
 		task, err := tasks.GetById(id)
 		if err != nil {
 			toasts.Warning(writer, "Unable to patch", fmt.Sprintf("Task #%d not found", id))
 			continue
 		}
-		/* Status */
 		if changes["status"] != nil && task.Status != changes["status"] {
 			if err := task.SetStatus(changes["status"].(tasks.TaskStatus)); err != nil {
 				panic(err)
 			}
 			patched++
 		}
-		/* Read only */
 		if changes["read-only"] != nil && task.ReadOnly != changes["read-only"] {
 			if err := task.SetReadOnly(changes["read-only"].(bool)); err != nil {
 				panic(err)
 			}
 			patched++
 		}
+		*/
 	}
+
 	toasts.Info(writer, "Updated "+strconv.Itoa(patched)+" tasks", "Success")
 	GetTaskList(writer, req)
 }

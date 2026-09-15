@@ -5,10 +5,10 @@ import (
 	"strings"
 )
 
-type TaskFieldName uint
+type TaskField uint
 
 const (
-	Id TaskFieldName = iota
+	Id TaskField = iota
 	User
 	Category
 	Datetime
@@ -17,8 +17,8 @@ const (
 	ReadOnly
 )
 
-func (fieldName TaskFieldName) String() string {
-	switch fieldName {
+func (field TaskField) String() string {
+	switch field {
 	case Id:
 		return "Id"
 	case User:
@@ -34,12 +34,12 @@ func (fieldName TaskFieldName) String() string {
 	case ReadOnly:
 		return "ReadOnly"
 	default:
-		panic(fmt.Sprintf("Invalid TaskFieldName: %d", fieldName))
+		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
 }
 
-func ParseTaskFieldName(fieldName string) TaskFieldName {
-	switch strings.ToLower(fieldName) {
+func ParseTaskFieldName(field string) TaskField {
+	switch strings.ToLower(field) {
 	case "id":
 		return Id
 	case "user":
@@ -52,9 +52,9 @@ func ParseTaskFieldName(fieldName string) TaskFieldName {
 		return Description
 	case "status":
 		return Status
-	case "readonly":
+	case "readonly", "read-only":
 		return ReadOnly
 	default:
-		panic(fmt.Sprintf("Invalid TaskFieldName: %s", fieldName))
+		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
 }

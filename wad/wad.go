@@ -10,7 +10,7 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-func Load(filename string) ([]users.User, []tasks.Task[tasks.TaskFieldName]) {
+func Load(filename string) ([]users.User, []tasks.Task[tasks.TaskField]) {
 	/* Load raw yaml */
 	log.Println("Loading everything from", filename)
 	rawData, err := os.ReadFile(filename)

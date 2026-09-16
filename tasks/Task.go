@@ -129,7 +129,7 @@ func (task Task[T]) Filter(field TaskField, values []any) bool {
 		for _, value := range values {
 			filterInt, ok := value.(int)
 			if !ok {
-				panic(fmt.Sprintf("Invalid filter value: %#v", value))
+				panic(fmt.Sprintf("Invalid filter value: %#v (expected int)", value))
 			}
 			if filterInt == task.Id {
 				return true

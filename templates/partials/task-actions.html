@@ -41,7 +41,8 @@
 				<li>
 					<button
 						class="dropdown-item link-info"
-						hx-patch="/hx/tasks/{{ .Id }}/read-only"
+						hx-patch="/hx/tasks/{{ .Id }}"
+						hx-vals='{ "readOnly": false }'
 						hx-target="#task-list"
 						hx-indicator="#task-list"
 						hx-disabled-elt=".htmx-disable"
@@ -55,8 +56,8 @@
 				<li>
 					<button
 						class="dropdown-item link-info"
-						hx-patch="/hx/tasks/{{ .Id }}/read-only"
-						hx-vals='{ "read-only": true }'
+						hx-patch="/hx/tasks/{{ .Id }}"
+						hx-vals='{ "readOnly": true }'
 						hx-target="#task-list"
 						hx-indicator="#task-list"
 						hx-disabled-elt=".htmx-disable"
@@ -80,8 +81,8 @@
 					<button
 						class="dropdown-item"
 						type="button"
-						hx-patch="/hx/tasks/{{ .Id }}/status"
-						hx-vals='{ "status": "InProgress" }'
+						hx-patch="/hx/tasks/{{ .Id }}"
+						hx-vals='{ "status": "bogus" }'
 						hx-target="#task-list"
 						hx-indicator="#task-list"
 						hx-disabled-elt=".htmx-disable"
@@ -97,7 +98,7 @@
 					<button
 						class="dropdown-item link-success"
 						type="button"
-						hx-patch="/hx/tasks/{{ .Id }}/status"
+						hx-patch="/hx/tasks/{{ .Id }}"
 						hx-vals='{ "status": "Done" }'
 						hx-target="#task-list"
 						hx-indicator="#task-list"
@@ -114,7 +115,7 @@
 					<button
 						class="dropdown-item link-danger"
 						type="button"
-						hx-patch="/hx/tasks/{{ .Id }}/status"
+						hx-patch="/hx/tasks/{{ .Id }}"
 						hx-vals='{ "status": "Failed" }'
 						hx-target="#task-list"
 						hx-indicator="#task-list"

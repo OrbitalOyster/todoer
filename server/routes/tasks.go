@@ -32,8 +32,7 @@ type TaskListData struct {
 }
 
 func getTasks(query TasksQuery[tasks.TaskField]) (collection.Collection[tasks.TaskField], uint, uint) {
-	result := tasks.GetAll()
-	result = result.
+	result := tasks.All.
 		MoreThan(
 			tasks.Datetime,
 			query.FromDate,
@@ -68,7 +67,10 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 	checkboxedTasks := getCheckboxedTasks(req)
 	checkboxes := make([]bool, selectedTasks.Length())
 	for i, selectedTask := range selectedTasks.Items {
-		checkboxes[i] = slices.Contains(checkboxedTasks, selectedTask.Field(tasks.Id).(int))
+		checkboxes[i] = slices.Contains(
+			checkboxedTasks,
+			selectedTask.Field(tasks.Id).(int), /* TODO: Type assertion */
+		)
 	}
 
 	pages.Execute(writer, "tasks", struct {
@@ -120,7 +122,10 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	checkboxedTasks := getCheckboxedTasks(req)
 	checkboxes := make([]bool, tasksOnCurrentPage.Length())
 	for i, selectedTask := range tasksOnCurrentPage.Items {
-		checkboxes[i] = slices.Contains(checkboxedTasks, selectedTask.Field(tasks.Id).(int))
+		checkboxes[i] = slices.Contains(
+			checkboxedTasks,
+			selectedTask.Field(tasks.Id).(int), /* TODO: Type assertion */
+		)
 	}
 
 	/* Update calendar elements if both dates are set */
@@ -169,26 +174,26 @@ func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
 	task, err := tasks.GetById(id)
 	if err != nil {
 		pages.ExecutePartial(writer, "taskNotFound", nil)
-		return
+	} else {
+		data := struct {
+			Task  tasks.Task[tasks.TaskField]
+			Users []users.User
+		}{
+			task,
+			users.GetAllUsers(),
+		}
+		pages.ExecutePartial(writer, "editTaskForm", data)
 	}
-	data := struct {
-		Task  *tasks.Task[tasks.TaskField]
-		Users []users.User
-	}{
-		task,
-		users.GetAllUsers(),
-	}
-	pages.ExecutePartial(writer, "editTaskForm", data)
 }
 
 func GetCloneTaskForm(writer http.ResponseWriter, req *http.Request) {
 	id := req.PathValue("id")
 	task, err := tasks.GetById(id)
 	if err != nil {
-		toasts.Warning(writer, "Unable to clone", fmt.Sprintf("Task #%s not found", id))
-		return
+		toasts.Danger(writer, "Error", err.Error())
+	} else {
+		pages.ExecutePartial(writer, "cloneTaskForm", task)
 	}
-	pages.ExecutePartial(writer, "cloneTaskForm", task)
 }
 
 func AddTask(writer http.ResponseWriter, req *http.Request) {
@@ -202,98 +207,33 @@ func AddTask(writer http.ResponseWriter, req *http.Request) {
 }
 
 func PutTask(writer http.ResponseWriter, req *http.Request) {
-	/* Check if id is parseable */
-	idStr := req.PathValue("id")
-	id, err := strconv.Atoi(idStr)
+	id := req.PathValue("id")
+	task, err := tasks.GetById(id)
 	if err != nil {
-		toasts.Danger(
-			writer,
-			"Haxxor alert!",
-			fmt.Sprintf("Not a valid task id: %#v", id),
-		)
+		toasts.Danger(writer, "Error", err.Error())
 	} else {
-		tasksFound := tasks.GetAll().Filter(tasks.Id, []any{id})
-		/* Check if task exists */
-		if tasksFound.Length() == 0 {
-			toasts.Danger(
-				writer,
-				"Error",
-				fmt.Sprintf("Task %d not found", id),
-			)
-		} else if tasksFound.Length() > 1 {
-			panic("Major screwup")
+		description, user, status, readOnlyStr :=
+			req.FormValue("description"),
+			req.FormValue("user"),
+			req.FormValue("status"),
+			req.FormValue("readOnly")
+		readOnly := false
+		if readOnlyStr == "true" {
+			readOnly = true
+		}
+		/* TODO: Lunacy */
+		updatedDescription, _ := tasks.Patch([]int{task.Id}, tasks.Description, description)
+		updatedUser, _ := tasks.Patch([]int{task.Id}, tasks.User, user)
+		updatedStatus, _ := tasks.Patch([]int{task.Id}, tasks.Status, status)
+		updatedReadOnly, _ :=  tasks.Patch([]int{task.Id}, tasks.ReadOnly, readOnly)
+		if updatedDescription > 0 || updatedUser > 0 || updatedStatus > 0 || updatedReadOnly > 0 {
+			toasts.Success(writer, "Update task", "Success")
 		} else {
-			task := tasksFound.First()
-			description, user, readOnlyStr :=
-				req.FormValue("description"),
-				req.FormValue("user"),
-				req.FormValue("read-only")
-			readOnly := false
-			if readOnlyStr == "true" {
-				readOnly = true
-			}
-			updatedDescription := task.Patch(tasks.Description, description)
-			updatedUser := task.Patch(tasks.User, user)
-			updatedReadOnly := task.Patch(tasks.ReadOnly, readOnly)
-			if updatedDescription || updatedUser || updatedReadOnly {
-				toasts.Success(writer, "Update task", "Success")
-			} else {
-				toasts.Info(writer, "Update task", "Nothing changed")
-			}
+			toasts.Info(writer, "Update task", "Nothing changed")
 		}
 	}
 	/* Done */
 	writer.Header().Set("HX-Trigger", "hideModal")
-	GetTaskList(writer, req)
-}
-
-func PatchTask(writer http.ResponseWriter, req *http.Request) {
-	/* Check if id is parseable */
-	idStr := req.PathValue("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		toasts.Danger(
-			writer,
-			"Haxxor alert!",
-			fmt.Sprintf("Not a valid task id: %#v", id),
-		)
-		return
-	}
-	/* Check if field is parseable */
-	fieldStr := req.PathValue("field")
-	field, err := tasks.ParseTaskField(fieldStr)
-	if err != nil {
-		toasts.Danger(
-			writer,
-			"Haxxor alert!",
-			fmt.Sprintf("Not a valid field: %#v", fieldStr),
-		)
-		return
-	}
-
-	var patched uint = 0
-	switch field {
-	case tasks.Status:
-		if status, err := tasks.ParseStatus(req.FormValue("status")); err != nil {
-			toasts.Danger(
-				writer,
-				"Haxxor alert!",
-				fmt.Sprintf("Invalid status: %#v", status),
-			)
-		} else {
-			patched += tasks.FilterAndPatch(tasks.Id, []any{id}, tasks.Status, status)
-		}
-	case tasks.ReadOnly:
-		readOnly := false
-		readOnlyStr := req.FormValue("read-only")
-		if readOnlyStr == "true" {
-			readOnly = true
-		}
-		tasks.FilterAndPatch(tasks.Id, []any{id}, tasks.ReadOnly, readOnly)
-	default:
-		toasts.Danger(writer, "Haxxor alert!", fmt.Sprintf("Invalid task field: %#v", fieldStr))
-	}
-	toasts.Success(writer, "Patch task", "Success")
 	GetTaskList(writer, req)
 }
 
@@ -303,63 +243,70 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	if len(checkboxed) == 0 {
 		toasts.Warning(writer, "No tasks updated", "Nothing selected")
 	} else {
-		filterBy := make([]any, len(checkboxed))
-		for i, c := range checkboxed {
-			filterBy[i] = c
-		}
-		message := ""
-		/* Status */
-		if req.Form.Has("status") {
-			statusStr := req.FormValue("status")
-			status, err := tasks.ParseStatus(statusStr)
-			/* Invalid status string */
-			if err != nil {
-				toasts.Danger(
-					writer,
-					"Error",
-					fmt.Sprintf("Not a valid status: %#v", statusStr),
-				)
-			} else {
-				patchedStatus := tasks.FilterAndPatch(
-					tasks.Id,
-					filterBy,
-					tasks.Status,
-					status,
-				)
-				if patchedStatus > 0 {
-					message += fmt.Sprintf("Updated status: %d", patchedStatus)
-				}
+		var errors []error
+		switch {
+		case req.Form.Has("status"):
+			patched, err := tasks.Patch(checkboxed, tasks.Status, req.FormValue("status"))
+			errors = append(errors, err...)
+			/* Report results */
+			toasts.Success(writer, "Updated status", fmt.Sprintf("Tasks updated: %d", patched))
+		case req.Form.Has("readOnly"):
+			readOnly := false
+			if req.FormValue("readOnly") == "true" {
+				readOnly = true
 			}
+			patched, err := tasks.Patch(checkboxed, tasks.ReadOnly, readOnly)
+			errors = append(errors, err...)
+			/* Report results */
+			toasts.Success(writer, "Updated lock", fmt.Sprintf("Tasks updated: %d", patched))
 		}
-		/* Read only */
-		if req.Form.Has("read-only") {
-			readOnlyStr := req.FormValue("read-only")
-			readOnly, err := strconv.ParseBool(readOnlyStr)
-			if err != nil {
-				toasts.Danger(
-					writer,
-					"Error",
-					fmt.Sprintf("Not a valid boolean: %#v", readOnlyStr),
-				)
-			}
-			patchedReadOnly := tasks.FilterAndPatch(
-				tasks.Id,
-				filterBy,
-				tasks.ReadOnly,
-				readOnly,
-			)
-			if patchedReadOnly > 0 {
-				message += fmt.Sprintf("Updated lock: %d", patchedReadOnly)
-			}
-		}
-		/* Send results to user */
-		if message != "" {
-			toasts.Success(writer, "Updated tasks", message)
-		} else {
-			toasts.Warning(writer, "Updated tasks", "Nothing changed")
+		/* Report errors */
+		for _, e := range errors {
+			toasts.Danger(writer, "Error", e.Error())
 		}
 	}
 	/* Done */
+	GetTaskList(writer, req)
+}
+
+func PatchTask(writer http.ResponseWriter, req *http.Request) {
+	id := req.PathValue("id")
+	task, err := tasks.GetById(id)
+	if err != nil {
+		toasts.Danger(writer, "Error", err.Error())
+	} else {
+		var (
+			errors   []error
+			noChange = true
+		)
+		switch {
+		case req.Form.Has("status"):
+			patched, err := tasks.Patch([]int{task.Id}, tasks.Status, req.FormValue("status"))
+			if patched > 0 {
+				noChange = false
+				toasts.Success(writer, "Updated status", "Success")
+			}
+			errors = append(errors, err...)
+		case req.Form.Has("readOnly"):
+			readOnly := false
+			if req.FormValue("readOnly") == "true" {
+				readOnly = true
+			}
+			patched, err := tasks.Patch([]int{task.Id}, tasks.ReadOnly, readOnly)
+			if patched > 0 {
+				noChange = false
+				toasts.Success(writer, "Updated lock", "Success")
+			}
+			errors = append(errors, err...)
+		}
+		if noChange {
+			toasts.Info(writer, "Update task", "Nothing changed")
+		}
+		/* Report errors */
+		for _, e := range errors {
+			toasts.Danger(writer, "Error", e.Error())
+		}
+	}
 	GetTaskList(writer, req)
 }
 

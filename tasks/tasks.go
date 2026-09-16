@@ -8,25 +8,21 @@ import (
 	"todoer/collection"
 )
 
-var list collection.Collection[TaskField]
-
-func GetAll() collection.Collection[TaskField] {
-	return list
-}
+var All collection.Collection[TaskField]
 
 func Load(newList []Task[TaskField]) {
 	for _, task := range newList {
-		list.Add(&task)
+		All.Add(&task)
 	}
 }
 
 func getNextId() int {
 	/* No tasks */
-	if list.Length() == 0 {
+	if All.Length() == 0 {
 		return 1
 	}
 	/* Find biggest id, add 1 */
-	maxId, ok := list.Max(Id).Field(Id).(int)
+	maxId, ok := All.Max(Id).Field(Id).(int)
 	if !ok {
 		panic("Major screwup")
 	}
@@ -42,17 +38,20 @@ func Add(user string, description string) {
 		Datetime:    now,
 		Status:      InProgress,
 	}
-	list.Add(&newTask)
+	All.Add(&newTask)
 	log.Printf("New task: \"%s\"", newTask.Description)
 }
 
-func GetById[T int | string](idIntOrStr T) (*Task[TaskField], error) {
-	var id int
+func GetById[T int | string](idIntOrStr T) (Task[TaskField], error) {
+	var (
+		id          int
+		emptyResult Task[TaskField]
+	)
 	switch idAny := any(idIntOrStr).(type) {
 	case string:
 		idInt, err := strconv.Atoi(idAny)
 		if err != nil {
-			return nil, fmt.Errorf("Invalid id string: %s", idAny)
+			return emptyResult, fmt.Errorf("Invalid id string: %s", idAny)
 		}
 		id = idInt
 	case int:
@@ -60,25 +59,59 @@ func GetById[T int | string](idIntOrStr T) (*Task[TaskField], error) {
 	default:
 		panic(fmt.Sprintf("Invalid type: %v", idAny))
 	}
-
-	filtered := list.Filter(Id, []any{id})
+	filtered := All.Filter(Id, []any{id})
 	if filtered.Length() == 0 {
-		return nil, fmt.Errorf("Task not found: %v", id)
+		return emptyResult, fmt.Errorf("Task #%d not found", id)
 	}
 	if filtered.Length() != 1 {
-		return nil, fmt.Errorf("More than one task found: %v", id)
+		return emptyResult, fmt.Errorf("More than one task %d found", id)
 	}
 	result, ok := filtered.First().(*Task[TaskField])
 	if !ok {
 		panic("Major screwup")
 	}
-	return result, nil
+	return *result, nil
 }
 
-func FilterAndPatch(field TaskField, filter []any, fieldToPatch TaskField, value any) uint {
-	return list.FilterAndPatch(field, filter, fieldToPatch, value)
+func Patch(ids []int, field TaskField, value any) (patched uint, errors []error) {
+	filterBy := make([]any, len(ids))
+	for i, c := range ids {
+		filterBy[i] = c
+	}
+	switch field {
+	case User:
+		userStr, ok := value.(string)
+		if !ok {
+			panic("Major screwup")
+		}
+		patched += All.FilterAndPatch(Id, filterBy, User, userStr)
+	case Description:
+		descriptionStr, ok := value.(string)
+		if !ok {
+			panic("Major screwup")
+		}
+		patched += All.FilterAndPatch(Id, filterBy, Description, descriptionStr)
+	case Status:
+		statusStr, ok := value.(string)
+		if !ok {
+			panic("Major screwup")
+		}
+		status, err := ParseStatus(statusStr)
+		if err != nil {
+			errors = append(errors, err)
+		} else {
+			patched += All.FilterAndPatch(Id, filterBy, Status, status)
+		}
+	case ReadOnly:
+		readOnly, ok := value.(bool)
+		if !ok {
+			panic("Major screwup")
+		}
+		patched += All.FilterAndPatch(Id, filterBy, ReadOnly, readOnly)
+	}
+	return
 }
 
 func DeleteOne(id int) {
-	list.Delete(Id, []any{id})
+	All.Delete(Id, []any{id})
 }

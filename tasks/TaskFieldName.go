@@ -52,7 +52,7 @@ func ParseTaskField(field string) (TaskField, error) {
 		return Description, nil
 	case "status":
 		return Status, nil
-	case "readonly", "read-only":
+	case "readonly":
 		return ReadOnly, nil
 	default:
 		return 0, fmt.Errorf("Invalid field: %#v", field)

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type Task[T TaskField] struct {
+type Task struct {
 	Id          int        `yaml:"id"`
 	User        string     `yaml:"user"`
 	Category    string     `yaml:"category"`
@@ -17,7 +17,11 @@ type Task[T TaskField] struct {
 	ReadOnly    bool       `yaml:"read_only"`
 }
 
-func (task Task[T]) Field(field TaskField) any {
+func (task Task) ParseValue(field TaskField, value string) any {
+	return "Hello!"
+}
+
+func (task Task) Field(field TaskField) any {
 	switch field {
 	case Id:
 		return task.Id
@@ -38,7 +42,7 @@ func (task Task[T]) Field(field TaskField) any {
 	}
 }
 
-func (task *Task[T]) Patch(field TaskField, value any) (success bool) {
+func (task *Task) Patch(field TaskField, value any) (success bool) {
 	switch field {
 	case User:
 		valueStr, ok := value.(string)
@@ -93,8 +97,14 @@ func (task *Task[T]) Patch(field TaskField, value any) (success bool) {
 	}
 }
 
-func (task Task[T]) MoreThan(field TaskField, value any) bool {
+func (task Task) MoreThan(field TaskField, value any) bool {
 	switch field {
+	case Id:
+		valueInt, ok := value.(int)
+		if !ok {
+			panic("Type assertion failed")
+		}
+		return task.Id > valueInt
 	case Datetime:
 		return task.Datetime.After(value.(time.Time))
 	case Description:
@@ -104,8 +114,14 @@ func (task Task[T]) MoreThan(field TaskField, value any) bool {
 	}
 }
 
-func (task Task[T]) LessThan(field TaskField, value any) bool {
+func (task Task) LessThan(field TaskField, value any) bool {
 	switch field {
+	case Id:
+		valueInt, ok := value.(int)
+		if !ok {
+			panic("Type assertion failed")
+		}
+		return task.Id < valueInt
 	case Datetime:
 		valueTime, ok := value.(time.Time)
 		if !ok {
@@ -123,7 +139,7 @@ func (task Task[T]) LessThan(field TaskField, value any) bool {
 	}
 }
 
-func (task Task[T]) Filter(field TaskField, values []any) bool {
+func (task Task) Filter(field TaskField, values []any) bool {
 	switch field {
 	case Id:
 		for _, value := range values {

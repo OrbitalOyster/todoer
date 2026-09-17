@@ -176,7 +176,7 @@ func GetEditTaskForm(writer http.ResponseWriter, req *http.Request) {
 		pages.ExecutePartial(writer, "taskNotFound", nil)
 	} else {
 		data := struct {
-			Task  tasks.Task[tasks.TaskField]
+			Task  tasks.Task
 			Users []users.User
 		}{
 			task,

@@ -10,7 +10,7 @@ import (
 
 var All collection.Collection[TaskField]
 
-func Load(newList []Task[TaskField]) {
+func Load(newList []Task) {
 	for _, task := range newList {
 		All.Add(&task)
 	}
@@ -31,7 +31,7 @@ func getNextId() int {
 
 func Add(user string, description string) {
 	now := time.Now()
-	newTask := Task[TaskField]{
+	newTask := Task{
 		Id:          getNextId(),
 		User:        user,
 		Description: description,
@@ -42,10 +42,10 @@ func Add(user string, description string) {
 	log.Printf("New task: \"%s\"", newTask.Description)
 }
 
-func GetById[T int | string](idIntOrStr T) (Task[TaskField], error) {
+func GetById[T int | string](idIntOrStr T) (Task, error) {
 	var (
 		id          int
-		emptyResult Task[TaskField]
+		emptyResult Task
 	)
 	switch idAny := any(idIntOrStr).(type) {
 	case string:
@@ -66,7 +66,7 @@ func GetById[T int | string](idIntOrStr T) (Task[TaskField], error) {
 	if filtered.Length() != 1 {
 		return emptyResult, fmt.Errorf("More than one task %d found", id)
 	}
-	result, ok := filtered.First().(*Task[TaskField])
+	result, ok := filtered.First().(*Task)
 	if !ok {
 		panic("Major screwup")
 	}

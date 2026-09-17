@@ -10,7 +10,7 @@ type FieldName interface {
 }
 
 type Item[T FieldName] interface {
-	ParseValue(field T, s string) any
+	ParseValue(field T, s string) (any, error)
 	Field(field T) any
 	Patch(field T, value any) bool
 	MoreThan(field T, value any) bool

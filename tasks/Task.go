@@ -17,8 +17,8 @@ type Task struct {
 	ReadOnly    bool       `yaml:"read_only"`
 }
 
-func (task Task) ParseValue(field TaskField, value string) any {
-	return "Hello!"
+func (task Task) ParseValue(field TaskField, value string) (any, error) {
+	return "Hello!", nil
 }
 
 func (task Task) Field(field TaskField) any {

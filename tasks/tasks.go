@@ -44,27 +44,33 @@ func Add(user string, description string) {
 
 func GetById[T int | string](idIntOrStr T) (Task, error) {
 	var (
-		id          int
+		id          string
 		emptyResult Task
 	)
 	switch idAny := any(idIntOrStr).(type) {
 	case string:
+	id = idAny
+	/*
 		idInt, err := strconv.Atoi(idAny)
 		if err != nil {
 			return emptyResult, fmt.Errorf("Invalid id string: %s", idAny)
 		}
 		id = idInt
+		*/
 	case int:
+	id = strconv.Itoa(idAny)
+	/*
 		id = idAny
+		*/
 	default:
 		panic(fmt.Sprintf("Invalid type: %v", idAny))
 	}
-	filtered := All.Filter(Id, []any{id})
+	filtered := All.Filter(Id, []string{id})
 	if filtered.Length() == 0 {
-		return emptyResult, fmt.Errorf("Task #%d not found", id)
+		return emptyResult, fmt.Errorf("Task #%s not found", id)
 	}
 	if filtered.Length() != 1 {
-		return emptyResult, fmt.Errorf("More than one task %d found", id)
+		return emptyResult, fmt.Errorf("More than one task %s found", id)
 	}
 	result, ok := filtered.First().(*Task)
 	if !ok {
@@ -73,45 +79,15 @@ func GetById[T int | string](idIntOrStr T) (Task, error) {
 	return *result, nil
 }
 
-func Patch(ids []int, field TaskField, value any) (patched uint, errors []error) {
-	filterBy := make([]any, len(ids))
+func Patch(ids []int, field TaskField, value string) (patched uint, errors []error) {
+	filterBy := make([]string, len(ids))
 	for i, c := range ids {
-		filterBy[i] = c
+		filterBy[i] = strconv.Itoa(c)
 	}
-	switch field {
-	case User:
-		userStr, ok := value.(string)
-		if !ok {
-			panic("Major screwup")
-		}
-		patched += All.FilterAndPatch(Id, filterBy, User, userStr)
-	case Description:
-		descriptionStr, ok := value.(string)
-		if !ok {
-			panic("Major screwup")
-		}
-		patched += All.FilterAndPatch(Id, filterBy, Description, descriptionStr)
-	case Status:
-		statusStr, ok := value.(string)
-		if !ok {
-			panic("Major screwup")
-		}
-		status, err := ParseStatus(statusStr)
-		if err != nil {
-			errors = append(errors, err)
-		} else {
-			patched += All.FilterAndPatch(Id, filterBy, Status, status)
-		}
-	case ReadOnly:
-		readOnly, ok := value.(bool)
-		if !ok {
-			panic("Major screwup")
-		}
-		patched += All.FilterAndPatch(Id, filterBy, ReadOnly, readOnly)
-	}
+	patched += All.FilterAndPatch(Id, filterBy, field, value)
 	return
 }
 
 func DeleteOne(id int) {
-	All.Delete(Id, []any{id})
+	All.Delete(Id, []string{strconv.Itoa(id)})
 }

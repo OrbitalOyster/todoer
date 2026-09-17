@@ -42,7 +42,10 @@ func getTasks(query TasksQuery[tasks.TaskField]) (collection.Collection[tasks.Ta
 			tasks.Datetime,
 			query.ToDate.Add(time.Hour*24-time.Second),
 		).
-		Filter(tasks.Description, []any{query.SearchBy}).
+		Filter(
+			tasks.Description,
+			[]string{query.SearchBy},
+		).
 		SortBy(query.SortBy)
 	if query.SortDesc {
 		result.Reverse()
@@ -212,20 +215,20 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		toasts.Danger(writer, "Error", err.Error())
 	} else {
-		description, user, status, readOnlyStr :=
+		description, user, status, readOnly :=
 			req.FormValue("description"),
 			req.FormValue("user"),
 			req.FormValue("status"),
 			req.FormValue("readOnly")
-		readOnly := false
-		if readOnlyStr == "true" {
-			readOnly = true
-		}
+		// readOnly := false
+		// if readOnlyStr == "true" {
+		// 	readOnly = true
+		// }
 		/* TODO: Lunacy */
 		updatedDescription, _ := tasks.Patch([]int{task.Id}, tasks.Description, description)
 		updatedUser, _ := tasks.Patch([]int{task.Id}, tasks.User, user)
 		updatedStatus, _ := tasks.Patch([]int{task.Id}, tasks.Status, status)
-		updatedReadOnly, _ :=  tasks.Patch([]int{task.Id}, tasks.ReadOnly, readOnly)
+		updatedReadOnly, _ := tasks.Patch([]int{task.Id}, tasks.ReadOnly, readOnly)
 		if updatedDescription > 0 || updatedUser > 0 || updatedStatus > 0 || updatedReadOnly > 0 {
 			toasts.Success(writer, "Update task", "Success")
 		} else {
@@ -244,21 +247,33 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 		toasts.Warning(writer, "No tasks updated", "Nothing selected")
 	} else {
 		var errors []error
-		switch {
-		case req.Form.Has("status"):
-			patched, err := tasks.Patch(checkboxed, tasks.Status, req.FormValue("status"))
-			errors = append(errors, err...)
-			/* Report results */
-			toasts.Success(writer, "Updated status", fmt.Sprintf("Tasks updated: %d", patched))
-		case req.Form.Has("readOnly"):
-			readOnly := false
-			if req.FormValue("readOnly") == "true" {
-				readOnly = true
+		for _, id := range checkboxed {
+			filtered := tasks.All.Filter(tasks.Id, []string{strconv.Itoa(id)})
+			if filtered.Length() < 1 {
+				errors = append(errors, fmt.Errorf("Task %d not found", id))
+			} else {
+
+				task := filtered.First()
+				switch {
+				case req.Form.Has("status"):
+					updated, err := task.Patch(tasks.Status, req.Form.Get("status"))
+					if updated {
+						// noChange = false
+						// toasts.Success(writer, "Updated status", "Success")
+					} else if err != nil {
+						errors = append(errors, err)
+					}
+				case req.Form.Has("readOnly"):
+					updated, err := task.Patch(tasks.ReadOnly, req.Form.Get("readOnly"))
+					if updated {
+						// noChange = false
+						// toasts.Success(writer, "Updated lock", "Success")
+					} else if err != nil {
+						errors = append(errors, err)
+					}
+				}
+
 			}
-			patched, err := tasks.Patch(checkboxed, tasks.ReadOnly, readOnly)
-			errors = append(errors, err...)
-			/* Report results */
-			toasts.Success(writer, "Updated lock", fmt.Sprintf("Tasks updated: %d", patched))
 		}
 		/* Report errors */
 		for _, e := range errors {
@@ -271,34 +286,34 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 
 func PatchTask(writer http.ResponseWriter, req *http.Request) {
 	id := req.PathValue("id")
-	task, err := tasks.GetById(id)
-	if err != nil {
-		toasts.Danger(writer, "Error", err.Error())
+	filtered := tasks.All.Filter(tasks.Id, []string{id})
+	if filtered.Length() < 1 {
+		toasts.Danger(writer, "Error", fmt.Sprintf("Task %s not found", id))
 	} else {
+		task := filtered.First()
 		var (
 			errors   []error
 			noChange = true
 		)
 		switch {
 		case req.Form.Has("status"):
-			patched, err := tasks.Patch([]int{task.Id}, tasks.Status, req.FormValue("status"))
-			if patched > 0 {
+			updated, err := task.Patch(tasks.Status, req.Form.Get("status"))
+			if updated {
 				noChange = false
 				toasts.Success(writer, "Updated status", "Success")
+			} else if err != nil {
+				errors = append(errors, err)
 			}
-			errors = append(errors, err...)
 		case req.Form.Has("readOnly"):
-			readOnly := false
-			if req.FormValue("readOnly") == "true" {
-				readOnly = true
-			}
-			patched, err := tasks.Patch([]int{task.Id}, tasks.ReadOnly, readOnly)
-			if patched > 0 {
+			updated, err := task.Patch(tasks.ReadOnly, req.Form.Get("readOnly"))
+			if updated {
 				noChange = false
 				toasts.Success(writer, "Updated lock", "Success")
+			} else if err != nil {
+				errors = append(errors, err)
 			}
-			errors = append(errors, err...)
 		}
+		/* Report no change */
 		if noChange {
 			toasts.Info(writer, "Update task", "Nothing changed")
 		}

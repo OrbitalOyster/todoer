@@ -3,8 +3,10 @@ package tasks
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"time"
+	"todoer/utils"
 )
 
 type Task struct {
@@ -17,8 +19,21 @@ type Task struct {
 	ReadOnly    bool       `yaml:"read_only"`
 }
 
-func (task Task) ParseValue(field TaskField, value string) (any, error) {
-	return "Hello!", nil
+func ParseValue(field TaskField, value string) (result any, err error) {
+	switch field {
+	case Id: /* Int */
+		return strconv.Atoi(value)
+	case User, Description, Category: /* String */
+		return value, nil
+	case Datetime: /* Time */
+		return time.Parse(utils.HTMLDateFormat, value)
+	case Status: /* TaskStatus */
+		return ParseStatus(value)
+	case ReadOnly: /* Bool */
+		return strconv.ParseBool(value)
+	default:
+		panic(fmt.Errorf("Invalid field: %#v", field))
+	}
 }
 
 func (task Task) Field(field TaskField) any {
@@ -42,59 +57,34 @@ func (task Task) Field(field TaskField) any {
 	}
 }
 
-func (task *Task) Patch(field TaskField, value any) (success bool) {
-	switch field {
-	case User:
-		valueStr, ok := value.(string)
-		if !ok {
-			panic("Type assertion failed")
+func (task *Task) Patch(field TaskField, value string) (updated bool, err error) {
+	if parsed, err := ParseValue(field, value); err != nil {
+		return false, err
+	} else {
+		switch field {
+		case Id:
+		case User:
+		case Category:
+		case Datetime:
+		case Description:
+		case Status:
+			if task.Status != parsed {
+				task.Status = parsed.(TaskStatus)
+				updated = true
+			}
+		case ReadOnly:
+			if task.ReadOnly != parsed {
+				task.ReadOnly = parsed.(bool)
+				updated = true
+			}
+		default:
+			panic(fmt.Sprintf("Invalid field: %#v", field))
 		}
-		if task.User != valueStr {
-			task.User = valueStr
-			log.Printf("Set task #%d user to \"%s\"", task.Id, task.User)
-			return true
-		} else {
-			return false
+		if updated {
+			log.Printf("Set task #%d field %s to %#v", task.Id, field.String(), value)
 		}
-	case Description:
-		valueString, ok := value.(string)
-		if !ok {
-			panic("Type assertion failed")
-		}
-		if task.Description != valueString {
-			task.Description = valueString
-			log.Printf("Set task #%d description to \"%s\"", task.Id, task.Description)
-			return true
-		} else {
-			return false
-		}
-	case Status:
-		valueStatus, ok := value.(TaskStatus)
-		if !ok {
-			panic("Type assertion failed")
-		}
-		if task.Status != valueStatus {
-			task.Status = valueStatus
-			log.Printf("Set task #%d status to \"%s\"", task.Id, task.Status)
-			return true
-		} else {
-			return false
-		}
-	case ReadOnly:
-		valueBool, ok := value.(bool)
-		if !ok {
-			panic("Type assertion failed")
-		}
-		if task.ReadOnly != valueBool {
-			task.ReadOnly = valueBool
-			log.Printf("Set task #%d read only to %t", task.Id, task.ReadOnly)
-			return true
-		} else {
-			return false
-		}
-	default:
-		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
+	return
 }
 
 func (task Task) MoreThan(field TaskField, value any) bool {
@@ -139,26 +129,31 @@ func (task Task) LessThan(field TaskField, value any) bool {
 	}
 }
 
-func (task Task) Filter(field TaskField, values []any) bool {
+func (task Task) Filter(field TaskField, values []string) bool {
 	switch field {
 	case Id:
 		for _, value := range values {
-			filterInt, ok := value.(int)
-			if !ok {
-				panic(fmt.Sprintf("Invalid filter value: %#v (expected int)", value))
+			var id int
+			switch idAny := any(value).(type) {
+			case string:
+				idInt, err := strconv.Atoi(idAny)
+				if err != nil {
+					panic(fmt.Sprintf("Not a valid id string: %#v", value))
+				}
+				id = idInt
+			case int:
+				id = idAny
+			default:
+				panic(fmt.Sprintf("Invalid type: %v", idAny))
 			}
-			if filterInt == task.Id {
+			if id == task.Id {
 				return true
 			}
 		}
 		return false
 	case Description:
 		for _, value := range values {
-			filterString, ok := value.(string)
-			if !ok {
-				panic(fmt.Sprintf("Invalid filter: %#v", values))
-			}
-			if filterString == "" || strings.Contains(task.Description, filterString) {
+			if value == "" || strings.Contains(task.Description, value) {
 				return true
 			}
 		}

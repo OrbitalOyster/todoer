@@ -67,14 +67,6 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	selectedTasks, page, totalPages := getTasks(query)
-	checkboxedTasks := getCheckboxedTasks(req)
-	checkboxes := make([]bool, selectedTasks.Length())
-	for i, selectedTask := range selectedTasks.Items {
-		checkboxes[i] = slices.Contains(
-			checkboxedTasks,
-			selectedTask.Field(tasks.Id).(int), /* TODO: Type assertion */
-		)
-	}
 
 	pages.Execute(writer, "tasks", struct {
 		Title     string
@@ -95,20 +87,17 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		ToDate:     query.ToDate,
 		SortBy:     query.SortBy.String(),
 		SortDesc:   query.SortDesc,
-		Checkboxes: checkboxes,
+		/* Nothing selected on new page */
+		Checkboxes: make([]bool, selectedTasks.Length()),
 	})
 }
 
-func getCheckboxedTasks(req *http.Request) (result []int) {
+func getCheckboxedTasks(req *http.Request) (result []string) {
 	if !req.Form.Has("checked") { /* Nothing checked */
 		return
 	}
 	for _, checkboxStr := range req.Form["checked"] {
-		n, err := strconv.Atoi(checkboxStr)
-		if err != nil {
-			panic(err) /* Unparseable string */
-		}
-		result = append(result, n)
+		result = append(result, checkboxStr)
 	}
 	return
 }
@@ -125,9 +114,10 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	checkboxedTasks := getCheckboxedTasks(req)
 	checkboxes := make([]bool, tasksOnCurrentPage.Length())
 	for i, selectedTask := range tasksOnCurrentPage.Items {
+		idStr := strconv.Itoa(selectedTask.Field(tasks.Id).(int))
 		checkboxes[i] = slices.Contains(
 			checkboxedTasks,
-			selectedTask.Field(tasks.Id).(int), /* TODO: Type assertion */
+			idStr,
 		)
 	}
 
@@ -246,9 +236,9 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 		updatedReadOnly uint
 	)
 	for _, id := range checkboxed {
-		filtered := tasks.All.Filter(tasks.Id, []string{strconv.Itoa(id)})
+		filtered := tasks.All.Filter(tasks.Id, []string{id})
 		if filtered.Length() < 1 {
-			errors = append(errors, fmt.Errorf("Task %d not found", id))
+			errors = append(errors, fmt.Errorf("Task %s not found", id))
 		} else {
 			task := filtered.First()
 			switch {
@@ -361,7 +351,7 @@ func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 	for _, id := range checkboxed {
 		task, err := tasks.GetById(id)
 		if err != nil {
-			toasts.Warning(writer, "Unable to delete", fmt.Sprintf("Task #%d not found", id))
+			toasts.Warning(writer, "Unable to delete", fmt.Sprintf("Task #%s not found", id))
 			continue
 		}
 		tasks.DeleteOne(task.Id)

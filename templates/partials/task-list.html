@@ -106,7 +106,7 @@
 									name="checked"
 									value="{{ $task.Id }}"
 									autocomplete="off"
-									{{ if index $.Checkboxes $index }}
+									{{ if containsId $task.Id $.Checkboxes }}
 										checked
 									{{ end }}
 								/>

@@ -23,6 +23,7 @@
 							hx-target="#task-list"
 							hx-indicator="#task-list"
 							hx-disabled-elt=".htmx-disable"
+							hx-include="#task-list-form"
 							autocomplete="off"
 						>
 							{{ range .PageSizes }}
@@ -45,6 +46,7 @@
 							hx-indicator="#task-list"
 							hx-disabled-elt=".htmx-disable"
 							hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
+							hx-include="#task-list-form"
 							autocomplete="off"
 						/>
 						<i class="input-group-text bi bi-search"></i>
@@ -82,6 +84,7 @@
 							hx-target="#task-list"
 							hx-indicator="#task-list"
 							hx-disabled-elt=".htmx-disable"
+							hx-include="#task-list-form"
 						>
 							<i class="bi bi-arrow-repeat fs-4"></i>
 						</button>

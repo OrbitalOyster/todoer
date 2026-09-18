@@ -3,7 +3,6 @@ package routes
 import (
 	"fmt"
 	"net/http"
-	"slices"
 	"strconv"
 	"time"
 	"todoer/collection"
@@ -28,7 +27,7 @@ type TaskListData struct {
 	ToDate     time.Time
 	SortBy     string
 	SortDesc   bool
-	Checkboxes []bool
+	Checkboxes []string
 }
 
 func getTasks(query TasksQuery[tasks.TaskField]) (collection.Collection[tasks.TaskField], uint, uint) {
@@ -88,7 +87,7 @@ func GetTasksPage(writer http.ResponseWriter, req *http.Request) {
 		SortBy:     query.SortBy.String(),
 		SortDesc:   query.SortDesc,
 		/* Nothing selected on new page */
-		Checkboxes: make([]bool, selectedTasks.Length()),
+		Checkboxes: []string{},
 	})
 }
 
@@ -112,14 +111,16 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	checkboxedTasks := getCheckboxedTasks(req)
-	checkboxes := make([]bool, tasksOnCurrentPage.Length())
-	for i, selectedTask := range tasksOnCurrentPage.Items {
-		idStr := strconv.Itoa(selectedTask.Field(tasks.Id).(int))
-		checkboxes[i] = slices.Contains(
-			checkboxedTasks,
-			idStr,
-		)
-	}
+	/*
+		checkboxes := make([]bool, tasksOnCurrentPage.Length())
+		for i, selectedTask := range tasksOnCurrentPage.Items {
+			idStr := strconv.Itoa(selectedTask.Field(tasks.Id).(int))
+			checkboxes[i] = slices.Contains(
+				checkboxedTasks,
+				idStr,
+			)
+		}
+	*/
 
 	/* Update calendar elements if both dates are set */
 	if req.Form.Has("from") && req.Form.Has("to") {
@@ -154,7 +155,7 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 		Pagination: utils.GetPagination(numberOfPages, page),
 		SortBy:     query.SortBy.String(),
 		SortDesc:   query.SortDesc,
-		Checkboxes: checkboxes,
+		Checkboxes: checkboxedTasks,
 	})
 }
 

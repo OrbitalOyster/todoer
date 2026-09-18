@@ -10,6 +10,7 @@
 			hx-target="#task-list"
 			hx-indicator="#task-list"
 			hx-disabled-elt=".htmx-disable"
+			hx-include="#task-list-form"
 			value="{{ formatDate .FromDate }}"
 		/>
 		<i class="bi bi-slash-lg"></i>
@@ -23,6 +24,7 @@
 			hx-target="#task-list"
 			hx-indicator="#task-list"
 			hx-disabled-elt=".htmx-disable"
+			hx-include="#task-list-form"
 			value="{{ formatDate .ToDate }}"
 		/>
 		<!-- Presets -->
@@ -45,6 +47,7 @@
 							"from": "{{ getFirstDayOfMonth }}",
 							"to": "{{ getLastDayOfMonth }}"
 						}'
+						hx-include="#task-list-form"
 					>
 						This month
 					</button>
@@ -60,6 +63,7 @@
 							"from": "{{ getFirstDayOfPreviousMonth }}",
 							"to": "{{ getLastDayOfPreviousMonth }}"
 						}'
+						hx-include="#task-list-form"
 					>
 						Previous month
 					</button>
@@ -79,6 +83,7 @@
 							"from": "{{ getToday }}",
 							"to": "{{ getToday }}"
 						}'
+						hx-include="#task-list-form"
 					>
 						Today
 					</button>
@@ -94,7 +99,7 @@
 							"from": "{{ getYesterday }}",
 							"to": "{{ getYesterday }}"
 						}'
-					>
+						hx-include="#task-list-form">
 						Yesterday
 					</button>
 				</li>

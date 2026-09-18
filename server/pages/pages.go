@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"slices"
+	"strconv"
 	"time"
 	"todoer/tasks"
 	"todoer/utils"
@@ -67,7 +69,10 @@ var TemplateFuncMap = template.FuncMap{
 		yesterday := now.AddDate(0, 0, -1)
 		return yesterday.Format(utils.HTMLDateFormat)
 	},
-	"parseTaskStatus":    tasks.ParseStatus,
+	"parseTaskStatus": tasks.ParseStatus,
+	"containsId": func(id int, arr []string) bool {
+		return slices.Contains(arr, strconv.Itoa(id))
+	},
 }
 
 func Add(page string, layout string) {

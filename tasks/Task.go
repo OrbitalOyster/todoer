@@ -57,6 +57,15 @@ func (task Task) Field(field TaskField) any {
 	}
 }
 
+func (task *Task) Put(user string, description string, readOnly bool) {
+	/* TODO: Some error checking */
+	task.User = user
+	task.Description = description
+	task.ReadOnly = readOnly
+
+	log.Printf("Updated task #%d to %#v", task.Id, *task)
+}
+
 func (task *Task) Patch(field TaskField, value string) (updated bool, err error) {
 	if parsed, err := ParseValue(field, value); err != nil {
 		return false, err

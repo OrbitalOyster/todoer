@@ -33,7 +33,7 @@ func (collection *Collection[T]) Add(newItem Item[T]) {
 	collection.Items = append(collection.Items, newItem)
 }
 
-func (collection *Collection[T]) Delete(field T, filter []string) (deleted []string) {
+func (collection *Collection[T]) Delete(field T, filter []string) (deleted []any) {
 	collection.Items = slices.DeleteFunc(
 		collection.Items,
 		func(item Item[T]) bool {

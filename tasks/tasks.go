@@ -56,3 +56,9 @@ func GetById(id string) (Task, error) {
 	}
 	return *result, nil
 }
+
+func Delete(field TaskField, filter []string) (deleted []any) {
+	deleted = All.Delete(field, filter)
+	log.Printf("Deleted tasks: %#v", deleted)
+	return
+}

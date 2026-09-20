@@ -333,14 +333,14 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 	id := req.PathValue("id")
-	deleted := tasks.All.Delete(tasks.Id, []string{id})
-	if len(deleted) == 0 {
+	deleted := len(tasks.Delete(tasks.Id, []string{id}))
+	if deleted == 0 {
 		toasts.Warning(writer, "Delete task", "Nothing deleted")
 	} else {
 		toasts.Success(
 			writer,
 			"Delete task",
-			fmt.Sprintf("Task deleted: %s", id),
+			fmt.Sprintf("Task #%s deleted", id),
 		)
 	}
 	GetTaskList(writer, req)
@@ -348,14 +348,14 @@ func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 
 func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 	checkboxed := getCheckboxedTasks(req)
-	deleted := tasks.All.Delete(tasks.Id, checkboxed)
-	if len(deleted) == 0 {
+	deleted := len(tasks.Delete(tasks.Id, checkboxed))
+	if deleted == 0 {
 		toasts.Warning(writer, "Delete tasks", "Nothing deleted")
 	} else {
 		toasts.Success(
 			writer,
 			"Delete tasks",
-			fmt.Sprintf("Tasks deleted: %v", deleted),
+			fmt.Sprintf("Tasks deleted: %d", deleted),
 		)
 	}
 	GetTaskList(writer, req)

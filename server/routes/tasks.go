@@ -3,7 +3,6 @@ package routes
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 	"todoer/collection"
 	"todoer/config"
@@ -334,30 +333,30 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 
 func DeleteTask(writer http.ResponseWriter, req *http.Request) {
 	id := req.PathValue("id")
-	task, err := tasks.GetById(id)
-	if err != nil {
-		toasts.Warning(writer, "Unable to delete", fmt.Sprintf("Task #%s not found", id))
-		GetTaskList(writer, req)
-		return
+	deleted := tasks.All.Delete(tasks.Id, []string{id})
+	if len(deleted) == 0 {
+		toasts.Warning(writer, "Delete task", "Nothing deleted")
+	} else {
+		toasts.Success(
+			writer,
+			"Delete task",
+			fmt.Sprintf("Task deleted: %s", id),
+		)
 	}
-	taskId := task.Id
-	tasks.DeleteOne(taskId)
-	toasts.Warning(writer, "Task "+strconv.Itoa(taskId)+" deleted", "Success")
 	GetTaskList(writer, req)
 }
 
 func DeleteTasks(writer http.ResponseWriter, req *http.Request) {
 	checkboxed := getCheckboxedTasks(req)
-	deletedTasks := 0
-	for _, id := range checkboxed {
-		task, err := tasks.GetById(id)
-		if err != nil {
-			toasts.Warning(writer, "Unable to delete", fmt.Sprintf("Task #%s not found", id))
-			continue
-		}
-		tasks.DeleteOne(task.Id)
-		deletedTasks++
+	deleted := tasks.All.Delete(tasks.Id, checkboxed)
+	if len(deleted) == 0 {
+		toasts.Warning(writer, "Delete tasks", "Nothing deleted")
+	} else {
+		toasts.Success(
+			writer,
+			"Delete tasks",
+			fmt.Sprintf("Tasks deleted: %v", deleted),
+		)
 	}
-	toasts.Warning(writer, "Deleted "+strconv.Itoa(deletedTasks)+" tasks", "Success")
 	GetTaskList(writer, req)
 }

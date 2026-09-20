@@ -33,13 +33,19 @@ func (collection *Collection[T]) Add(newItem Item[T]) {
 	collection.Items = append(collection.Items, newItem)
 }
 
-func (collection *Collection[T]) Delete(field T, filter []string) {
+func (collection *Collection[T]) Delete(field T, filter []string) (deleted []string) {
 	collection.Items = slices.DeleteFunc(
 		collection.Items,
 		func(item Item[T]) bool {
-			return item.Filter(field, filter)
+			if item.Filter(field, filter) {
+				deleted = append(deleted, item.Field(field))
+				return true
+			} else {
+				return false
+			}
 		},
 	)
+	return
 }
 
 func (collection Collection[T]) First() Item[T] {
@@ -82,17 +88,6 @@ func (collection Collection[T]) Filter(field T, filter []string) (result Collect
 	for _, item := range collection.Items {
 		if item.Filter(field, filter) {
 			result.Items = append(result.Items, item)
-		}
-	}
-	return
-}
-
-func (collection *Collection[T]) FilterAndPatch(field T, filter []string, fieldToPatch T, value string) (patched uint) {
-	for i, item := range collection.Items {
-		if item.Filter(field, filter) {
-			if updated, err := collection.Items[i].Patch(fieldToPatch, value); err == nil && updated {
-				patched++
-			}
 		}
 	}
 	return

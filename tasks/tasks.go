@@ -3,7 +3,6 @@ package tasks
 import (
 	"fmt"
 	"log"
-	"strconv"
 	"time"
 	"todoer/collection"
 )
@@ -26,7 +25,7 @@ func getNextId() int {
 	if !ok {
 		panic("Major screwup")
 	}
-	return maxId
+	return maxId + 1
 }
 
 func Add(user string, description string) {
@@ -42,29 +41,8 @@ func Add(user string, description string) {
 	log.Printf("New task: \"%s\"", newTask.Description)
 }
 
-func GetById[T int | string](idIntOrStr T) (Task, error) {
-	var (
-		id          string
-		emptyResult Task
-	)
-	switch idAny := any(idIntOrStr).(type) {
-	case string:
-	id = idAny
-	/*
-		idInt, err := strconv.Atoi(idAny)
-		if err != nil {
-			return emptyResult, fmt.Errorf("Invalid id string: %s", idAny)
-		}
-		id = idInt
-		*/
-	case int:
-	id = strconv.Itoa(idAny)
-	/*
-		id = idAny
-		*/
-	default:
-		panic(fmt.Sprintf("Invalid type: %v", idAny))
-	}
+func GetById(id string) (Task, error) {
+	var emptyResult Task
 	filtered := All.Filter(Id, []string{id})
 	if filtered.Length() == 0 {
 		return emptyResult, fmt.Errorf("Task #%s not found", id)
@@ -77,17 +55,4 @@ func GetById[T int | string](idIntOrStr T) (Task, error) {
 		panic("Major screwup")
 	}
 	return *result, nil
-}
-
-func Patch(ids []int, field TaskField, value string) (patched uint, errors []error) {
-	filterBy := make([]string, len(ids))
-	for i, c := range ids {
-		filterBy[i] = strconv.Itoa(c)
-	}
-	patched += All.FilterAndPatch(Id, filterBy, field, value)
-	return
-}
-
-func DeleteOne(id int) {
-	All.Delete(Id, []string{strconv.Itoa(id)})
 }

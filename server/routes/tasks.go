@@ -211,11 +211,11 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 		}
 		user := req.FormValue("user")
 		description := req.FormValue("description")
-		readOnly := false
-		if req.FormValue("readOnly") == "true" {
-			readOnly = true
+		locked := false
+		if req.FormValue("locked") == "true" {
+			locked = true
 		}
-		task.Put(user, description, readOnly)
+		task.Put(user, description, locked)
 		/* Done */
 		toasts.Success(writer, "Update task", "Success")
 	}
@@ -233,7 +233,7 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 	var (
 		errors          []error
 		updatedStatus   uint
-		updatedReadOnly uint
+		updatedLock uint
 	)
 	for _, id := range checkboxed {
 		filtered := tasks.All.Filter(tasks.Id, []string{id})
@@ -249,10 +249,10 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 				} else if err != nil {
 					errors = append(errors, err)
 				}
-			case req.Form.Has("readOnly"):
-				updated, err := task.Patch(tasks.ReadOnly, req.Form.Get("readOnly"))
+			case req.Form.Has("locked"):
+				updated, err := task.Patch(tasks.Locked, req.Form.Get("locked"))
 				if updated {
-					updatedReadOnly++
+					updatedLock++
 				} else if err != nil {
 					errors = append(errors, err)
 				}
@@ -267,10 +267,10 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 			fmt.Sprintf("%d tasks", updatedStatus),
 		)
 	}
-	if updatedReadOnly > 0 {
-		toasts.Success(writer, "Updated read only", fmt.Sprintf("%d tasks", updatedReadOnly))
+	if updatedLock > 0 {
+		toasts.Success(writer, "Updated lock", fmt.Sprintf("%d tasks", updatedLock))
 	}
-	if updatedStatus+updatedReadOnly == 0 {
+	if updatedStatus+updatedLock == 0 {
 		toasts.Info(writer, "Update task", "Nothing changed")
 	}
 	/* Report errors */
@@ -305,14 +305,14 @@ func PatchTask(writer http.ResponseWriter, req *http.Request) {
 			} else if err != nil {
 				errors = append(errors, err)
 			}
-		case req.Form.Has("readOnly"):
-			updated, err := task.Patch(tasks.ReadOnly, req.Form.Get("readOnly"))
+		case req.Form.Has("locked"):
+			updated, err := task.Patch(tasks.Locked, req.Form.Get("locked"))
 			if updated {
 				noChange = false
 				toasts.Success(
 					writer,
 					fmt.Sprintf("Task #%d update", task.Field(tasks.Id)),
-					fmt.Sprintf("Set readOnly to %t", task.Field(tasks.ReadOnly)),
+					fmt.Sprintf("Set locked to %t", task.Field(tasks.Locked)),
 				)
 			} else if err != nil {
 				errors = append(errors, err)

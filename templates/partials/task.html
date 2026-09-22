@@ -19,7 +19,7 @@
 		{{ else if eq .Status (parseTaskStatus "Failed") }}
 			<i class="bi bi-emoji-angry-fill text-danger fs-5 position-relative">
 		{{ end }}
-			{{ if .ReadOnly }}
+			{{ if .Locked }}
 				<span class="position-absolute top-0 start-100 translate-middle badge p-2">
 					<i
 						class="bi bi-lock-fill text-info"

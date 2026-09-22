@@ -6,7 +6,7 @@
 				class="dropdown-item link-info"
 				type="button"
 				hx-patch="/hx/tasks"
-				hx-vals='{ "readOnly": true }'
+				hx-vals='{ "locked": true }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
 				hx-disabled-elt=".htmx-disable"
@@ -22,7 +22,7 @@
 				class="dropdown-item link-info"
 				type="button"
 				hx-patch="/hx/tasks"
-				hx-vals='{ "readOnly": false }'
+				hx-vals='{ "locked": false }'
 				hx-target="#task-list"
 				hx-indicator="#task-list"
 				hx-disabled-elt=".htmx-disable"

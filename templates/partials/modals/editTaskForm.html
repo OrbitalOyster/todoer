@@ -31,13 +31,13 @@
 						<input
 							class="form-check-input htmx-disable"
 							type="checkbox"
-							name="readOnly"
+							name="locked"
 							value="true"
 							id="status-checkbox"
-							{{ if .Task.ReadOnly }} checked {{ end }}
+							{{ if .Task.Locked }} checked {{ end }}
 						/>
 						<label class="form-check-label" for="status-checkbox">
-							Read only
+							Locked
 						</label>
 					</div>
 					<div class="d-flex gap-2 align-items-center">

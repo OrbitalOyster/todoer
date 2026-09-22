@@ -16,347 +16,347 @@ tasks:
     category: food
     description: Drink coffee
     status: Done
-    read_only: true
+    locked: true
   - id: 11
     user: Bob
     datetime: 2026-09-02T10:02:00Z
     category: house
     description: Make the bed
     status: InProgress
-    read_only: false
+    locked: false
   - id: 12
     user: Charlie
     datetime: 2026-09-03T10:03:00Z
     category: house
     description: Water the plants
     status: Done
-    read_only: true
+    locked: true
   - id: 14
     user: Charlie
     datetime: 2026-09-04T10:04:00Z
     category: house
     description: Take out the trash
     status: InProgress
-    read_only: false
+    locked: false
   - id: 15
     user: Alice
     datetime: 2026-09-05T10:06:01Z
     category: house
     description: Sweep the floor
     status: Done
-    read_only: false
+    locked: false
   - id: 16
     user: Charlie
     datetime: 2026-09-06T10:06:00Z
     category: house
     description: Wash the dishes
     status: InProgress
-    read_only: false
+    locked: false
   - id: 17
     user: Alice
     datetime: 2026-09-07T10:07:00Z
     category: social
     description: Send an email
     status: InProgress
-    read_only: false
+    locked: false
   - id: 18
     user: Bob
     datetime: 2026-09-08T10:08:00Z
     category: social
     description: Call a friend
     status: InProgress
-    read_only: false
+    locked: false
   - id: 20
     user: Bob
     datetime: 2026-09-09T10:09:00Z
     category: house
     description: Buy groceries
     status: InProgress
-    read_only: false
+    locked: false
   - id: 21
     user: Bob
     datetime: 2026-09-10T10:10:00Z
     category: other
     description: Feed the pet
     status: InProgress
-    read_only: false
+    locked: false
   - id: 22
     user: Charlie
     datetime: 2026-09-11T10:11:00Z
     category: house
     description: Fold laundry
     status: InProgress
-    read_only: false
+    locked: false
   - id: 23
     user: Bob
     datetime: 2026-09-12T10:12:00Z
     category: other
     description: Pay bills
     status: InProgress
-    read_only: false
+    locked: false
   - id: 24
     user: Bob
     datetime: 2026-09-13T10:13:00Z
     category: house
     description: Clean the bathroom
     status: InProgress
-    read_only: false
+    locked: false
   - id: 26
     user: Charlie
     datetime: 2026-09-14T10:14:00Z
     category: house
     description: Dust the shelves
     status: InProgress
-    read_only: false
+    locked: false
   - id: 27
     user: Alice
     datetime: 2026-09-15T10:15:00Z
     category: food
     description: Prepare a snack
     status: InProgress
-    read_only: false
+    locked: false
   - id: 28
     user: Bob
     datetime: 2026-09-16T10:16:00Z
     category: other
     description: Read a book
     status: InProgress
-    read_only: false
+    locked: false
   - id: 29
     user: Charlie
     datetime: 2026-09-17T10:17:00Z
     category: other
     description: Write a note
     status: InProgress
-    read_only: false
+    locked: false
   - id: 30
     user: Bob
     datetime: 2026-09-18T10:18:00Z
     category: house
     description: Organize a drawer
     status: InProgress
-    read_only: false
+    locked: false
   - id: 31
     user: Bob
     datetime: 2026-09-19T10:19:00Z
     category: other
     description: Exercise for 10 minutes
     status: InProgress
-    read_only: false
+    locked: false
   - id: 32
     user: Charlie
     datetime: 2026-09-20T10:20:00Z
     category: other
     description: Check the calendar
     status: InProgress
-    read_only: false
+    locked: false
   - id: 33
     user: Alice
     datetime: 2026-09-21T10:21:00Z
     category: other
     description: Update a to-do list
     status: InProgress
-    read_only: false
+    locked: false
   - id: 34
     user: Bob
     datetime: 2026-09-22T10:22:00Z
     category: other
     description: Take a short walk
     status: InProgress
-    read_only: false
+    locked: false
   - id: 35
     user: Charlie
     datetime: 2026-09-23T10:23:00Z
     category: house
     description: Wipe the kitchen counters
     status: InProgress
-    read_only: false
+    locked: false
   - id: 37
     user: Charlie
     datetime: 2026-09-24T10:24:00Z
     category: food
     description: Refill water bottle
     status: InProgress
-    read_only: false
+    locked: false
   - id: 38
     user: Bob
     datetime: 2026-09-25T10:25:00Z
     category: other
     description: Charge your phone
     status: InProgress
-    read_only: false
+    locked: false
   - id: 39
     user: Bob
     datetime: 2026-09-26T10:26:00Z
     category: other
     description: Meditate for 5 minutes
     status: InProgress
-    read_only: false
+    locked: false
   - id: 40
     user: Alice
     datetime: 2026-09-27T10:27:00Z
     category: food
     description: Plan meals for the day
     status: InProgress
-    read_only: false
+    locked: false
   - id: 41
     user: Bob
     datetime: 2026-09-28T10:28:00Z
     category: house
     description: Clean out the fridge
     status: InProgress
-    read_only: false
+    locked: false
   - id: 42
     user: Bob
     datetime: 2026-09-29T10:29:00Z
     category: social
     description: Sort mail
     status: InProgress
-    read_only: false
+    locked: false
   - id: 43
     user: Alice
     datetime: 2026-09-30T10:30:00Z
     category: other
     description: Backup computer files
     status: InProgress
-    read_only: false
+    locked: false
   - id: 44
     user: Bob
     datetime: 2026-09-30T10:31:00Z
     category: house
     description: Water the garden
     status: InProgress
-    read_only: false
+    locked: false
   - id: 45
     user: Bob
     datetime: 2026-09-01T10:32:00Z
     category: house
     description: Pick up clothes from floor
     status: InProgress
-    read_only: false
+    locked: false
   - id: 46
     user: Charlie
     datetime: 2026-09-01T10:33:00Z
     category: other
     description: Buy a small household item
     status: Failed
-    read_only: true
+    locked: true
   - id: 47
     user: Charlie
     datetime: 2026-09-01T10:34:00Z
     category: house
     description: Replace a light bulb
     status: Failed
-    read_only: false
+    locked: false
   - id: 50
     user: Alice
     datetime: 2026-09-01T10:35:00Z
     category: house
     description: Vacuum a room
     status: InProgress
-    read_only: false
+    locked: false
   - id: 51
     user: Alice
     datetime: 2026-09-01T10:36:00Z
     category: other
     description: Shred old papers
     status: InProgress
-    read_only: false
+    locked: false
   - id: 52
     user: Charlie
     datetime: 2026-09-01T10:37:00Z
     category: house
     description: Clean mirrors
     status: InProgress
-    read_only: false
+    locked: false
   - id: 53
     user: Bob
     datetime: 2026-09-01T10:38:00Z
     category: house
     description: Sweep porch or entryway
     status: InProgress
-    read_only: false
+    locked: false
   - id: 54
     user: Bob
     datetime: 2026-09-01T10:39:00Z
     category: other
     description: Set an alarm
     status: InProgress
-    read_only: false
+    locked: false
   - id: 55
     user: Charlie
     datetime: 2026-09-01T10:40:00Z
     category: social
     description: Check mailbox
     status: InProgress
-    read_only: false
+    locked: false
   - id: 56
     user: Bob
     datetime: 2026-09-01T10:41:00Z
     category: food
     description: Take vitamins
     status: InProgress
-    read_only: false
+    locked: false
   - id: 57
     user: Alice
     datetime: 2026-09-01T10:42:00Z
     category: house
     description: Clean computer screen
     status: InProgress
-    read_only: false
+    locked: false
   - id: 58
     user: Charlie
     datetime: 2026-09-01T10:43:00Z
     category: social
     description: Clear out email inbox
     status: InProgress
-    read_only: false
+    locked: false
   - id: 59
     user: Charlie
     datetime: 2026-09-01T10:44:00Z
     category: other
     description: Write a journal entry
     status: InProgress
-    read_only: false
+    locked: false
   - id: 60
     user: Bob
     datetime: 2026-09-01T10:45:00Z
     category: food
     description: Prepare lunch
     status: InProgress
-    read_only: false
+    locked: false
   - id: 61
     user: Bob
     datetime: 2026-09-01T10:46:00Z
     category: other
     description: Pack a bag
     status: InProgress
-    read_only: false
+    locked: false
   - id: 62
     user: Bob
     datetime: 2026-09-01T10:47:00Z
     category: other
     description: Stretch for 5 minutes
     status: InProgress
-    read_only: false
+    locked: false
   - id: 63
     user: Bob
     datetime: 2026-09-01T10:48:00Z
     category: other
     description: Organize workspace
     status: InProgress
-    read_only: false
+    locked: false
   - id: 64
     user: Alice
     datetime: 2026-09-01T10:49:00Z
     category: social
     description: Check bank account
     status: InProgress
-    read_only: false
+    locked: false
   - id: 65
     user: Alice
     datetime: 2026-09-01T10:50:00Z
     category: other
     description: Review goals for the week
     status: InProgress
-    read_only: false
+    locked: false

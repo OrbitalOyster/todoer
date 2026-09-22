@@ -36,13 +36,13 @@
 					Clone
 				</button>
 			</li>
-			{{ if .ReadOnly }}
+			{{ if .Locked }}
 				<!-- Unlock -->
 				<li>
 					<button
 						class="dropdown-item link-info"
 						hx-patch="/hx/tasks/{{ .Id }}"
-						hx-vals='{ "readOnly": false }'
+						hx-vals='{ "locked": false }'
 						hx-target="#task-list"
 						hx-indicator="#task-list"
 						hx-disabled-elt=".htmx-disable"
@@ -57,7 +57,7 @@
 					<button
 						class="dropdown-item link-info"
 						hx-patch="/hx/tasks/{{ .Id }}"
-						hx-vals='{ "readOnly": true }'
+						hx-vals='{ "locked": true }'
 						hx-target="#task-list"
 						hx-indicator="#task-list"
 						hx-disabled-elt=".htmx-disable"

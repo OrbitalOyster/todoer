@@ -16,7 +16,7 @@ type Task struct {
 	Datetime    time.Time  `yaml:"datetime"`
 	Description string     `yaml:"description"`
 	Status      TaskStatus `yaml:"status"`
-	ReadOnly    bool       `yaml:"read_only"`
+	Locked      bool       `yaml:"locked"`
 }
 
 func ParseValue(field TaskField, value string) (result any, err error) {
@@ -29,7 +29,7 @@ func ParseValue(field TaskField, value string) (result any, err error) {
 		return time.Parse(utils.HTMLDateFormat, value)
 	case Status: /* TaskStatus */
 		return ParseStatus(value)
-	case ReadOnly: /* Bool */
+	case Locked: /* Bool */
 		return strconv.ParseBool(value)
 	default:
 		panic(fmt.Errorf("Invalid field: %#v", field))
@@ -50,18 +50,18 @@ func (task Task) Field(field TaskField) any {
 		return task.Description
 	case Status:
 		return task.Status
-	case ReadOnly:
-		return task.ReadOnly
+	case Locked:
+		return task.Locked
 	default:
 		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
 }
 
-func (task *Task) Put(user string, description string, readOnly bool) {
+func (task *Task) Put(user string, description string, locked bool) {
 	/* TODO: Some error checking */
 	task.User = user
 	task.Description = description
-	task.ReadOnly = readOnly
+	task.Locked = locked
 
 	log.Printf("Updated task #%d to %#v", task.Id, *task)
 }
@@ -81,9 +81,9 @@ func (task *Task) Patch(field TaskField, value string) (updated bool, err error)
 				task.Status = parsed.(TaskStatus)
 				updated = true
 			}
-		case ReadOnly:
-			if task.ReadOnly != parsed {
-				task.ReadOnly = parsed.(bool)
+		case Locked:
+			if task.Locked != parsed {
+				task.Locked = parsed.(bool)
 				updated = true
 			}
 		default:

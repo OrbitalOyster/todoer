@@ -14,7 +14,7 @@ const (
 	Datetime
 	Description
 	Status
-	ReadOnly
+	Locked
 )
 
 func (field TaskField) String() string {
@@ -31,8 +31,8 @@ func (field TaskField) String() string {
 		return "Description"
 	case Status:
 		return "Status"
-	case ReadOnly:
-		return "ReadOnly"
+	case Locked:
+		return "Locked"
 	default:
 		panic(fmt.Sprintf("Invalid field: %#v", field))
 	}
@@ -52,8 +52,8 @@ func ParseTaskField(field string) (TaskField, error) {
 		return Description, nil
 	case "status":
 		return Status, nil
-	case "readonly":
-		return ReadOnly, nil
+	case "locked":
+		return Locked, nil
 	default:
 		return 0, fmt.Errorf("Invalid field: %#v", field)
 	}

@@ -231,9 +231,9 @@ func PatchTasks(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var (
-		errors          []error
-		updatedStatus   uint
-		updatedLock uint
+		errors        []error
+		updatedStatus uint
+		updatedLock   uint
 	)
 	for _, id := range checkboxed {
 		filtered := tasks.All.Filter(tasks.Id, []string{id})

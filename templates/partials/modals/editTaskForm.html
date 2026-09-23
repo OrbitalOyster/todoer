@@ -3,7 +3,7 @@
 		<form
 			hx-put="/hx/tasks/{{ .Task.Id }}"
 			hx-target="#task-list"
-			hx-indicator="#ok-btn-icon"
+			hx-indicator="#ok-btn-icon, #task-list"
 			hx-disabled-elt=".htmx-disable"
 			hx-include="#task-list-form"
 		>

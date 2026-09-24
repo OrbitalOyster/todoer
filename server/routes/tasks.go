@@ -29,7 +29,7 @@ type TaskListData struct {
 	Checkboxes []string
 }
 
-func getTasks(query TasksQuery[tasks.TaskField]) (collection.Collection[tasks.TaskField], uint, uint) {
+func getTasks(query TasksQuery) (collection.Collection[tasks.TaskField], uint, uint) {
 	result := tasks.All.
 		MoreThan(
 			tasks.Datetime,

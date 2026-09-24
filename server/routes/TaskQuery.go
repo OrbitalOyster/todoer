@@ -11,19 +11,19 @@ import (
 	"todoer/utils"
 )
 
-type TasksQuery[T tasks.TaskField] struct {
+type TasksQuery struct {
 	Page     uint
 	Size     uint
 	SearchBy string
 	FromDate time.Time
 	ToDate   time.Time
-	SortBy   T
+	SortBy   tasks.TaskField
 	SortDesc bool
 }
 
-func defaultTaskQuery() TasksQuery[tasks.TaskField] {
+func defaultTaskQuery() TasksQuery {
 	fromDate, toDate := utils.GetMonthBounds(time.Now().Year(), time.Now().Month())
-	return TasksQuery[tasks.TaskField]{
+	return TasksQuery{
 		Page:     1,
 		Size:     defaultPageSize,
 		SearchBy: "",
@@ -34,7 +34,7 @@ func defaultTaskQuery() TasksQuery[tasks.TaskField] {
 	}
 }
 
-func (taskQuery *TasksQuery[T]) parse(rawQuery string) {
+func (taskQuery *TasksQuery) parse(rawQuery string) {
 	parsed, err := url.ParseQuery(rawQuery)
 	if err != nil {
 		return
@@ -77,7 +77,7 @@ func (taskQuery *TasksQuery[T]) parse(rawQuery string) {
 		if err != nil {
 			panic("Invalid sortByField: " + sortByField.String())
 		}
-		taskQuery.SortBy = T(sortByField)
+		taskQuery.SortBy = tasks.TaskField(sortByField)
 	}
 	if parsed.Has("sortDesc") {
 		/* Empty query parameter counts as "true" */
@@ -93,7 +93,7 @@ func (taskQuery *TasksQuery[T]) parse(rawQuery string) {
 	}
 }
 
-func CreateQueryFromRequest(req *http.Request) (query TasksQuery[tasks.TaskField], updated bool) {
+func CreateQueryFromRequest(req *http.Request) (query TasksQuery, updated bool) {
 	query = defaultTaskQuery()
 	updated = false
 	currentQuery := req.URL.RawQuery
@@ -115,7 +115,7 @@ func CreateQueryFromRequest(req *http.Request) (query TasksQuery[tasks.TaskField
 	return
 }
 
-func (taskQuery TasksQuery[T]) String() string {
+func (taskQuery TasksQuery) String() string {
 	var fields []string
 	/* Pagination */
 	if taskQuery.Page != 1 {
@@ -137,7 +137,7 @@ func (taskQuery TasksQuery[T]) String() string {
 		fields = append(fields, fmt.Sprintf("to=%s", taskQuery.ToDate.Format(utils.HTMLDateFormat)))
 	}
 	/* Sorting */
-	if taskQuery.SortBy != T(tasks.Datetime) {
+	if taskQuery.SortBy != tasks.TaskField(tasks.Datetime) {
 		fields = append(fields, fmt.Sprintf("sortBy=%s", taskQuery.SortBy))
 	}
 	if taskQuery.SortDesc {

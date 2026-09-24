@@ -26,11 +26,3 @@ func (claims claims[T]) GetLifetime() (seconds int) {
 						Seconds()                  /* Convert to seconds */
 	return int(secondsFloat)
 }
-
-func (claims *claims[T]) SetPayload(payload T) {
-	claims.Payload = payload
-}
-
-func (claims claims[T]) GetPayload() T {
-	return claims.Payload
-}

@@ -41,9 +41,7 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 		if rememberMeStr == "true" {
 			lifetime = config.CookieLifetime
 		}
-		token.SetPayload(utils.Payload{
-			UserID: username,
-		})
+		token.Payload.UserID = username
 		token.SetLifetime(lifetime)
 		token.Save()
 		writer.Header().Set("HX-Redirect", "/")
@@ -56,8 +54,8 @@ func LoginAttempt(writer http.ResponseWriter, req *http.Request) {
 func Logout(writer http.ResponseWriter, req *http.Request) {
 	token := req.Context(). /* Get context from request */
 				Value("token").(*token.Token[utils.Payload]) /* Get "token" field */
-	payload := token.GetPayload() /* Load actual payload */
+	username := token.Payload.UserID
 	token.Clear()
 	writer.Header().Set("HX-Redirect", "/login")
-	log.Printf("User %s logged out", payload.UserID)
+	log.Printf("User %s logged out", username)
 }

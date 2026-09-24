@@ -18,7 +18,7 @@ type Payload struct {
 func GetTokenPayload(req *http.Request) Payload {
 	return req.Context(). /* Get context from request */
 				Value("token").(*token.Token[Payload]). /* Get "token" field */
-				GetPayload()
+				Payload
 }
 
 /* Returns first and last day of month */

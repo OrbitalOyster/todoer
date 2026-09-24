@@ -25,10 +25,6 @@ func (collection Collection[T]) Length() int {
 	return len(collection.Items)
 }
 
-func (collection Collection[T]) Clone() Collection[T] {
-	return Collection[T]{Items: slices.Clone(collection.Items)}
-}
-
 func (collection *Collection[T]) Add(newItem Item[T]) {
 	collection.Items = append(collection.Items, newItem)
 }
@@ -122,6 +118,6 @@ func (collection Collection[T]) GetPage(page uint, pageSize uint) (Collection[T]
 	}
 	startInd := pageSize * (page - 1)
 	endInd := min(startInd+pageSize, uint(length))
-	result := Collection[T]{Items: slices.Clone(collection.Items)[startInd:endInd]}
+	result := Collection[T]{Items: collection.Items[startInd:endInd]}
 	return result, page, numberOfPages
 }

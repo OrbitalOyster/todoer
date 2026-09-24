@@ -27,21 +27,42 @@ func Start(routerMap routes.RouterMap) {
 	mux := http.NewServeMux()
 	/* Static files */
 	cssHandler := http.FileServer(http.Dir(cssFolder))
-	mux.Handle("GET /css/", http.StripPrefix("/css/", middleware.Cache(cssHandler)))
+	mux.Handle(
+		"GET /css/",
+		http.StripPrefix("/css/", middleware.Cache(cssHandler)),
+	)
 	jsHandler := http.FileServer(http.Dir(jsFolder))
-	mux.Handle("GET /js/", http.StripPrefix("/js/", middleware.Cache(jsHandler)))
+	mux.Handle(
+		"GET /js/",
+		http.StripPrefix("/js/", middleware.Cache(jsHandler)),
+	)
 	/* External handlers */
 	bootstrapHandler := http.FileServer(http.Dir(bootstrapFolder))
-	mux.Handle("GET /bootstrap/", http.StripPrefix("/bootstrap/", middleware.Cache(bootstrapHandler)))
+	mux.Handle(
+		"GET /bootstrap/",
+		http.StripPrefix("/bootstrap/", middleware.Cache(bootstrapHandler)),
+	)
 	bootstrapIconsHandler := http.FileServer(http.Dir(bootstrapIconsFolder))
-	mux.Handle("GET /bootstrap-icons/", http.StripPrefix("/bootstrap-icons/", middleware.Cache(bootstrapIconsHandler)))
+	mux.Handle(
+		"GET /bootstrap-icons/",
+		http.StripPrefix("/bootstrap-icons/", middleware.Cache(bootstrapIconsHandler)),
+	)
 	bootswatchHandler := http.FileServer(http.Dir(bootswatchFolder))
-	mux.Handle("GET /bootswatch/", http.StripPrefix("/bootswatch/", middleware.Cache(bootswatchHandler)))
+	mux.Handle(
+		"GET /bootswatch/",
+		http.StripPrefix("/bootswatch/", middleware.Cache(bootswatchHandler)),
+	)
 	htmxHandler := http.FileServer(http.Dir(htmxFolder))
-	mux.Handle("GET /htmx/", http.StripPrefix("/htmx/", middleware.Cache(htmxHandler)))
+	mux.Handle(
+		"GET /htmx/",
+		http.StripPrefix("/htmx/", middleware.Cache(htmxHandler)),
+	)
 	/* Images */
 	imgHandler := http.FileServer(http.Dir(imgFolder))
-	mux.Handle("GET /img/", http.StripPrefix("/img/", middleware.Cache(imgHandler)))
+	mux.Handle(
+		"GET /img/",
+		http.StripPrefix("/img/", middleware.Cache(imgHandler)),
+	)
 	/* Favicon */
 	mux.HandleFunc("GET /favicon.ico", func(writer http.ResponseWriter, req *http.Request) {
 		http.ServeFile(writer, req, faviconPath)

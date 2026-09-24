@@ -203,7 +203,7 @@ func PutTask(writer http.ResponseWriter, req *http.Request) {
 	id := req.PathValue("id")
 	filtered := tasks.All.Filter(tasks.Id, []string{id})
 	if filtered.Length() < 1 {
-		toasts.Danger(writer, "Error", "Task %d not found")
+		toasts.Danger(writer, "Error", fmt.Sprintf("Task %s not found", id))
 	} else {
 		task, ok := filtered.First().(*tasks.Task)
 		if !ok {

@@ -56,7 +56,7 @@ func Auth(next http.Handler) http.Handler {
 			config.CookieName,
 			config.JWTSecret,
 		)
-		if _, err := token.Load(); err != nil {
+		if err := token.Validate(); err != nil {
 			log.Printf("Redirect to login: %s", err)
 			/* Add HTMX redirect header on HTMX requests, otherwise redirect via http */
 			if req.Header.Get("HX-Request") == "true" {

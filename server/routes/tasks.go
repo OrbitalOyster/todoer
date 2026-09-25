@@ -102,25 +102,12 @@ func getCheckboxedTasks(req *http.Request) (result []string) {
 
 func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 	query, urlUpdate := CreateQueryFromRequest(req)
-
 	/* Get tasks */
 	tasksOnCurrentPage, page, numberOfPages := getTasks(query)
 	if page != query.Page {
 		query.Page = page
 	}
-
-	checkboxedTasks := getCheckboxedTasks(req)
-	/*
-		checkboxes := make([]bool, tasksOnCurrentPage.Length())
-		for i, selectedTask := range tasksOnCurrentPage.Items {
-			idStr := strconv.Itoa(selectedTask.Field(tasks.Id).(int))
-			checkboxes[i] = slices.Contains(
-				checkboxedTasks,
-				idStr,
-			)
-		}
-	*/
-
+	checkboxed := getCheckboxedTasks(req)
 	/* Update calendar elements if both dates are set */
 	if req.Form.Has("from") && req.Form.Has("to") {
 		pages.ExecutePartial(
@@ -135,7 +122,6 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 			},
 		)
 	}
-
 	/* Update URL */
 	if urlUpdate {
 		queryStr := query.String()
@@ -144,7 +130,6 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 		}
 		writer.Header().Add("HX-Push-Url", "/tasks"+queryStr)
 	}
-
 	/* Send actual list */
 	pages.ExecutePartial(writer, "task-list", TaskListData{
 		Tasks:      tasksOnCurrentPage.Items,
@@ -154,7 +139,7 @@ func GetTaskList(writer http.ResponseWriter, req *http.Request) {
 		Pagination: utils.GetPagination(numberOfPages, page),
 		SortBy:     query.SortBy.String(),
 		SortDesc:   query.SortDesc,
-		Checkboxes: checkboxedTasks,
+		Checkboxes: checkboxed,
 	})
 }
 
